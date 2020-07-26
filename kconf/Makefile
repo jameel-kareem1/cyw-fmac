@@ -17,7 +17,7 @@ clean:
 zconf.tab.c: zconf.lex.c
 
 %.tab.c: %.y
-	$(YACC) -o$@ -t -l $<
+	yacc -o$@ -t -l $<
 
 %.lex.c: %.l
-	$(LEX) -o$@ -L $<
+	flex -o$@ -L $<
