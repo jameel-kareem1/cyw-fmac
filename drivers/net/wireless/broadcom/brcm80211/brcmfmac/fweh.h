@@ -15,7 +15,7 @@
 /* formward declarations */
 struct brcmf_pub;
 struct brcmf_if;
-struct brcmf_cfg80211_info;
+struct brcmf_cyw-cfg80211_info;
 
 /* list of firmware events */
 #define BRCMF_FWEH_EVENT_ENUM_DEFLIST \

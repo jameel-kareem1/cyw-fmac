@@ -11,7 +11,7 @@
 #include <linux/etherdevice.h>
 #include <linux/err.h>
 #include <linux/jiffies.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 
 #include <brcmu_utils.h>
 #include <brcmu_wifi.h>
@@ -23,7 +23,7 @@
 #include "fweh.h"
 #include "fwsignal.h"
 #include "p2p.h"
-#include "cfg80211.h"
+#include "cyw-cfg80211.h"
 #include "proto.h"
 #include "bcdc.h"
 #include "common.h"

@@ -4,13 +4,13 @@
  */
 #include <linux/netdevice.h>
 #include <linux/gcd.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 
 #include "core.h"
 #include "debug.h"
 #include "fwil.h"
 #include "fwil_types.h"
-#include "cfg80211.h"
+#include "cyw-cfg80211.h"
 #include "pno.h"
 
 #define BRCMF_PNO_VERSION		2
@@ -31,14 +31,14 @@
 
 struct brcmf_pno_info {
 	int n_reqs;
-	struct cfg80211_sched_scan_request *reqs[BRCMF_PNO_MAX_BUCKETS];
+	struct cyw-cfg80211_sched_scan_request *reqs[BRCMF_PNO_MAX_BUCKETS];
 	struct mutex req_lock;
 };
 
 #define ifp_to_pno(_ifp)	((_ifp)->drvr->config->pno)
 
 static int brcmf_pno_store_request(struct brcmf_pno_info *pi,
-				   struct cfg80211_sched_scan_request *req)
+				   struct cyw-cfg80211_sched_scan_request *req)
 {
 	if (WARN(pi->n_reqs == BRCMF_PNO_MAX_BUCKETS,
 		 "pno request storage full\n"))
@@ -190,7 +190,7 @@ static int brcmf_pno_set_random(struct brcmf_if *ifp, struct brcmf_pno_info *pi)
 	return err;
 }
 
-static int brcmf_pno_add_ssid(struct brcmf_if *ifp, struct cfg80211_ssid *ssid,
+static int brcmf_pno_add_ssid(struct brcmf_if *ifp, struct cyw-cfg80211_ssid *ssid,
 			      bool active)
 {
 	struct brcmf_pub *drvr = ifp->drvr;
@@ -231,8 +231,8 @@ static int brcmf_pno_add_bssid(struct brcmf_if *ifp, const u8 *bssid)
 	return err;
 }
 
-static bool brcmf_is_ssid_active(struct cfg80211_ssid *ssid,
-				 struct cfg80211_sched_scan_request *req)
+static bool brcmf_is_ssid_active(struct cyw-cfg80211_ssid *ssid,
+				 struct cyw-cfg80211_sched_scan_request *req)
 {
 	int i;
 
@@ -266,7 +266,7 @@ static int brcmf_pno_clean(struct brcmf_if *ifp)
 	return ret;
 }
 
-static int brcmf_pno_get_bucket_channels(struct cfg80211_sched_scan_request *r,
+static int brcmf_pno_get_bucket_channels(struct cyw-cfg80211_sched_scan_request *r,
 					 struct brcmf_pno_config_le *pno_cfg)
 {
 	u32 n_chan = le32_to_cpu(pno_cfg->channel_num);
@@ -294,7 +294,7 @@ static int brcmf_pno_prep_fwconfig(struct brcmf_pno_info *pi,
 				   struct brcmf_gscan_bucket_config **buckets,
 				   u32 *scan_freq)
 {
-	struct cfg80211_sched_scan_request *sr;
+	struct cyw-cfg80211_sched_scan_request *sr;
 	struct brcmf_gscan_bucket_config *fw_buckets;
 	int i, err, chidx;
 
@@ -359,8 +359,8 @@ fail:
 static int brcmf_pno_config_networks(struct brcmf_if *ifp,
 				     struct brcmf_pno_info *pi)
 {
-	struct cfg80211_sched_scan_request *r;
-	struct cfg80211_match_set *ms;
+	struct cyw-cfg80211_sched_scan_request *r;
+	struct cyw-cfg80211_match_set *ms;
 	bool active;
 	int i, j, err = 0;
 
@@ -461,7 +461,7 @@ free_buckets:
 }
 
 int brcmf_pno_start_sched_scan(struct brcmf_if *ifp,
-			       struct cfg80211_sched_scan_request *req)
+			       struct cyw-cfg80211_sched_scan_request *req)
 {
 	struct brcmf_pno_info *pi;
 	int ret;
@@ -508,7 +508,7 @@ int brcmf_pno_stop_sched_scan(struct brcmf_if *ifp, u64 reqid)
 	return 0;
 }
 
-int brcmf_pno_attach(struct brcmf_cfg80211_info *cfg)
+int brcmf_pno_attach(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	struct brcmf_pno_info *pi;
 
@@ -522,7 +522,7 @@ int brcmf_pno_attach(struct brcmf_cfg80211_info *cfg)
 	return 0;
 }
 
-void brcmf_pno_detach(struct brcmf_cfg80211_info *cfg)
+void brcmf_pno_detach(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	struct brcmf_pno_info *pi;
 
@@ -561,8 +561,8 @@ u64 brcmf_pno_find_reqid_by_bucket(struct brcmf_pno_info *pi, u32 bucket)
 u32 brcmf_pno_get_bucket_map(struct brcmf_pno_info *pi,
 			     struct brcmf_pno_net_info_le *ni)
 {
-	struct cfg80211_sched_scan_request *req;
-	struct cfg80211_match_set *ms;
+	struct cyw-cfg80211_sched_scan_request *req;
+	struct cyw-cfg80211_match_set *ms;
 	u32 bucket_map = 0;
 	int i, j;
 

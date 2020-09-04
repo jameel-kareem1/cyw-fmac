@@ -15,7 +15,7 @@
  */
 
 #include <linux/of.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include "core.h"
 
 static bool wiphy_freq_limits_valid_chan(struct wiphy *wiphy,
@@ -29,7 +29,7 @@ static bool wiphy_freq_limits_valid_chan(struct wiphy *wiphy,
 	for (i = 0; i < n_freq_limits; i++) {
 		struct ieee80211_freq_range *limit = &freq_limits[i];
 
-		if (cfg80211_does_bw_fit_range(limit,
+		if (cyw-cfg80211_does_bw_fit_range(limit,
 					       MHZ_TO_KHZ(chan->center_freq),
 					       bw))
 			return true;

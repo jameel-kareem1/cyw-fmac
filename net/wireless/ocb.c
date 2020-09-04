@@ -9,12 +9,12 @@
  */
 
 #include <linux/ieee80211.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include "nl80211.h"
 #include "core.h"
 #include "rdev-ops.h"
 
-int __cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
+int __cyw-cfg80211_join_ocb(struct cyw-cfg80211_registered_device *rdev,
 			struct net_device *dev,
 			struct ocb_setup *setup)
 {
@@ -39,7 +39,7 @@ int __cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
 	return err;
 }
 
-int cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_join_ocb(struct cyw-cfg80211_registered_device *rdev,
 		      struct net_device *dev,
 		      struct ocb_setup *setup)
 {
@@ -47,13 +47,13 @@ int cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
 	int err;
 
 	wdev_lock(wdev);
-	err = __cfg80211_join_ocb(rdev, dev, setup);
+	err = __cyw-cfg80211_join_ocb(rdev, dev, setup);
 	wdev_unlock(wdev);
 
 	return err;
 }
 
-int __cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
+int __cyw-cfg80211_leave_ocb(struct cyw-cfg80211_registered_device *rdev,
 			 struct net_device *dev)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
@@ -74,14 +74,14 @@ int __cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
 	return err;
 }
 
-int cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_leave_ocb(struct cyw-cfg80211_registered_device *rdev,
 		       struct net_device *dev)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	int err;
 
 	wdev_lock(wdev);
-	err = __cfg80211_leave_ocb(rdev, dev);
+	err = __cyw-cfg80211_leave_ocb(rdev, dev);
 	wdev_unlock(wdev);
 
 	return err;
