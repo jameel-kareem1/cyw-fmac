@@ -10,7 +10,7 @@
 #ifndef BRCMFMAC_CORE_H
 #define BRCMFMAC_CORE_H
 
-#include <net/cyw-cfg80211.h>
+#include <net/cfg80211.h>
 #include "fweh.h"
 #include "fwil_types.h"
 
@@ -98,8 +98,8 @@ struct brcmf_pub {
 	struct brcmf_bus *bus_if;
 	struct brcmf_proto *proto;
 	struct wiphy *wiphy;
-	struct cyw-cfg80211_ops *ops;
-	struct brcmf_cyw-cfg80211_info *config;
+	struct cfg80211_ops *ops;
+	struct brcmf_cfg80211_info *config;
 
 	/* Internal brcmf items */
 	uint hdrlen;		/* Total BRCMF header length (proto + bus) */
@@ -142,7 +142,7 @@ struct brcmf_pub {
 };
 
 /* forward declarations */
-struct brcmf_cyw-cfg80211_vif;
+struct brcmf_cfg80211_vif;
 struct brcmf_fws_mac_descriptor;
 
 /**
@@ -165,7 +165,7 @@ enum brcmf_netif_stop_reason {
  * struct brcmf_if - interface control information.
  *
  * @drvr: points to device related information.
- * @vif: points to cyw-cfg80211 specific interface information.
+ * @vif: points to cfg80211 specific interface information.
  * @ndev: associated network device.
  * @multicast_work: worker object for multicast provisioning.
  * @ndoffload_work: worker object for neighbor discovery offload configuration.
@@ -181,7 +181,7 @@ enum brcmf_netif_stop_reason {
  */
 struct brcmf_if {
 	struct brcmf_pub *drvr;
-	struct brcmf_cyw-cfg80211_vif *vif;
+	struct brcmf_cfg80211_vif *vif;
 	struct net_device *ndev;
 	struct work_struct multicast_work;
 	struct work_struct ndoffload_work;

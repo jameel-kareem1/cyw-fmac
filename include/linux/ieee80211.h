@@ -1726,7 +1726,7 @@ struct ieee80211_mu_edca_param_set {
  * Due to the VHT Extended NSS Bandwidth Support, the maximum NSS can
  * vary for a given BW/MCS. This function parses the data.
  *
- * Note: This function is exported by cyw-cfg80211.
+ * Note: This function is exported by cfg80211.
  */
 int ieee80211_get_vht_max_nss(struct ieee80211_vht_cap *cap,
 			      enum ieee80211_vht_chanwidth bw,

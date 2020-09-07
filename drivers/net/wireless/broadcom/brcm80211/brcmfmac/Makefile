@@ -11,7 +11,7 @@ ccflags-y += \
 
 obj-$(CPTCFG_BRCMFMAC) += brcmfmac.o
 brcmfmac-objs += \
-		cyw-cfg80211.o \
+		cfg80211.o \
 		chip.o \
 		fwil.o \
 		fweh.o \

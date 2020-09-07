@@ -16,11 +16,11 @@
 
 #include <linux/kernel.h>
 #include <linux/export.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cfg80211.h>
 #include <net/ieee80211_radiotap.h>
 #include <asm/unaligned.h>
 
-/* function prototypes and related defs are in include/net/cyw-cfg80211.h */
+/* function prototypes and related defs are in include/net/cfg80211.h */
 
 static const struct radiotap_align_size rtap_namespace_sizes[] = {
 	[IEEE80211_RADIOTAP_TSFT] = { .align = 8, .size = 8, },

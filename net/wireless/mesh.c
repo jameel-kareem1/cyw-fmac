@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/ieee80211.h>
 #include <linux/export.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cfg80211.h>
 #include "nl80211.h"
 #include "core.h"
 #include "rdev-ops.h"
@@ -81,7 +81,7 @@ const struct mesh_config default_mesh_config = {
 };
 
 const struct mesh_setup default_mesh_setup = {
-	/* cyw-cfg80211_join_mesh() will pick a channel if needed */
+	/* cfg80211_join_mesh() will pick a channel if needed */
 	.sync_method = IEEE80211_SYNC_METHOD_NEIGHBOR_OFFSET,
 	.path_sel_proto = IEEE80211_PATH_PROTOCOL_HWMP,
 	.path_metric = IEEE80211_PATH_METRIC_AIRTIME,
@@ -94,7 +94,7 @@ const struct mesh_setup default_mesh_setup = {
 	.dtim_period = MESH_DEFAULT_DTIM_PERIOD,
 };
 
-int __cyw-cfg80211_join_mesh(struct cyw-cfg80211_registered_device *rdev,
+int __cfg80211_join_mesh(struct cfg80211_registered_device *rdev,
 			 struct net_device *dev,
 			 struct mesh_setup *setup,
 			 const struct mesh_config *conf)
@@ -188,13 +188,13 @@ int __cyw-cfg80211_join_mesh(struct cyw-cfg80211_registered_device *rdev,
 				}
 			}
 		} else {
-			scan_width = cyw-cfg80211_chandef_to_scan_width(&setup->chandef);
+			scan_width = cfg80211_chandef_to_scan_width(&setup->chandef);
 			setup->basic_rates = ieee80211_mandatory_rates(sband,
 								       scan_width);
 		}
 	}
 
-	err = cyw-cfg80211_chandef_dfs_required(&rdev->wiphy,
+	err = cfg80211_chandef_dfs_required(&rdev->wiphy,
 					    &setup->chandef,
 					    NL80211_IFTYPE_MESH_POINT);
 	if (err < 0)
@@ -202,7 +202,7 @@ int __cyw-cfg80211_join_mesh(struct cyw-cfg80211_registered_device *rdev,
 	if (err > 0 && !setup->userspace_handles_dfs)
 		return -EINVAL;
 
-	if (!cyw-cfg80211_reg_can_beacon(&rdev->wiphy, &setup->chandef,
+	if (!cfg80211_reg_can_beacon(&rdev->wiphy, &setup->chandef,
 				     NL80211_IFTYPE_MESH_POINT))
 		return -EINVAL;
 
@@ -217,9 +217,9 @@ int __cyw-cfg80211_join_mesh(struct cyw-cfg80211_registered_device *rdev,
 	return err;
 }
 
-int cyw-cfg80211_set_mesh_channel(struct cyw-cfg80211_registered_device *rdev,
+int cfg80211_set_mesh_channel(struct cfg80211_registered_device *rdev,
 			      struct wireless_dev *wdev,
-			      struct cyw-cfg80211_chan_def *chandef)
+			      struct cfg80211_chan_def *chandef)
 {
 	int err;
 
@@ -252,7 +252,7 @@ int cyw-cfg80211_set_mesh_channel(struct cyw-cfg80211_registered_device *rdev,
 	return 0;
 }
 
-int __cyw-cfg80211_leave_mesh(struct cyw-cfg80211_registered_device *rdev,
+int __cfg80211_leave_mesh(struct cfg80211_registered_device *rdev,
 			  struct net_device *dev)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
@@ -276,20 +276,20 @@ int __cyw-cfg80211_leave_mesh(struct cyw-cfg80211_registered_device *rdev,
 		wdev->beacon_interval = 0;
 		memset(&wdev->chandef, 0, sizeof(wdev->chandef));
 		rdev_set_qos_map(rdev, dev, NULL);
-		cyw-cfg80211_sched_dfs_chan_update(rdev);
+		cfg80211_sched_dfs_chan_update(rdev);
 	}
 
 	return err;
 }
 
-int cyw-cfg80211_leave_mesh(struct cyw-cfg80211_registered_device *rdev,
+int cfg80211_leave_mesh(struct cfg80211_registered_device *rdev,
 			struct net_device *dev)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	int err;
 
 	wdev_lock(wdev);
-	err = __cyw-cfg80211_leave_mesh(rdev, dev);
+	err = __cfg80211_leave_mesh(rdev, dev);
 	wdev_unlock(wdev);
 
 	return err;

@@ -1201,13 +1201,13 @@ brcmf_msgbuf_process_rx_complete(struct brcmf_msgbuf *msgbuf, void *buf)
 		eh = (struct ethhdr *)(skb->data);
 		skb_set_network_header(skb, sizeof(struct ethhdr));
 		skb->protocol = eh->h_proto;
-		skb->priority = cyw-cfg80211_classify8021d(skb, NULL);
+		skb->priority = cfg80211_classify8021d(skb, NULL);
 		if (is_unicast_ether_addr(eh->h_dest)) {
 			if (brcmf_find_sta(ifp, eh->h_dest)) {
 				 /* determine the priority */
 				if (skb->priority == 0 || skb->priority > 7) {
 					skb->priority =
-						cyw-cfg80211_classify8021d(skb,
+						cfg80211_classify8021d(skb,
 								       NULL);
 				}
 				brcmf_proto_tx_queue_data(ifp->drvr,

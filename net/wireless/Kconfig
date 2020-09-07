@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-only
 config CFG80211
-	tristate "cyw-cfg80211 - wireless configuration API"
+	tristate "cfg80211 - wireless configuration API"
 	depends on m
 	depends on RFKILL || !RFKILL
 	depends on FW_LOADER
@@ -9,14 +9,14 @@ config CFG80211
 	# (this is here rather than below to allow it to be a module)
 	select CRYPTO_SHA256 if CFG80211_USE_KERNEL_REGDB_KEYS
 	---help---
-	  cyw-cfg80211 is the Linux wireless LAN (802.11) configuration API.
+	  cfg80211 is the Linux wireless LAN (802.11) configuration API.
 	  Enable this if you have a wireless device.
 
 	  For more information refer to documentation on the wireless wiki:
 
-	  http://wireless.kernel.org/en/developers/Documentation/cyw-cfg80211
+	  http://wireless.kernel.org/en/developers/Documentation/cfg80211
 
-	  When built as a module it will be called cyw-cfg80211.
+	  When built as a module it will be called cfg80211.
 
 if CFG80211
 
@@ -39,19 +39,19 @@ config CFG80211_DEVELOPER_WARNINGS
 	default n
 	help
 	  This option enables some additional warnings that help
-	  cyw-cfg80211 developers and driver developers, but beware that
+	  cfg80211 developers and driver developers, but beware that
 	  they can also trigger due to races with userspace.
 
 	  For example, when a driver reports that it was disconnected
 	  from the AP, but the user disconnects manually at the same
 	  time, the warning might trigger spuriously due to races.
 
-	  Say Y only if you are developing cyw-cfg80211 or a driver based
+	  Say Y only if you are developing cfg80211 or a driver based
 	  on it (or mac80211).
 
 
 config CFG80211_CERTIFICATION_ONUS
-	bool "cyw-cfg80211 certification onus"
+	bool "cfg80211 certification onus"
 	depends on EXPERT
 	default n
 	---help---
@@ -102,10 +102,10 @@ config CFG80211_EXTRA_REGDB_KEYDIR
 	  that shall be accepted for a signed regulatory database.
 
 	  Note that you need to also select the correct CRYPTO_<hash> modules
-	  for your certificates, and if cyw-cfg80211 is built-in they also must be.
+	  for your certificates, and if cfg80211 is built-in they also must be.
 
 config CFG80211_REG_CELLULAR_HINTS
-	bool "cyw-cfg80211 regulatory support for cellular base station hints"
+	bool "cfg80211 regulatory support for cellular base station hints"
 	depends on CFG80211_CERTIFICATION_ONUS
 	---help---
 	  This option enables support for parsing regulatory hints
@@ -118,7 +118,7 @@ config CFG80211_REG_CELLULAR_HINTS
 	  systems.
 
 config CFG80211_REG_RELAX_NO_IR
-	bool "cyw-cfg80211 support for NO_IR relaxation"
+	bool "cfg80211 support for NO_IR relaxation"
 	depends on CFG80211_CERTIFICATION_ONUS
 	---help---
 	 This option enables support for relaxation of the NO_IR flag for
@@ -152,10 +152,10 @@ config CFG80211_DEFAULT_PS
 	  latency requirement, see Documentation/power/pm_qos_interface.rst.
 
 config CFG80211_DEBUGFS
-	bool "cyw-cfg80211 DebugFS entries"
+	bool "cfg80211 DebugFS entries"
 	depends on DEBUG_FS
 	---help---
-	  You can enable this if you want debugfs entries for cyw-cfg80211.
+	  You can enable this if you want debugfs entries for cfg80211.
 
 	  If unsure, say N.
 
@@ -170,17 +170,17 @@ config CFG80211_CRDA_SUPPORT
 	  If unsure, say Y.
 
 config CFG80211_WEXT
-	bool "cyw-cfg80211 wireless extensions compatibility" if !CFG80211_WEXT_EXPORT
+	bool "cfg80211 wireless extensions compatibility" if !CFG80211_WEXT_EXPORT
 	depends on WEXT_CORE
 	default y if CFG80211_WEXT_EXPORT
 	help
 	  Enable this option if you need old userspace for wireless
-	  extensions with cyw-cfg80211-based drivers.
+	  extensions with cfg80211-based drivers.
 
 config CFG80211_WEXT_EXPORT
 	bool
 	help
-	  Drivers should select this option if they require cyw-cfg80211's
+	  Drivers should select this option if they require cfg80211's
 	  wext compatibility symbols to be exported.
 
 endif # CFG80211

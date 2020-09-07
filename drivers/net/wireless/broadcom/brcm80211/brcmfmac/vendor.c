@@ -4,7 +4,7 @@
  */
 
 #include <linux/vmalloc.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cfg80211.h>
 #include <net/netlink.h>
 
 #include <brcmu_wifi.h>
@@ -12,15 +12,15 @@
 #include "core.h"
 #include "p2p.h"
 #include "debug.h"
-#include "cyw-cfg80211.h"
+#include "cfg80211.h"
 #include "vendor.h"
 #include "fwil.h"
 
-static int brcmf_cyw-cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
+static int brcmf_cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 						 struct wireless_dev *wdev,
 						 const void *data, int len)
 {
-	struct brcmf_cyw-cfg80211_vif *vif;
+	struct brcmf_cfg80211_vif *vif;
 	struct brcmf_if *ifp;
 	const struct brcmf_vndr_dcmd_hdr *cmdhdr = data;
 	struct sk_buff *reply;
@@ -34,7 +34,7 @@ static int brcmf_cyw-cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 		return -EINVAL;
 	}
 
-	vif = container_of(wdev, struct brcmf_cyw-cfg80211_vif, wdev);
+	vif = container_of(wdev, struct brcmf_cfg80211_vif, wdev);
 	ifp = vif->ifp;
 
 	brcmf_dbg(TRACE, "ifidx=%d, cmd=%d\n", ifp->ifidx, cmdhdr->cmd);
@@ -87,7 +87,7 @@ static int brcmf_cyw-cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 		msglen = ret_len > maxmsglen ? maxmsglen : ret_len;
 		ret_len -= msglen;
 		payload = msglen + sizeof(msglen);
-		reply = cyw-cfg80211_vendor_cmd_alloc_reply_skb(wiphy, payload);
+		reply = cfg80211_vendor_cmd_alloc_reply_skb(wiphy, payload);
 		if (NULL == reply) {
 			ret = -ENOMEM;
 			break;
@@ -100,7 +100,7 @@ static int brcmf_cyw-cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 			break;
 		}
 
-		ret = cyw-cfg80211_vendor_cmd_reply(reply);
+		ret = cfg80211_vendor_cmd_reply(reply);
 		if (ret)
 			break;
 
@@ -118,7 +118,7 @@ brcmf_wiphy_phy_temp_evt_handler(struct brcmf_if *ifp,
 				 const struct brcmf_event_msg *e, void *data)
 
 {
-	struct brcmf_cyw-cfg80211_info *cfg = ifp->drvr->config;
+	struct brcmf_cfg80211_info *cfg = ifp->drvr->config;
 	struct wiphy *wiphy = cfg_to_wiphy(cfg);
 	struct sk_buff *skb;
 	struct nlattr *phy_temp_data;
@@ -131,7 +131,7 @@ brcmf_wiphy_phy_temp_evt_handler(struct brcmf_if *ifp,
 	temp = le32_to_cpu(phy_temp_evt->temp);
 	tempdelta = le32_to_cpu(phy_temp_evt->tempdelta);
 
-	skb = cyw-cfg80211_vendor_event_alloc(wiphy, NULL,
+	skb = cfg80211_vendor_event_alloc(wiphy, NULL,
 					  sizeof(*phy_temp_evt),
 					  BRCMF_VNDR_EVTS_PHY_TEMP,
 					  GFP_KERNEL);
@@ -159,7 +159,7 @@ brcmf_wiphy_phy_temp_evt_handler(struct brcmf_if *ifp,
 
 	nla_nest_end(skb, phy_temp_data);
 
-	cyw-cfg80211_vendor_event(skb, GFP_KERNEL);
+	cfg80211_vendor_event(skb, GFP_KERNEL);
 	return 0;
 }
 
@@ -172,7 +172,7 @@ const struct wiphy_vendor_command brcmf_vendor_cmds[] = {
 		.flags = WIPHY_VENDOR_CMD_NEED_WDEV |
 			 WIPHY_VENDOR_CMD_NEED_NETDEV,
 		.policy = VENDOR_CMD_RAW_DATA,
-		.doit = brcmf_cyw-cfg80211_vndr_cmds_dcmd_handler
+		.doit = brcmf_cfg80211_vndr_cmds_dcmd_handler
 	},
 };
 

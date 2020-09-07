@@ -4,7 +4,7 @@
  */
 #include <linux/slab.h>
 #include <linux/netdevice.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cfg80211.h>
 
 #include <brcmu_wifi.h>
 #include <brcmu_utils.h>
@@ -15,7 +15,7 @@
 #include "fwil_types.h"
 #include "btcoex.h"
 #include "p2p.h"
-#include "cyw-cfg80211.h"
+#include "cfg80211.h"
 
 /* T1 start SCO/eSCO priority suppression */
 #define BRCMF_BTCOEX_OPPR_WIN_TIME   msecs_to_jiffies(2000)
@@ -59,7 +59,7 @@ enum brcmf_btcoex_state {
  * @dhcp_done: DHCP finished before T1/T2 timer expiration
  * @bt_state: DHCP state machine state
  * @work: DHCP state machine work
- * @cfg: driver private data for cyw-cfg80211 interface
+ * @cfg: driver private data for cfg80211 interface
  * @reg66: saved value of btc_params 66
  * @reg41: saved value of btc_params 41
  * @reg68: saved value of btc_params 68
@@ -73,14 +73,14 @@ enum brcmf_btcoex_state {
  *	have been saved
  */
 struct brcmf_btcoex_info {
-	struct brcmf_cyw-cfg80211_vif *vif;
+	struct brcmf_cfg80211_vif *vif;
 	struct timer_list timer;
 	u16 timeout;
 	bool timer_on;
 	bool dhcp_done;
 	enum brcmf_btcoex_state bt_state;
 	struct work_struct work;
-	struct brcmf_cyw-cfg80211_info *cfg;
+	struct brcmf_cfg80211_info *cfg;
 	u32 reg66;
 	u32 reg41;
 	u32 reg68;
@@ -344,18 +344,18 @@ idle:
 	btci->bt_state = BRCMF_BT_DHCP_IDLE;
 	btci->timer_on = false;
 	brcmf_btcoex_boost_wifi(btci, false);
-	cyw-cfg80211_crit_proto_stopped(&btci->vif->wdev, GFP_KERNEL);
+	cfg80211_crit_proto_stopped(&btci->vif->wdev, GFP_KERNEL);
 	brcmf_btcoex_restore_part1(btci);
 	btci->vif = NULL;
 }
 
 /**
  * brcmf_btcoex_attach() - initialize BT coex data
- * @cfg: driver private cyw-cfg80211 data
+ * @cfg: driver private cfg80211 data
  *
  * return: 0 on success
  */
-int brcmf_btcoex_attach(struct brcmf_cyw-cfg80211_info *cfg)
+int brcmf_btcoex_attach(struct brcmf_cfg80211_info *cfg)
 {
 	struct brcmf_btcoex_info *btci = NULL;
 	brcmf_dbg(TRACE, "enter\n");
@@ -382,9 +382,9 @@ int brcmf_btcoex_attach(struct brcmf_cyw-cfg80211_info *cfg)
 
 /**
  * brcmf_btcoex_detach - clean BT coex data
- * @cfg: driver private cyw-cfg80211 data
+ * @cfg: driver private cfg80211 data
  */
-void brcmf_btcoex_detach(struct brcmf_cyw-cfg80211_info *cfg)
+void brcmf_btcoex_detach(struct brcmf_cfg80211_info *cfg)
 {
 	brcmf_dbg(TRACE, "enter\n");
 
@@ -443,15 +443,15 @@ static void brcmf_btcoex_dhcp_end(struct brcmf_btcoex_info *btci)
 
 /**
  * brcmf_btcoex_set_mode - set BT coex mode
- * @cfg: driver private cyw-cfg80211 data
+ * @cfg: driver private cfg80211 data
  * @mode: Wifi-Bluetooth coexistence mode
  *
  * return: 0 on success
  */
-int brcmf_btcoex_set_mode(struct brcmf_cyw-cfg80211_vif *vif,
+int brcmf_btcoex_set_mode(struct brcmf_cfg80211_vif *vif,
 			  enum brcmf_btcoex_mode mode, u16 duration)
 {
-	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(vif->wdev.wiphy);
+	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(vif->wdev.wiphy);
 	struct brcmf_btcoex_info *btci = cfg->btcoex;
 	struct brcmf_if *ifp = brcmf_get_ifp(cfg->pub, 0);
 
