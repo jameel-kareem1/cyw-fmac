@@ -94,7 +94,7 @@
 
 #define BRCMF_PM_WAIT_MAXRETRY			100
 
-/* cfg80211 wowlan definitions */
+/* cyw-cfg80211 wowlan definitions */
 #define WL_WOWLAN_MAX_PATTERNS			8
 #define WL_WOWLAN_MIN_PATTERN_LEN		1
 #define WL_WOWLAN_MAX_PATTERN_LEN		255
@@ -115,7 +115,7 @@ enum brcmf_scan_status {
 };
 
 /* dongle configuration */
-struct brcmf_cfg80211_conf {
+struct brcmf_cyw-cfg80211_conf {
 	u32 frag_threshold;
 	u32 rts_threshold;
 	u32 retry_short;
@@ -123,7 +123,7 @@ struct brcmf_cfg80211_conf {
 };
 
 /* security information with currently associated ap */
-struct brcmf_cfg80211_security {
+struct brcmf_cyw-cfg80211_security {
 	u32 wpa_versions;
 	u32 auth_type;
 	u32 cipher_pairwise;
@@ -151,15 +151,15 @@ enum brcmf_profile_fwauth {
 };
 
 /**
- * struct brcmf_cfg80211_profile - profile information.
+ * struct brcmf_cyw-cfg80211_profile - profile information.
  *
  * @bssid: bssid of joined/joining ibss.
  * @sec: security information.
  * @key: key information
  */
-struct brcmf_cfg80211_profile {
+struct brcmf_cyw-cfg80211_profile {
 	u8 bssid[ETH_ALEN];
-	struct brcmf_cfg80211_security sec;
+	struct brcmf_cyw-cfg80211_security sec;
 	struct brcmf_wsec_key key[BRCMF_MAX_DEFAULT_KEYS];
 	enum brcmf_profile_fwsup use_fwsup;
 	u16 use_fwauth;
@@ -188,7 +188,7 @@ enum brcmf_vif_status {
 	BRCMF_VIF_STATUS_ASSOC_SUCCESS,
 };
 
-enum brcmf_cfg80211_pm_state {
+enum brcmf_cyw-cfg80211_pm_state {
 	BRCMF_CFG80211_PM_STATE_RESUMED,
 	BRCMF_CFG80211_PM_STATE_RESUMING,
 	BRCMF_CFG80211_PM_STATE_SUSPENDED,
@@ -221,7 +221,7 @@ struct vif_saved_ie {
 };
 
 /**
- * struct brcmf_cfg80211_vif - virtual interface specific information.
+ * struct brcmf_cyw-cfg80211_vif - virtual interface specific information.
  *
  * @ifp: lower layer interface pointer
  * @wdev: wireless device.
@@ -231,10 +231,10 @@ struct vif_saved_ie {
  * @mgmt_rx_reg: registered rx mgmt frame types.
  * @mbss: Multiple BSS type, set if not first AP (not relevant for P2P).
  */
-struct brcmf_cfg80211_vif {
+struct brcmf_cyw-cfg80211_vif {
 	struct brcmf_if *ifp;
 	struct wireless_dev wdev;
-	struct brcmf_cfg80211_profile profile;
+	struct brcmf_cyw-cfg80211_profile profile;
 	unsigned long sme_state;
 	struct vif_saved_ie saved_ie;
 	struct list_head list;
@@ -244,7 +244,7 @@ struct brcmf_cfg80211_vif {
 };
 
 /* association inform */
-struct brcmf_cfg80211_connect_info {
+struct brcmf_cyw-cfg80211_connect_info {
 	u8 *req_ie;
 	s32 req_ie_len;
 	u8 *resp_ie;
@@ -252,12 +252,12 @@ struct brcmf_cfg80211_connect_info {
 };
 
 /* assoc ie length */
-struct brcmf_cfg80211_assoc_ielen_le {
+struct brcmf_cyw-cfg80211_assoc_ielen_le {
 	__le32 req_len;
 	__le32 resp_len;
 };
 
-struct brcmf_cfg80211_edcf_acparam {
+struct brcmf_cyw-cfg80211_edcf_acparam {
 	u8 ACI;
 	u8 ECW;
 	u16 TXOP;        /* stored in network order (ls octet first) */
@@ -274,12 +274,12 @@ struct escan_info {
 	u8 *escan_buf;
 	struct wiphy *wiphy;
 	struct brcmf_if *ifp;
-	s32 (*run)(struct brcmf_cfg80211_info *cfg, struct brcmf_if *ifp,
-		   struct cfg80211_scan_request *request);
+	s32 (*run)(struct brcmf_cyw-cfg80211_info *cfg, struct brcmf_if *ifp,
+		   struct cyw-cfg80211_scan_request *request);
 };
 
 /**
- * struct brcmf_cfg80211_vif_event - virtual interface event information.
+ * struct brcmf_cyw-cfg80211_vif_event - virtual interface event information.
  *
  * @vif_wq: waitqueue awaiting interface event from firmware.
  * @vif_event_lock: protects other members in this structure.
@@ -287,46 +287,46 @@ struct escan_info {
  * @action: either add, change, or delete.
  * @vif: virtual interface object related to the event.
  */
-struct brcmf_cfg80211_vif_event {
+struct brcmf_cyw-cfg80211_vif_event {
 	wait_queue_head_t vif_wq;
 	spinlock_t vif_event_lock;
 	u8 action;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 };
 
 /**
- * struct brcmf_cfg80211_wowl - wowl related information.
+ * struct brcmf_cyw-cfg80211_wowl - wowl related information.
  *
  * @active: set on suspend, cleared on resume.
  * @pre_pmmode: firmware PM mode at entering suspend.
  * @nd: net dectect data.
- * @nd_info: helper struct to pass to cfg80211.
+ * @nd_info: helper struct to pass to cyw-cfg80211.
  * @nd_data_wait: wait queue to sync net detect data.
  * @nd_data_completed: completion for net detect data.
  * @nd_enabled: net detect enabled.
  */
-struct brcmf_cfg80211_wowl {
+struct brcmf_cyw-cfg80211_wowl {
 	bool active;
 	u32 pre_pmmode;
-	struct cfg80211_wowlan_nd_match *nd;
-	struct cfg80211_wowlan_nd_info *nd_info;
+	struct cyw-cfg80211_wowlan_nd_match *nd;
+	struct cyw-cfg80211_wowlan_nd_info *nd_info;
 	wait_queue_head_t nd_data_wait;
 	bool nd_data_completed;
 	bool nd_enabled;
 };
 
 /**
- * struct brcmf_cfg80211_info - dongle private data of cfg80211 interface
+ * struct brcmf_cyw-cfg80211_info - dongle private data of cyw-cfg80211 interface
  *
- * @wiphy: wiphy object for cfg80211 interface.
+ * @wiphy: wiphy object for cyw-cfg80211 interface.
  * @ops: pointer to copy of ops as registered with wiphy object.
  * @conf: dongle configuration.
  * @p2p: peer-to-peer specific information.
  * @btcoex: Bluetooth coexistence information.
- * @scan_request: cfg80211 scan request object.
+ * @scan_request: cyw-cfg80211 scan request object.
  * @usr_sync: mainly for dongle up/down synchronization.
  * @bss_list: bss_list holding scanned ap information.
- * @bss_info: bss information for cfg80211 layer.
+ * @bss_info: bss information for cyw-cfg80211 layer.
  * @conn_info: association info.
  * @pmk_list: wpa2 pmk list.
  * @scan_status: scan activity on the dongle.
@@ -350,15 +350,15 @@ struct brcmf_cfg80211_wowl {
  * @wowl: wowl related information.
  * @pno: information of pno module.
  */
-struct brcmf_cfg80211_info {
+struct brcmf_cyw-cfg80211_info {
 	struct wiphy *wiphy;
-	struct brcmf_cfg80211_conf *conf;
+	struct brcmf_cyw-cfg80211_conf *conf;
 	struct brcmf_p2p_info p2p;
 	struct brcmf_btcoex_info *btcoex;
-	struct cfg80211_scan_request *scan_request;
+	struct cyw-cfg80211_scan_request *scan_request;
 	struct mutex usr_sync;
-	struct wl_cfg80211_bss_info *bss_info;
-	struct brcmf_cfg80211_connect_info conn_info;
+	struct wl_cyw-cfg80211_bss_info *bss_info;
+	struct brcmf_cyw-cfg80211_connect_info conn_info;
 	struct brcmf_pmk_list_le pmk_list;
 	unsigned long scan_status;
 	struct brcmf_pub *pub;
@@ -375,11 +375,11 @@ struct brcmf_cfg80211_info {
 	struct timer_list escan_timeout;
 	struct work_struct escan_timeout_work;
 	struct list_head vif_list;
-	struct brcmf_cfg80211_vif_event vif_event;
+	struct brcmf_cyw-cfg80211_vif_event vif_event;
 	struct completion vif_disabled;
 	struct brcmu_d11inf d11inf;
 	struct brcmf_assoclist_le assoclist;
-	struct brcmf_cfg80211_wowl wowl;
+	struct brcmf_cyw-cfg80211_wowl wowl;
 	struct brcmf_pno_info *pno;
 	u8 ac_priority[MAX_8021D_PRIO];
 	u8 pm_state;
@@ -399,87 +399,87 @@ struct brcmf_tlv {
 	u8 data[1];
 };
 
-static inline struct wiphy *cfg_to_wiphy(struct brcmf_cfg80211_info *cfg)
+static inline struct wiphy *cfg_to_wiphy(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	return cfg->wiphy;
 }
 
-static inline struct brcmf_cfg80211_info *wiphy_to_cfg(struct wiphy *w)
+static inline struct brcmf_cyw-cfg80211_info *wiphy_to_cfg(struct wiphy *w)
 {
 	struct brcmf_pub *drvr = wiphy_priv(w);
 	return drvr->config;
 }
 
-static inline struct brcmf_cfg80211_info *wdev_to_cfg(struct wireless_dev *wd)
+static inline struct brcmf_cyw-cfg80211_info *wdev_to_cfg(struct wireless_dev *wd)
 {
 	return wiphy_to_cfg(wd->wiphy);
 }
 
-static inline struct brcmf_cfg80211_vif *wdev_to_vif(struct wireless_dev *wdev)
+static inline struct brcmf_cyw-cfg80211_vif *wdev_to_vif(struct wireless_dev *wdev)
 {
-	return container_of(wdev, struct brcmf_cfg80211_vif, wdev);
+	return container_of(wdev, struct brcmf_cyw-cfg80211_vif, wdev);
 }
 
 static inline
-struct net_device *cfg_to_ndev(struct brcmf_cfg80211_info *cfg)
+struct net_device *cfg_to_ndev(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	return brcmf_get_ifp(cfg->pub, 0)->ndev;
 }
 
-static inline struct brcmf_cfg80211_info *ndev_to_cfg(struct net_device *ndev)
+static inline struct brcmf_cyw-cfg80211_info *ndev_to_cfg(struct net_device *ndev)
 {
 	return wdev_to_cfg(ndev->ieee80211_ptr);
 }
 
-static inline struct brcmf_cfg80211_profile *ndev_to_prof(struct net_device *nd)
+static inline struct brcmf_cyw-cfg80211_profile *ndev_to_prof(struct net_device *nd)
 {
 	struct brcmf_if *ifp = netdev_priv(nd);
 	return &ifp->vif->profile;
 }
 
-static inline struct brcmf_cfg80211_vif *ndev_to_vif(struct net_device *ndev)
+static inline struct brcmf_cyw-cfg80211_vif *ndev_to_vif(struct net_device *ndev)
 {
 	struct brcmf_if *ifp = netdev_priv(ndev);
 	return ifp->vif;
 }
 
 static inline struct
-brcmf_cfg80211_connect_info *cfg_to_conn(struct brcmf_cfg80211_info *cfg)
+brcmf_cyw-cfg80211_connect_info *cfg_to_conn(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	return &cfg->conn_info;
 }
 
-struct brcmf_cfg80211_info *brcmf_cfg80211_attach(struct brcmf_pub *drvr,
-						  struct cfg80211_ops *ops,
+struct brcmf_cyw-cfg80211_info *brcmf_cyw-cfg80211_attach(struct brcmf_pub *drvr,
+						  struct cyw-cfg80211_ops *ops,
 						  bool p2pdev_forced);
-void brcmf_cfg80211_detach(struct brcmf_cfg80211_info *cfg);
-s32 brcmf_cfg80211_up(struct net_device *ndev);
-s32 brcmf_cfg80211_down(struct net_device *ndev);
-struct cfg80211_ops *brcmf_cfg80211_get_ops(struct brcmf_mp_device *settings);
-enum nl80211_iftype brcmf_cfg80211_get_iftype(struct brcmf_if *ifp);
+void brcmf_cyw-cfg80211_detach(struct brcmf_cyw-cfg80211_info *cfg);
+s32 brcmf_cyw-cfg80211_up(struct net_device *ndev);
+s32 brcmf_cyw-cfg80211_down(struct net_device *ndev);
+struct cyw-cfg80211_ops *brcmf_cyw-cfg80211_get_ops(struct brcmf_mp_device *settings);
+enum nl80211_iftype brcmf_cyw-cfg80211_get_iftype(struct brcmf_if *ifp);
 
-struct brcmf_cfg80211_vif *brcmf_alloc_vif(struct brcmf_cfg80211_info *cfg,
+struct brcmf_cyw-cfg80211_vif *brcmf_alloc_vif(struct brcmf_cyw-cfg80211_info *cfg,
 					   enum nl80211_iftype type);
-void brcmf_free_vif(struct brcmf_cfg80211_vif *vif);
+void brcmf_free_vif(struct brcmf_cyw-cfg80211_vif *vif);
 
-s32 brcmf_vif_set_mgmt_ie(struct brcmf_cfg80211_vif *vif, s32 pktflag,
+s32 brcmf_vif_set_mgmt_ie(struct brcmf_cyw-cfg80211_vif *vif, s32 pktflag,
 			  const u8 *vndr_ie_buf, u32 vndr_ie_len);
-s32 brcmf_vif_clear_mgmt_ies(struct brcmf_cfg80211_vif *vif);
+s32 brcmf_vif_clear_mgmt_ies(struct brcmf_cyw-cfg80211_vif *vif);
 u16 channel_to_chanspec(struct brcmu_d11inf *d11inf,
 			struct ieee80211_channel *ch);
-bool brcmf_get_vif_state_any(struct brcmf_cfg80211_info *cfg,
+bool brcmf_get_vif_state_any(struct brcmf_cyw-cfg80211_info *cfg,
 			     unsigned long state);
-void brcmf_cfg80211_arm_vif_event(struct brcmf_cfg80211_info *cfg,
-				  struct brcmf_cfg80211_vif *vif);
-bool brcmf_cfg80211_vif_event_armed(struct brcmf_cfg80211_info *cfg);
-int brcmf_cfg80211_wait_vif_event(struct brcmf_cfg80211_info *cfg,
+void brcmf_cyw-cfg80211_arm_vif_event(struct brcmf_cyw-cfg80211_info *cfg,
+				  struct brcmf_cyw-cfg80211_vif *vif);
+bool brcmf_cyw-cfg80211_vif_event_armed(struct brcmf_cyw-cfg80211_info *cfg);
+int brcmf_cyw-cfg80211_wait_vif_event(struct brcmf_cyw-cfg80211_info *cfg,
 				  u8 action, ulong timeout);
-s32 brcmf_notify_escan_complete(struct brcmf_cfg80211_info *cfg,
+s32 brcmf_notify_escan_complete(struct brcmf_cyw-cfg80211_info *cfg,
 				struct brcmf_if *ifp, bool aborted,
 				bool fw_abort);
 void brcmf_set_mpc(struct brcmf_if *ndev, int mpc);
-void brcmf_abort_scanning(struct brcmf_cfg80211_info *cfg);
-void brcmf_cfg80211_free_netdev(struct net_device *ndev);
+void brcmf_abort_scanning(struct brcmf_cyw-cfg80211_info *cfg);
+void brcmf_cyw-cfg80211_free_netdev(struct net_device *ndev);
 bool brcmf_is_apmode_operating(struct wiphy *wiphy);
 
 #endif /* BRCMFMAC_CFG80211_H */

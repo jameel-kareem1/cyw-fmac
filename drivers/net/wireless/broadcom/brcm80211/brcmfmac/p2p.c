@@ -6,7 +6,7 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/rtnetlink.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 
 #include <brcmu_wifi.h>
 #include <brcmu_utils.h>
@@ -16,7 +16,7 @@
 #include "fwil.h"
 #include "fwil_types.h"
 #include "p2p.h"
-#include "cfg80211.h"
+#include "cyw-cfg80211.h"
 #include "feature.h"
 
 /* parameters used for p2p escan */
@@ -531,16 +531,16 @@ static void brcmf_p2p_generate_bss_mac(struct brcmf_p2p_info *p2p, u8 *dev_addr)
 }
 
 /**
- * brcmf_p2p_scan_is_p2p_request() - is cfg80211 scan request a P2P scan.
+ * brcmf_p2p_scan_is_p2p_request() - is cyw-cfg80211 scan request a P2P scan.
  *
- * @request: the scan request as received from cfg80211.
+ * @request: the scan request as received from cyw-cfg80211.
  *
  * returns true if one of the ssids in the request matches the
  * P2P wildcard ssid; otherwise returns false.
  */
-static bool brcmf_p2p_scan_is_p2p_request(struct cfg80211_scan_request *request)
+static bool brcmf_p2p_scan_is_p2p_request(struct cyw-cfg80211_scan_request *request)
 {
-	struct cfg80211_ssid *ssids = request->ssids;
+	struct cyw-cfg80211_ssid *ssids = request->ssids;
 	int i;
 
 	for (i = 0; i < request->n_ssids; i++) {
@@ -587,7 +587,7 @@ static s32 brcmf_p2p_set_discover_state(struct brcmf_if *ifp, u8 state,
  */
 static s32 brcmf_p2p_deinit_discovery(struct brcmf_p2p_info *p2p)
 {
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 
 	brcmf_dbg(TRACE, "enter\n");
 
@@ -612,7 +612,7 @@ static s32 brcmf_p2p_deinit_discovery(struct brcmf_p2p_info *p2p)
 static int brcmf_p2p_enable_discovery(struct brcmf_p2p_info *p2p)
 {
 	struct brcmf_pub *drvr = p2p->cfg->pub;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	s32 ret = 0;
 
 	brcmf_dbg(TRACE, "enter\n");
@@ -680,7 +680,7 @@ static s32 brcmf_p2p_escan(struct brcmf_p2p_info *p2p, u32 num_chans,
 	s32 active;
 	u32 i;
 	u8 *memblk;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	struct brcmf_p2p_scan_le *p2p_params;
 	struct brcmf_scan_params_le *sparams;
 
@@ -790,23 +790,23 @@ exit:
 /**
  * brcmf_p2p_run_escan() - escan callback for peer-to-peer.
  *
- * @cfg: driver private data for cfg80211 interface.
+ * @cfg: driver private data for cyw-cfg80211 interface.
  * @ndev: net device for which scan is requested.
- * @request: scan request from cfg80211.
+ * @request: scan request from cyw-cfg80211.
  * @action: scan action.
  *
  * Determines the P2P discovery state based to scan request parameters and
  * validates the channels in the request.
  */
-static s32 brcmf_p2p_run_escan(struct brcmf_cfg80211_info *cfg,
+static s32 brcmf_p2p_run_escan(struct brcmf_cyw-cfg80211_info *cfg,
 			       struct brcmf_if *ifp,
-			       struct cfg80211_scan_request *request)
+			       struct cyw-cfg80211_scan_request *request)
 {
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct brcmf_pub *drvr = cfg->pub;
 	s32 err = 0;
 	s32 search_state = WL_P2P_DISC_ST_SCAN;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	struct net_device *dev = NULL;
 	int i, num_nodfs = 0;
 	u16 *chanspecs;
@@ -886,7 +886,7 @@ static s32 brcmf_p2p_find_listen_channel(const u8 *ie, u32 ie_len)
 	s32 listen_channel;
 	s32 err;
 
-	err = cfg80211_get_p2p_attr(ie, ie_len,
+	err = cyw-cfg80211_get_p2p_attr(ie, ie_len,
 				    IEEE80211_P2P_ATTR_LISTEN_CHANNEL,
 				    channel_ie, sizeof(channel_ie));
 	if (err < 0)
@@ -911,17 +911,17 @@ static s32 brcmf_p2p_find_listen_channel(const u8 *ie, u32 ie_len)
  * brcmf_p2p_scan_prep() - prepare scan based on request.
  *
  * @wiphy: wiphy device.
- * @request: scan request from cfg80211.
+ * @request: scan request from cyw-cfg80211.
  * @vif: vif on which scan request is to be executed.
  *
  * Prepare the scan appropriately for type of scan requested. Overrides the
  * escan .run() callback for peer-to-peer scanning.
  */
 int brcmf_p2p_scan_prep(struct wiphy *wiphy,
-			struct cfg80211_scan_request *request,
-			struct brcmf_cfg80211_vif *vif)
+			struct cyw-cfg80211_scan_request *request,
+			struct brcmf_cyw-cfg80211_vif *vif)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	int err = 0;
 
@@ -964,7 +964,7 @@ static s32
 brcmf_p2p_discover_listen(struct brcmf_p2p_info *p2p, u16 channel, u32 duration)
 {
 	struct brcmf_pub *drvr = p2p->cfg->pub;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	struct brcmu_chan ch;
 	s32 err = 0;
 
@@ -1007,7 +1007,7 @@ int brcmf_p2p_remain_on_channel(struct wiphy *wiphy, struct wireless_dev *wdev,
 				struct ieee80211_channel *channel,
 				unsigned int duration, u64 *cookie)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	s32 err;
 	u16 channel_nr;
@@ -1027,7 +1027,7 @@ int brcmf_p2p_remain_on_channel(struct wiphy *wiphy, struct wireless_dev *wdev,
 
 	memcpy(&p2p->remain_on_channel, channel, sizeof(*channel));
 	*cookie = p2p->remain_on_channel_cookie;
-	cfg80211_ready_on_channel(wdev, *cookie, channel, duration, GFP_KERNEL);
+	cyw-cfg80211_ready_on_channel(wdev, *cookie, channel, duration, GFP_KERNEL);
 
 exit:
 	return err;
@@ -1046,7 +1046,7 @@ int brcmf_p2p_notify_listen_complete(struct brcmf_if *ifp,
 				     const struct brcmf_event_msg *e,
 				     void *data)
 {
-	struct brcmf_cfg80211_info *cfg = ifp->drvr->config;
+	struct brcmf_cyw-cfg80211_info *cfg = ifp->drvr->config;
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct wireless_dev *wdev = p2p->remin_on_channel_wdev;
 
@@ -1065,7 +1065,7 @@ int brcmf_p2p_notify_listen_complete(struct brcmf_if *ifp,
 			p2p->remin_on_channel_wdev :
 			&ifp->vif->wdev;
 
-		cfg80211_remain_on_channel_expired(wdev,
+		cyw-cfg80211_remain_on_channel_expired(wdev,
 						   p2p->remain_on_channel_cookie,
 						   &p2p->remain_on_channel,
 						   GFP_KERNEL);
@@ -1191,7 +1191,7 @@ static void brcmf_p2p_afx_handler(struct work_struct *work)
 static s32 brcmf_p2p_af_searching_channel(struct brcmf_p2p_info *p2p)
 {
 	struct afx_hdl *afx_hdl = &p2p->afx_hdl;
-	struct brcmf_cfg80211_vif *pri_vif;
+	struct brcmf_cyw-cfg80211_vif *pri_vif;
 	s32 retry;
 
 	brcmf_dbg(TRACE, "Enter\n");
@@ -1261,7 +1261,7 @@ static s32 brcmf_p2p_af_searching_channel(struct brcmf_p2p_info *p2p)
  * @bi: bss info struct, result from scan.
  *
  */
-bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cfg80211_info *cfg,
+bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cyw-cfg80211_info *cfg,
 					   struct brcmf_bss_info_le *bi)
 
 {
@@ -1284,11 +1284,11 @@ bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cfg80211_info *cfg,
 
 	ie = ((u8 *)bi) + le16_to_cpu(bi->ie_offset);
 	memset(p2p_dev_addr, 0, sizeof(p2p_dev_addr));
-	err = cfg80211_get_p2p_attr(ie, le32_to_cpu(bi->ie_length),
+	err = cyw-cfg80211_get_p2p_attr(ie, le32_to_cpu(bi->ie_length),
 				    IEEE80211_P2P_ATTR_DEVICE_INFO,
 				    p2p_dev_addr, sizeof(p2p_dev_addr));
 	if (err < 0)
-		err = cfg80211_get_p2p_attr(ie, le32_to_cpu(bi->ie_length),
+		err = cyw-cfg80211_get_p2p_attr(ie, le32_to_cpu(bi->ie_length),
 					    IEEE80211_P2P_ATTR_DEVICE_ID,
 					    p2p_dev_addr, sizeof(p2p_dev_addr));
 	if ((err >= 0) &&
@@ -1312,10 +1312,10 @@ bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cfg80211_info *cfg,
  * @cfg: common configuration struct.
  *
  */
-static s32 brcmf_p2p_abort_action_frame(struct brcmf_cfg80211_info *cfg)
+static s32 brcmf_p2p_abort_action_frame(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	s32 err;
 	s32 int_val = 1;
 
@@ -1337,7 +1337,7 @@ static s32 brcmf_p2p_abort_action_frame(struct brcmf_cfg80211_info *cfg)
  *
  */
 static void
-brcmf_p2p_stop_wait_next_action_frame(struct brcmf_cfg80211_info *cfg)
+brcmf_p2p_stop_wait_next_action_frame(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct brcmf_if *ifp = p2p->bss_idx[P2PAPI_BSSCFG_PRIMARY].vif->ifp;
@@ -1376,7 +1376,7 @@ brcmf_p2p_stop_wait_next_action_frame(struct brcmf_cfg80211_info *cfg)
 static bool
 brcmf_p2p_gon_req_collision(struct brcmf_p2p_info *p2p, u8 *mac)
 {
-	struct brcmf_cfg80211_info *cfg = p2p->cfg;
+	struct brcmf_cyw-cfg80211_info *cfg = p2p->cfg;
 	struct brcmf_if *ifp;
 
 	brcmf_dbg(TRACE, "Enter\n");
@@ -1427,7 +1427,7 @@ int brcmf_p2p_notify_action_frame_rx(struct brcmf_if *ifp,
 				     void *data)
 {
 	struct brcmf_pub *drvr = ifp->drvr;
-	struct brcmf_cfg80211_info *cfg = drvr->config;
+	struct brcmf_cyw-cfg80211_info *cfg = drvr->config;
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct afx_hdl *afx_hdl = &p2p->afx_hdl;
 	struct wireless_dev *wdev;
@@ -1515,7 +1515,7 @@ int brcmf_p2p_notify_action_frame_rx(struct brcmf_if *ifp,
 					      NL80211_BAND_5GHZ);
 
 	wdev = &ifp->vif->wdev;
-	cfg80211_rx_mgmt(wdev, freq, 0, (u8 *)mgmt_frame, mgmt_frame_len, 0);
+	cyw-cfg80211_rx_mgmt(wdev, freq, 0, (u8 *)mgmt_frame, mgmt_frame_len, 0);
 
 	kfree(mgmt_frame);
 	return 0;
@@ -1534,7 +1534,7 @@ int brcmf_p2p_notify_action_tx_complete(struct brcmf_if *ifp,
 					const struct brcmf_event_msg *e,
 					void *data)
 {
-	struct brcmf_cfg80211_info *cfg = ifp->drvr->config;
+	struct brcmf_cyw-cfg80211_info *cfg = ifp->drvr->config;
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 
 	brcmf_dbg(INFO, "Enter: event %s, status=%d\n",
@@ -1581,7 +1581,7 @@ int brcmf_p2p_notify_action_tx_complete(struct brcmf_if *ifp,
  */
 static s32 brcmf_p2p_tx_action_frame(struct brcmf_p2p_info *p2p,
 				     struct brcmf_fil_af_params_le *af_params,
-				     struct brcmf_cfg80211_vif *vif
+				     struct brcmf_cyw-cfg80211_vif *vif
 				     )
 {
 	struct brcmf_pub *drvr = p2p->cfg->pub;
@@ -1641,13 +1641,13 @@ exit:
 /**
  * brcmf_p2p_pub_af_tx() - public action frame tx routine.
  *
- * @cfg: driver private data for cfg80211 interface.
+ * @cfg: driver private data for cyw-cfg80211 interface.
  * @af_params: action frame data/info.
  * @config_af_params: configuration data for action frame.
  *
  * routine which transmits ation frame public type.
  */
-static s32 brcmf_p2p_pub_af_tx(struct brcmf_cfg80211_info *cfg,
+static s32 brcmf_p2p_pub_af_tx(struct brcmf_cyw-cfg80211_info *cfg,
 			       struct brcmf_fil_af_params_le *af_params,
 			       struct brcmf_config_af_params *config_af_params)
 {
@@ -1714,7 +1714,7 @@ static s32 brcmf_p2p_pub_af_tx(struct brcmf_cfg80211_info *cfg,
 	case P2P_PAF_PROVDIS_REQ:
 		ie_len = le16_to_cpu(action_frame->len) -
 			 offsetof(struct brcmf_p2p_pub_act_frame, elts);
-		if (cfg80211_get_p2p_attr(&act_frm->elts[0], ie_len,
+		if (cyw-cfg80211_get_p2p_attr(&act_frm->elts[0], ie_len,
 					  IEEE80211_P2P_ATTR_GROUP_ID,
 					  NULL, 0) < 0)
 			config_af_params->search_channel = true;
@@ -1752,15 +1752,15 @@ static bool brcmf_p2p_check_dwell_overflow(u32 requested_dwell,
 /**
  * brcmf_p2p_send_action_frame() - send action frame .
  *
- * @cfg: driver private data for cfg80211 interface.
+ * @cfg: driver private data for cyw-cfg80211 interface.
  * @ndev: net device to transmit on.
  * @af_params: configuration data for action frame.
  * @vif: virtual interface to send
  */
-bool brcmf_p2p_send_action_frame(struct brcmf_cfg80211_info *cfg,
+bool brcmf_p2p_send_action_frame(struct brcmf_cyw-cfg80211_info *cfg,
 				 struct net_device *ndev,
 				 struct brcmf_fil_af_params_le *af_params,
-				 struct brcmf_cfg80211_vif *vif
+				 struct brcmf_cyw-cfg80211_vif *vif
 				 )
 {
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
@@ -1980,10 +1980,10 @@ s32 brcmf_p2p_notify_rx_mgmt_p2p_probereq(struct brcmf_if *ifp,
 					  const struct brcmf_event_msg *e,
 					  void *data)
 {
-	struct brcmf_cfg80211_info *cfg = ifp->drvr->config;
+	struct brcmf_cyw-cfg80211_info *cfg = ifp->drvr->config;
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct afx_hdl *afx_hdl = &p2p->afx_hdl;
-	struct brcmf_cfg80211_vif *vif = ifp->vif;
+	struct brcmf_cyw-cfg80211_vif *vif = ifp->vif;
 	struct brcmf_rx_mgmt_data *rxframe = (struct brcmf_rx_mgmt_data *)data;
 	struct brcmu_chan ch;
 	u8 *mgmt_frame;
@@ -2034,7 +2034,7 @@ s32 brcmf_p2p_notify_rx_mgmt_p2p_probereq(struct brcmf_if *ifp,
 					      NL80211_BAND_2GHZ :
 					      NL80211_BAND_5GHZ);
 
-	cfg80211_rx_mgmt(&vif->wdev, freq, 0, mgmt_frame, mgmt_frame_len, 0);
+	cyw-cfg80211_rx_mgmt(&vif->wdev, freq, 0, mgmt_frame, mgmt_frame_len, 0);
 
 	brcmf_dbg(INFO, "mgmt_frame_len (%d) , e->datalen (%d), chanspec (%04x), freq (%d)\n",
 		  mgmt_frame_len, e->datalen, ch.chspec, freq);
@@ -2088,12 +2088,12 @@ static void brcmf_p2p_get_current_chanspec(struct brcmf_p2p_info *p2p,
  * @mac: MAC address of the BSS to change a role
  * Returns 0 if success.
  */
-int brcmf_p2p_ifchange(struct brcmf_cfg80211_info *cfg,
+int brcmf_p2p_ifchange(struct brcmf_cyw-cfg80211_info *cfg,
 		       enum brcmf_fil_p2p_if_types if_type)
 {
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
 	struct brcmf_pub *drvr = cfg->pub;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	struct brcmf_fil_p2p_if_le if_request;
 	s32 err;
 	u16 chanspec;
@@ -2122,17 +2122,17 @@ int brcmf_p2p_ifchange(struct brcmf_cfg80211_info *cfg,
 	if_request.chspec = cpu_to_le16(chanspec);
 	memcpy(if_request.addr, p2p->conn_int_addr, sizeof(if_request.addr));
 
-	brcmf_cfg80211_arm_vif_event(cfg, vif);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, vif);
 	err = brcmf_fil_iovar_data_set(vif->ifp, "p2p_ifupd", &if_request,
 				       sizeof(if_request));
 	if (err) {
 		bphy_err(drvr, "p2p_ifupd FAILED, err=%d\n", err);
-		brcmf_cfg80211_arm_vif_event(cfg, NULL);
+		brcmf_cyw-cfg80211_arm_vif_event(cfg, NULL);
 		return err;
 	}
-	err = brcmf_cfg80211_wait_vif_event(cfg, BRCMF_E_IF_CHANGE,
+	err = brcmf_cyw-cfg80211_wait_vif_event(cfg, BRCMF_E_IF_CHANGE,
 					    BRCMF_VIF_EVENT_TIMEOUT);
-	brcmf_cfg80211_arm_vif_event(cfg, NULL);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, NULL);
 	if (!err)  {
 		bphy_err(drvr, "No BRCMF_E_IF_CHANGE event received\n");
 		return -EIO;
@@ -2166,9 +2166,9 @@ static int brcmf_p2p_request_p2p_if(struct brcmf_p2p_info *p2p,
 	return err;
 }
 
-static int brcmf_p2p_disable_p2p_if(struct brcmf_cfg80211_vif *vif)
+static int brcmf_p2p_disable_p2p_if(struct brcmf_cyw-cfg80211_vif *vif)
 {
-	struct brcmf_cfg80211_info *cfg = wdev_to_cfg(&vif->wdev);
+	struct brcmf_cyw-cfg80211_info *cfg = wdev_to_cfg(&vif->wdev);
 	struct net_device *pri_ndev = cfg_to_ndev(cfg);
 	struct brcmf_if *ifp = netdev_priv(pri_ndev);
 	u8 *addr = vif->wdev.netdev->dev_addr;
@@ -2176,9 +2176,9 @@ static int brcmf_p2p_disable_p2p_if(struct brcmf_cfg80211_vif *vif)
 	return brcmf_fil_iovar_data_set(ifp, "p2p_ifdis", addr, ETH_ALEN);
 }
 
-static int brcmf_p2p_release_p2p_if(struct brcmf_cfg80211_vif *vif)
+static int brcmf_p2p_release_p2p_if(struct brcmf_cyw-cfg80211_vif *vif)
 {
-	struct brcmf_cfg80211_info *cfg = wdev_to_cfg(&vif->wdev);
+	struct brcmf_cyw-cfg80211_info *cfg = wdev_to_cfg(&vif->wdev);
 	struct net_device *pri_ndev = cfg_to_ndev(cfg);
 	struct brcmf_if *ifp = netdev_priv(pri_ndev);
 	u8 *addr = vif->wdev.netdev->dev_addr;
@@ -2198,7 +2198,7 @@ static struct wireless_dev *brcmf_p2p_create_p2pdev(struct brcmf_p2p_info *p2p,
 						    u8 *addr)
 {
 	struct brcmf_pub *drvr = p2p->cfg->pub;
-	struct brcmf_cfg80211_vif *p2p_vif;
+	struct brcmf_cyw-cfg80211_vif *p2p_vif;
 	struct brcmf_if *p2p_ifp;
 	struct brcmf_if *pri_ifp;
 	int err;
@@ -2224,7 +2224,7 @@ static struct wireless_dev *brcmf_p2p_create_p2pdev(struct brcmf_p2p_info *p2p,
 	brcmf_p2p_generate_bss_mac(p2p, addr);
 	brcmf_p2p_set_firmware(pri_ifp, p2p->dev_addr);
 
-	brcmf_cfg80211_arm_vif_event(p2p->cfg, p2p_vif);
+	brcmf_cyw-cfg80211_arm_vif_event(p2p->cfg, p2p_vif);
 	brcmf_fweh_p2pdev_setup(pri_ifp, true);
 
 	/* Initialize P2P Discovery in the firmware */
@@ -2232,14 +2232,14 @@ static struct wireless_dev *brcmf_p2p_create_p2pdev(struct brcmf_p2p_info *p2p,
 	if (err < 0) {
 		bphy_err(drvr, "set p2p_disc error\n");
 		brcmf_fweh_p2pdev_setup(pri_ifp, false);
-		brcmf_cfg80211_arm_vif_event(p2p->cfg, NULL);
+		brcmf_cyw-cfg80211_arm_vif_event(p2p->cfg, NULL);
 		goto fail;
 	}
 
 	/* wait for firmware event */
-	err = brcmf_cfg80211_wait_vif_event(p2p->cfg, BRCMF_E_IF_ADD,
+	err = brcmf_cyw-cfg80211_wait_vif_event(p2p->cfg, BRCMF_E_IF_ADD,
 					    BRCMF_VIF_EVENT_TIMEOUT);
-	brcmf_cfg80211_arm_vif_event(p2p->cfg, NULL);
+	brcmf_cyw-cfg80211_arm_vif_event(p2p->cfg, NULL);
 	brcmf_fweh_p2pdev_setup(pri_ifp, false);
 	if (!err) {
 		bphy_err(drvr, "timeout occurred\n");
@@ -2274,7 +2274,7 @@ fail:
 	return ERR_PTR(err);
 }
 
-int brcmf_p2p_get_conn_idx(struct brcmf_cfg80211_info *cfg)
+int brcmf_p2p_get_conn_idx(struct brcmf_cyw-cfg80211_info *cfg)
 {
 	int i;
 	struct brcmf_if *ifp = netdev_priv(cfg_to_ndev(cfg));
@@ -2309,16 +2309,16 @@ struct wireless_dev *brcmf_p2p_add_vif(struct wiphy *wiphy, const char *name,
 				       enum nl80211_iftype type,
 				       struct vif_params *params)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_if *ifp = netdev_priv(cfg_to_ndev(cfg));
 	struct brcmf_pub *drvr = cfg->pub;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	enum brcmf_fil_p2p_if_types iftype;
 	int err = 0;
 	int connidx;
 	u8 *p2p_intf_addr;
 
-	if (brcmf_cfg80211_vif_event_armed(cfg))
+	if (brcmf_cyw-cfg80211_vif_event_armed(cfg))
 		return ERR_PTR(-EBUSY);
 
 	brcmf_dbg(INFO, "adding vif \"%s\" (type=%d)\n", name, type);
@@ -2340,7 +2340,7 @@ struct wireless_dev *brcmf_p2p_add_vif(struct wiphy *wiphy, const char *name,
 	vif = brcmf_alloc_vif(cfg, type);
 	if (IS_ERR(vif))
 		return (struct wireless_dev *)vif;
-	brcmf_cfg80211_arm_vif_event(cfg, vif);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, vif);
 
 	connidx = brcmf_p2p_get_conn_idx(cfg);
 
@@ -2357,14 +2357,14 @@ struct wireless_dev *brcmf_p2p_add_vif(struct wiphy *wiphy, const char *name,
 
 	if (err) {
 		brcmf_err("request p2p interface failed\n");
-		brcmf_cfg80211_arm_vif_event(cfg, NULL);
+		brcmf_cyw-cfg80211_arm_vif_event(cfg, NULL);
 		goto fail;
 	}
 
 	/* wait for firmware event */
-	err = brcmf_cfg80211_wait_vif_event(cfg, BRCMF_E_IF_ADD,
+	err = brcmf_cyw-cfg80211_wait_vif_event(cfg, BRCMF_E_IF_ADD,
 					    BRCMF_VIF_EVENT_TIMEOUT);
-	brcmf_cfg80211_arm_vif_event(cfg, NULL);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, NULL);
 	if (!err) {
 		bphy_err(drvr, "timeout occurred\n");
 		err = -EIO;
@@ -2413,18 +2413,18 @@ fail:
  */
 int brcmf_p2p_del_vif(struct wiphy *wiphy, struct wireless_dev *wdev)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	enum nl80211_iftype iftype;
 	bool wait_for_disable = false;
 	int err;
 
 	brcmf_dbg(TRACE, "delete P2P vif\n");
-	vif = container_of(wdev, struct brcmf_cfg80211_vif, wdev);
+	vif = container_of(wdev, struct brcmf_cyw-cfg80211_vif, wdev);
 
 	iftype = vif->wdev.iftype;
-	brcmf_cfg80211_arm_vif_event(cfg, vif);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, vif);
 	switch (iftype) {
 	case NL80211_IFTYPE_P2P_CLIENT:
 		if (test_bit(BRCMF_VIF_STATUS_DISCONNECTING, &vif->sme_state))
@@ -2461,7 +2461,7 @@ int brcmf_p2p_del_vif(struct wiphy *wiphy, struct wireless_dev *wdev)
 	}
 	if (!err) {
 		/* wait for firmware event */
-		err = brcmf_cfg80211_wait_vif_event(cfg, BRCMF_E_IF_DEL,
+		err = brcmf_cyw-cfg80211_wait_vif_event(cfg, BRCMF_E_IF_DEL,
 						    BRCMF_VIF_EVENT_TIMEOUT);
 		if (!err)
 			err = -EIO;
@@ -2470,7 +2470,7 @@ int brcmf_p2p_del_vif(struct wiphy *wiphy, struct wireless_dev *wdev)
 	}
 	brcmf_remove_interface(vif->ifp, true);
 
-	brcmf_cfg80211_arm_vif_event(cfg, NULL);
+	brcmf_cyw-cfg80211_arm_vif_event(cfg, NULL);
 	if (iftype != NL80211_IFTYPE_P2P_DEVICE)
 		p2p->bss_idx[P2PAPI_BSSCFG_CONNECTION].vif = NULL;
 
@@ -2479,8 +2479,8 @@ int brcmf_p2p_del_vif(struct wiphy *wiphy, struct wireless_dev *wdev)
 
 void brcmf_p2p_ifp_removed(struct brcmf_if *ifp, bool rtnl_locked)
 {
-	struct brcmf_cfg80211_info *cfg;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_info *cfg;
+	struct brcmf_cyw-cfg80211_vif *vif;
 
 	brcmf_dbg(INFO, "P2P: device interface removed\n");
 	vif = ifp->vif;
@@ -2488,7 +2488,7 @@ void brcmf_p2p_ifp_removed(struct brcmf_if *ifp, bool rtnl_locked)
 	cfg->p2p.bss_idx[P2PAPI_BSSCFG_DEVICE].vif = NULL;
 	if (!rtnl_locked)
 		rtnl_lock();
-	cfg80211_unregister_wdev(&vif->wdev);
+	cyw-cfg80211_unregister_wdev(&vif->wdev);
 	if (!rtnl_locked)
 		rtnl_unlock();
 	brcmf_free_vif(vif);
@@ -2496,12 +2496,12 @@ void brcmf_p2p_ifp_removed(struct brcmf_if *ifp, bool rtnl_locked)
 
 int brcmf_p2p_start_device(struct wiphy *wiphy, struct wireless_dev *wdev)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 	int err;
 
-	vif = container_of(wdev, struct brcmf_cfg80211_vif, wdev);
+	vif = container_of(wdev, struct brcmf_cyw-cfg80211_vif, wdev);
 	mutex_lock(&cfg->usr_sync);
 	err = brcmf_p2p_enable_discovery(p2p);
 	if (!err)
@@ -2512,11 +2512,11 @@ int brcmf_p2p_start_device(struct wiphy *wiphy, struct wireless_dev *wdev)
 
 void brcmf_p2p_stop_device(struct wiphy *wiphy, struct wireless_dev *wdev)
 {
-	struct brcmf_cfg80211_info *cfg = wiphy_to_cfg(wiphy);
+	struct brcmf_cyw-cfg80211_info *cfg = wiphy_to_cfg(wiphy);
 	struct brcmf_p2p_info *p2p = &cfg->p2p;
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 
-	vif = container_of(wdev, struct brcmf_cfg80211_vif, wdev);
+	vif = container_of(wdev, struct brcmf_cyw-cfg80211_vif, wdev);
 	/* This call can be result of the unregister_wdev call. In that case
 	 * we dont want to do anything anymore. Just return. The config vif
 	 * will have been cleared at this point.
@@ -2535,10 +2535,10 @@ void brcmf_p2p_stop_device(struct wiphy *wiphy, struct wireless_dev *wdev)
 /**
  * brcmf_p2p_attach() - attach for P2P.
  *
- * @cfg: driver private data for cfg80211 interface.
+ * @cfg: driver private data for cyw-cfg80211 interface.
  * @p2pdev_forced: create p2p device interface at attach.
  */
-s32 brcmf_p2p_attach(struct brcmf_cfg80211_info *cfg, bool p2pdev_forced)
+s32 brcmf_p2p_attach(struct brcmf_cyw-cfg80211_info *cfg, bool p2pdev_forced)
 {
 	struct brcmf_pub *drvr = cfg->pub;
 	struct brcmf_p2p_info *p2p;
@@ -2572,7 +2572,7 @@ s32 brcmf_p2p_attach(struct brcmf_cfg80211_info *cfg, bool p2pdev_forced)
  */
 void brcmf_p2p_detach(struct brcmf_p2p_info *p2p)
 {
-	struct brcmf_cfg80211_vif *vif;
+	struct brcmf_cyw-cfg80211_vif *vif;
 
 	vif = p2p->bss_idx[P2PAPI_BSSCFG_DEVICE].vif;
 	if (vif != NULL) {

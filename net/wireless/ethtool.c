@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/utsname.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include "core.h"
 #include "rdev-ops.h"
 
-void cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+void cyw-cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 
@@ -22,4 +22,4 @@ void cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 	strlcpy(info->bus_info, dev_name(wiphy_dev(wdev->wiphy)),
 		sizeof(info->bus_info));
 }
-EXPORT_SYMBOL(cfg80211_get_drvinfo);
+EXPORT_SYMBOL(cyw-cfg80211_get_drvinfo);

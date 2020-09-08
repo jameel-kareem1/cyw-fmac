@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/ieee80211.h>
 #include <linux/export.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include "nl80211.h"
 #include "core.h"
 #include "rdev-ops.h"
 
 
-int __cfg80211_stop_ap(struct cfg80211_registered_device *rdev,
+int __cyw-cfg80211_stop_ap(struct cyw-cfg80211_registered_device *rdev,
 		       struct net_device *dev, bool notify)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
@@ -38,22 +38,22 @@ int __cfg80211_stop_ap(struct cfg80211_registered_device *rdev,
 		/* Should we apply the grace period during beaconing interface
 		 * shutdown also?
 		 */
-		cfg80211_sched_dfs_chan_update(rdev);
+		cyw-cfg80211_sched_dfs_chan_update(rdev);
 	}
 
-	schedule_work(&cfg80211_disconnect_work);
+	schedule_work(&cyw-cfg80211_disconnect_work);
 
 	return err;
 }
 
-int cfg80211_stop_ap(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_stop_ap(struct cyw-cfg80211_registered_device *rdev,
 		     struct net_device *dev, bool notify)
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	int err;
 
 	wdev_lock(wdev);
-	err = __cfg80211_stop_ap(rdev, dev, notify);
+	err = __cyw-cfg80211_stop_ap(rdev, dev, notify);
 	wdev_unlock(wdev);
 
 	return err;

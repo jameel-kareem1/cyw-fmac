@@ -1,7 +1,7 @@
 #ifndef __NET_WIRELESS_REG_H
 #define __NET_WIRELESS_REG_H
 
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 
 /*
  * Copyright 2008-2011	Luis R. Rodriguez <mcgrof@qca.qualcomm.com>
@@ -26,7 +26,7 @@ enum ieee80211_regd_source {
 	REGD_SOURCE_CACHED,
 };
 
-extern const struct ieee80211_regdomain __rcu *cfg80211_regdomain;
+extern const struct ieee80211_regdomain __rcu *cyw-cfg80211_regdomain;
 
 bool reg_is_valid_request(const char *alpha2);
 bool is_world_regdom(const char *alpha2);
@@ -79,7 +79,7 @@ const struct ieee80211_regdomain *get_wiphy_regdom(struct wiphy *wiphy);
  * 1-11 are already enabled by the world regulatory domain; and on
  * non-radar 5 GHz channels.
  *
- * Drivers do not need to call this, cfg80211 will do it for after a scan
+ * Drivers do not need to call this, cyw-cfg80211 will do it for after a scan
  * on a newly found BSS. If you cannot make use of this feature you can
  * set the wiphy->disable_beacon_hints to true.
  */
@@ -132,7 +132,7 @@ void regulatory_hint_country_ie(struct wiphy *wiphy,
 void regulatory_hint_disconnect(void);
 
 /**
- * cfg80211_get_unii - get the U-NII band for the frequency
+ * cyw-cfg80211_get_unii - get the U-NII band for the frequency
  * @freq: the frequency for which we want to get the UNII band.
 
  * Get a value specifying the U-NII band frequency belongs to.
@@ -141,7 +141,7 @@ void regulatory_hint_disconnect(void);
  * Returns -EINVAL if freq is invalid, 0 for UNII-1, 1 for UNII-2A,
  * 2 for UNII-2B, 3 for UNII-2C and 4 for UNII-3.
  */
-int cfg80211_get_unii(int freq);
+int cyw-cfg80211_get_unii(int freq);
 
 /**
  * regulatory_indoor_allowed - is indoor operation allowed
@@ -166,7 +166,7 @@ bool regulatory_indoor_allowed(void);
  * This function should be called with rtnl lock held.
  */
 void regulatory_propagate_dfs_state(struct wiphy *wiphy,
-				    struct cfg80211_chan_def *chandef,
+				    struct cyw-cfg80211_chan_def *chandef,
 				    enum nl80211_dfs_state dfs_state,
 				    enum nl80211_radar_event event);
 

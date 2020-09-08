@@ -3857,10 +3857,10 @@ F:	net/wireless/
 F:	include/uapi/linux/nl80211.h
 F:	include/linux/ieee80211.h
 F:	include/net/wext.h
-F:	include/net/cfg80211.h
+F:	include/net/cyw-cfg80211.h
 F:	include/net/iw_handler.h
 F:	include/net/ieee80211_radiotap.h
-F:	Documentation/driver-api/80211/cfg80211.rst
+F:	Documentation/driver-api/80211/cyw-cfg80211.rst
 F:	Documentation/networking/regulatory.txt
 
 CHAR and MISC DRIVERS

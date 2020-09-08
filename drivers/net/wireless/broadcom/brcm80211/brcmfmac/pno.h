@@ -20,7 +20,7 @@ struct brcmf_pno_info;
  * @req: configuration parameters for scheduled scan.
  */
 int brcmf_pno_start_sched_scan(struct brcmf_if *ifp,
-			       struct cfg80211_sched_scan_request *req);
+			       struct cyw-cfg80211_sched_scan_request *req);
 
 /**
  * brcmf_pno_stop_sched_scan - terminate scheduled scan on device.
@@ -41,16 +41,16 @@ void brcmf_pno_wiphy_params(struct wiphy *wiphy, bool gscan);
 /**
  * brcmf_pno_attach - allocate and attach module information.
  *
- * @cfg: cfg80211 context used.
+ * @cfg: cyw-cfg80211 context used.
  */
-int brcmf_pno_attach(struct brcmf_cfg80211_info *cfg);
+int brcmf_pno_attach(struct brcmf_cyw-cfg80211_info *cfg);
 
 /**
  * brcmf_pno_detach - detach and free module information.
  *
- * @cfg: cfg80211 context used.
+ * @cfg: cyw-cfg80211 context used.
  */
-void brcmf_pno_detach(struct brcmf_cfg80211_info *cfg);
+void brcmf_pno_detach(struct brcmf_cyw-cfg80211_info *cfg);
 
 /**
  * brcmf_pno_find_reqid_by_bucket - find request id for given bucket index.

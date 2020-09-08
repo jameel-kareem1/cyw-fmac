@@ -12,7 +12,7 @@
 #include <linux/etherdevice.h>
 #include <linux/slab.h>
 #include <linux/ieee80211.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include <net/ip.h>
 #include <net/dsfield.h>
 #include <linux/if_vlan.h>
@@ -218,7 +218,7 @@ void ieee80211_set_bitrate_flags(struct wiphy *wiphy)
 			set_mandatory_flags_band(wiphy->bands[band]);
 }
 
-bool cfg80211_supported_cipher_suite(struct wiphy *wiphy, u32 cipher)
+bool cyw-cfg80211_supported_cipher_suite(struct wiphy *wiphy, u32 cipher)
 {
 	int i;
 	for (i = 0; i < wiphy->n_cipher_suites; i++)
@@ -227,7 +227,7 @@ bool cfg80211_supported_cipher_suite(struct wiphy *wiphy, u32 cipher)
 	return false;
 }
 
-int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_validate_key_settings(struct cyw-cfg80211_registered_device *rdev,
 				   struct key_params *params, int key_idx,
 				   bool pairwise, const u8 *mac_addr)
 {
@@ -364,7 +364,7 @@ int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
 		}
 	}
 
-	if (!cfg80211_supported_cipher_suite(&rdev->wiphy, params->cipher))
+	if (!cyw-cfg80211_supported_cipher_suite(&rdev->wiphy, params->cipher))
 		return -EINVAL;
 
 	return 0;
@@ -738,8 +738,8 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
 EXPORT_SYMBOL(ieee80211_amsdu_to_8023s);
 
 /* Given a data frame determine the 802.1p/1d tag to use. */
-unsigned int cfg80211_classify8021d(struct sk_buff *skb,
-				    struct cfg80211_qos_map *qos_map)
+unsigned int cyw-cfg80211_classify8021d(struct sk_buff *skb,
+				    struct cyw-cfg80211_qos_map *qos_map)
 {
 	unsigned int dscp;
 	unsigned char vlan_priority;
@@ -814,23 +814,23 @@ unsigned int cfg80211_classify8021d(struct sk_buff *skb,
 out:
 	return array_index_nospec(ret, IEEE80211_NUM_TIDS);
 }
-EXPORT_SYMBOL(cfg80211_classify8021d);
+EXPORT_SYMBOL(cyw-cfg80211_classify8021d);
 
-const struct element *ieee80211_bss_get_elem(struct cfg80211_bss *bss, u8 id)
+const struct element *ieee80211_bss_get_elem(struct cyw-cfg80211_bss *bss, u8 id)
 {
-	const struct cfg80211_bss_ies *ies;
+	const struct cyw-cfg80211_bss_ies *ies;
 
 	ies = rcu_dereference(bss->ies);
 	if (!ies)
 		return NULL;
 
-	return cfg80211_find_elem(id, ies->data, ies->len);
+	return cyw-cfg80211_find_elem(id, ies->data, ies->len);
 }
 EXPORT_SYMBOL(ieee80211_bss_get_elem);
 
-void cfg80211_upload_connect_keys(struct wireless_dev *wdev)
+void cyw-cfg80211_upload_connect_keys(struct wireless_dev *wdev)
 {
-	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
 	struct net_device *dev = wdev->netdev;
 	int i;
 
@@ -856,44 +856,44 @@ void cfg80211_upload_connect_keys(struct wireless_dev *wdev)
 	wdev->connect_keys = NULL;
 }
 
-void cfg80211_process_wdev_events(struct wireless_dev *wdev)
+void cyw-cfg80211_process_wdev_events(struct wireless_dev *wdev)
 {
-	struct cfg80211_event *ev;
+	struct cyw-cfg80211_event *ev;
 	unsigned long flags;
 
 	spin_lock_irqsave(&wdev->event_lock, flags);
 	while (!list_empty(&wdev->event_list)) {
 		ev = list_first_entry(&wdev->event_list,
-				      struct cfg80211_event, list);
+				      struct cyw-cfg80211_event, list);
 		list_del(&ev->list);
 		spin_unlock_irqrestore(&wdev->event_lock, flags);
 
 		wdev_lock(wdev);
 		switch (ev->type) {
 		case EVENT_CONNECT_RESULT:
-			__cfg80211_connect_result(
+			__cyw-cfg80211_connect_result(
 				wdev->netdev,
 				&ev->cr,
 				ev->cr.status == WLAN_STATUS_SUCCESS);
 			break;
 		case EVENT_ROAMED:
-			__cfg80211_roamed(wdev, &ev->rm);
+			__cyw-cfg80211_roamed(wdev, &ev->rm);
 			break;
 		case EVENT_DISCONNECTED:
-			__cfg80211_disconnected(wdev->netdev,
+			__cyw-cfg80211_disconnected(wdev->netdev,
 						ev->dc.ie, ev->dc.ie_len,
 						ev->dc.reason,
 						!ev->dc.locally_generated);
 			break;
 		case EVENT_IBSS_JOINED:
-			__cfg80211_ibss_joined(wdev->netdev, ev->ij.bssid,
+			__cyw-cfg80211_ibss_joined(wdev->netdev, ev->ij.bssid,
 					       ev->ij.channel);
 			break;
 		case EVENT_STOPPED:
-			__cfg80211_leave(wiphy_to_rdev(wdev->wiphy), wdev);
+			__cyw-cfg80211_leave(wiphy_to_rdev(wdev->wiphy), wdev);
 			break;
 		case EVENT_PORT_AUTHORIZED:
-			__cfg80211_port_authorized(wdev, ev->pa.bssid);
+			__cyw-cfg80211_port_authorized(wdev, ev->pa.bssid);
 			break;
 		}
 		wdev_unlock(wdev);
@@ -905,17 +905,17 @@ void cfg80211_process_wdev_events(struct wireless_dev *wdev)
 	spin_unlock_irqrestore(&wdev->event_lock, flags);
 }
 
-void cfg80211_process_rdev_events(struct cfg80211_registered_device *rdev)
+void cyw-cfg80211_process_rdev_events(struct cyw-cfg80211_registered_device *rdev)
 {
 	struct wireless_dev *wdev;
 
 	ASSERT_RTNL();
 
 	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list)
-		cfg80211_process_wdev_events(wdev);
+		cyw-cfg80211_process_wdev_events(wdev);
 }
 
-int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_change_iface(struct cyw-cfg80211_registered_device *rdev,
 			  struct net_device *dev, enum nl80211_iftype ntype,
 			  struct vif_params *params)
 {
@@ -953,15 +953,15 @@ int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
 
 		switch (otype) {
 		case NL80211_IFTYPE_AP:
-			cfg80211_stop_ap(rdev, dev, true);
+			cyw-cfg80211_stop_ap(rdev, dev, true);
 			break;
 		case NL80211_IFTYPE_ADHOC:
-			cfg80211_leave_ibss(rdev, dev, false);
+			cyw-cfg80211_leave_ibss(rdev, dev, false);
 			break;
 		case NL80211_IFTYPE_STATION:
 		case NL80211_IFTYPE_P2P_CLIENT:
 			wdev_lock(dev->ieee80211_ptr);
-			cfg80211_disconnect(rdev, dev,
+			cyw-cfg80211_disconnect(rdev, dev,
 					    WLAN_REASON_DEAUTH_LEAVING, true);
 			wdev_unlock(dev->ieee80211_ptr);
 			break;
@@ -972,8 +972,8 @@ int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
 			break;
 		}
 
-		cfg80211_process_rdev_events(rdev);
-		cfg80211_mlme_purge_registrations(dev->ieee80211_ptr);
+		cyw-cfg80211_process_rdev_events(rdev);
+		cyw-cfg80211_mlme_purge_registrations(dev->ieee80211_ptr);
 	}
 
 	err = rdev_change_virtual_intf(rdev, dev, ntype, params);
@@ -1017,14 +1017,14 @@ int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
 	}
 
 	if (!err && ntype != otype && netif_running(dev)) {
-		cfg80211_update_iface_num(rdev, ntype, 1);
-		cfg80211_update_iface_num(rdev, otype, -1);
+		cyw-cfg80211_update_iface_num(rdev, ntype, 1);
+		cyw-cfg80211_update_iface_num(rdev, otype, -1);
 	}
 
 	return err;
 }
 
-static u32 cfg80211_calculate_bitrate_ht(struct rate_info *rate)
+static u32 cyw-cfg80211_calculate_bitrate_ht(struct rate_info *rate)
 {
 	int modulation, streams, bitrate;
 
@@ -1053,7 +1053,7 @@ static u32 cfg80211_calculate_bitrate_ht(struct rate_info *rate)
 	return (bitrate + 50000) / 100000;
 }
 
-static u32 cfg80211_calculate_bitrate_dmg(struct rate_info *rate)
+static u32 cyw-cfg80211_calculate_bitrate_dmg(struct rate_info *rate)
 {
 	static const u32 __mcs2bitrate[] = {
 		/* control PHY */
@@ -1100,7 +1100,7 @@ static u32 cfg80211_calculate_bitrate_dmg(struct rate_info *rate)
 	return __mcs2bitrate[rate->mcs];
 }
 
-static u32 cfg80211_calculate_bitrate_edmg(struct rate_info *rate)
+static u32 cyw-cfg80211_calculate_bitrate_edmg(struct rate_info *rate)
 {
 	static const u32 __mcs2bitrate[] = {
 		/* control PHY */
@@ -1134,7 +1134,7 @@ static u32 cfg80211_calculate_bitrate_edmg(struct rate_info *rate)
 	return __mcs2bitrate[rate->mcs] * rate->n_bonded_ch;
 }
 
-static u32 cfg80211_calculate_bitrate_vht(struct rate_info *rate)
+static u32 cyw-cfg80211_calculate_bitrate_vht(struct rate_info *rate)
 {
 	static const u32 base[4][10] = {
 		{   6500000,
@@ -1221,7 +1221,7 @@ static u32 cfg80211_calculate_bitrate_vht(struct rate_info *rate)
 	return 0;
 }
 
-static u32 cfg80211_calculate_bitrate_he(struct rate_info *rate)
+static u32 cyw-cfg80211_calculate_bitrate_he(struct rate_info *rate)
 {
 #define SCALE 2048
 	u16 mcs_divisors[12] = {
@@ -1302,24 +1302,24 @@ static u32 cfg80211_calculate_bitrate_he(struct rate_info *rate)
 	return result / 10000;
 }
 
-u32 cfg80211_calculate_bitrate(struct rate_info *rate)
+u32 cyw-cfg80211_calculate_bitrate(struct rate_info *rate)
 {
 	if (rate->flags & RATE_INFO_FLAGS_MCS)
-		return cfg80211_calculate_bitrate_ht(rate);
+		return cyw-cfg80211_calculate_bitrate_ht(rate);
 	if (rate->flags & RATE_INFO_FLAGS_DMG)
-		return cfg80211_calculate_bitrate_dmg(rate);
+		return cyw-cfg80211_calculate_bitrate_dmg(rate);
 	if (rate->flags & RATE_INFO_FLAGS_EDMG)
-		return cfg80211_calculate_bitrate_edmg(rate);
+		return cyw-cfg80211_calculate_bitrate_edmg(rate);
 	if (rate->flags & RATE_INFO_FLAGS_VHT_MCS)
-		return cfg80211_calculate_bitrate_vht(rate);
+		return cyw-cfg80211_calculate_bitrate_vht(rate);
 	if (rate->flags & RATE_INFO_FLAGS_HE_MCS)
-		return cfg80211_calculate_bitrate_he(rate);
+		return cyw-cfg80211_calculate_bitrate_he(rate);
 
 	return rate->legacy;
 }
-EXPORT_SYMBOL(cfg80211_calculate_bitrate);
+EXPORT_SYMBOL(cyw-cfg80211_calculate_bitrate);
 
-int cfg80211_get_p2p_attr(const u8 *ies, unsigned int len,
+int cyw-cfg80211_get_p2p_attr(const u8 *ies, unsigned int len,
 			  enum ieee80211_p2p_attr_id attr,
 			  u8 *buf, unsigned int bufsize)
 {
@@ -1417,7 +1417,7 @@ int cfg80211_get_p2p_attr(const u8 *ies, unsigned int len,
 
 	return -ENOENT;
 }
-EXPORT_SYMBOL(cfg80211_get_p2p_attr);
+EXPORT_SYMBOL(cyw-cfg80211_get_p2p_attr);
 
 static bool ieee80211_id_in_list(const u8 *ids, int n_ids, u8 id, bool id_ext)
 {
@@ -1539,7 +1539,7 @@ bool ieee80211_operating_class_to_band(u8 operating_class,
 }
 EXPORT_SYMBOL(ieee80211_operating_class_to_band);
 
-bool ieee80211_chandef_to_operating_class(struct cfg80211_chan_def *chandef,
+bool ieee80211_chandef_to_operating_class(struct cyw-cfg80211_chan_def *chandef,
 					  u8 *op_class)
 {
 	u8 vht_opclass;
@@ -1669,7 +1669,7 @@ bool ieee80211_chandef_to_operating_class(struct cfg80211_chan_def *chandef,
 }
 EXPORT_SYMBOL(ieee80211_chandef_to_operating_class);
 
-static void cfg80211_calculate_bi_data(struct wiphy *wiphy, u32 new_beacon_int,
+static void cyw-cfg80211_calculate_bi_data(struct wiphy *wiphy, u32 new_beacon_int,
 				       u32 *beacon_int_gcd,
 				       bool *beacon_int_different)
 {
@@ -1701,15 +1701,15 @@ static void cfg80211_calculate_bi_data(struct wiphy *wiphy, u32 new_beacon_int,
 	}
 }
 
-int cfg80211_validate_beacon_int(struct cfg80211_registered_device *rdev,
+int cyw-cfg80211_validate_beacon_int(struct cyw-cfg80211_registered_device *rdev,
 				 enum nl80211_iftype iftype, u32 beacon_int)
 {
 	/*
 	 * This is just a basic pre-condition check; if interface combinations
 	 * are possible the driver must already be checking those with a call
-	 * to cfg80211_check_combinations(), in which case we'll validate more
-	 * through the cfg80211_calculate_bi_data() call and code in
-	 * cfg80211_iter_combinations().
+	 * to cyw-cfg80211_check_combinations(), in which case we'll validate more
+	 * through the cyw-cfg80211_calculate_bi_data() call and code in
+	 * cyw-cfg80211_iter_combinations().
 	 */
 
 	if (beacon_int < 10 || beacon_int > 10000)
@@ -1718,7 +1718,7 @@ int cfg80211_validate_beacon_int(struct cfg80211_registered_device *rdev,
 	return 0;
 }
 
-int cfg80211_iter_combinations(struct wiphy *wiphy,
+int cyw-cfg80211_iter_combinations(struct wiphy *wiphy,
 			       struct iface_combination_params *params,
 			       void (*iter)(const struct ieee80211_iface_combination *c,
 					    void *data),
@@ -1739,15 +1739,15 @@ int cfg80211_iter_combinations(struct wiphy *wiphy,
 	 * This is OK for all current users, and saves us from having to
 	 * push the GCD calculations into all the drivers.
 	 * In the future, this should probably rely more on data that's in
-	 * cfg80211 already - the only thing not would appear to be any new
+	 * cyw-cfg80211 already - the only thing not would appear to be any new
 	 * interfaces (while being brought up) and channel/radar data.
 	 */
-	cfg80211_calculate_bi_data(wiphy, params->new_beacon_int,
+	cyw-cfg80211_calculate_bi_data(wiphy, params->new_beacon_int,
 				   &beacon_int_gcd, &beacon_int_different);
 
 	if (params->radar_detect) {
 		rcu_read_lock();
-		regdom = rcu_dereference(cfg80211_regdomain);
+		regdom = rcu_dereference(cyw-cfg80211_regdomain);
 		if (regdom)
 			region = regdom->dfs_region;
 		rcu_read_unlock();
@@ -1756,7 +1756,7 @@ int cfg80211_iter_combinations(struct wiphy *wiphy,
 	for (iftype = 0; iftype < NUM_NL80211_IFTYPES; iftype++) {
 		num_interfaces += params->iftype_num[iftype];
 		if (params->iftype_num[iftype] > 0 &&
-		    !cfg80211_iftype_allowed(wiphy, iftype, 0, 1))
+		    !cyw-cfg80211_iftype_allowed(wiphy, iftype, 0, 1))
 			used_iftypes |= BIT(iftype);
 	}
 
@@ -1778,7 +1778,7 @@ int cfg80211_iter_combinations(struct wiphy *wiphy,
 			return -ENOMEM;
 
 		for (iftype = 0; iftype < NUM_NL80211_IFTYPES; iftype++) {
-			if (cfg80211_iftype_allowed(wiphy, iftype, 0, 1))
+			if (cyw-cfg80211_iftype_allowed(wiphy, iftype, 0, 1))
 				continue;
 			for (j = 0; j < c->n_limits; j++) {
 				all_iftypes |= limits[j].types;
@@ -1825,23 +1825,23 @@ int cfg80211_iter_combinations(struct wiphy *wiphy,
 
 	return 0;
 }
-EXPORT_SYMBOL(cfg80211_iter_combinations);
+EXPORT_SYMBOL(cyw-cfg80211_iter_combinations);
 
 static void
-cfg80211_iter_sum_ifcombs(const struct ieee80211_iface_combination *c,
+cyw-cfg80211_iter_sum_ifcombs(const struct ieee80211_iface_combination *c,
 			  void *data)
 {
 	int *num = data;
 	(*num)++;
 }
 
-int cfg80211_check_combinations(struct wiphy *wiphy,
+int cyw-cfg80211_check_combinations(struct wiphy *wiphy,
 				struct iface_combination_params *params)
 {
 	int err, num = 0;
 
-	err = cfg80211_iter_combinations(wiphy, params,
-					 cfg80211_iter_sum_ifcombs, &num);
+	err = cyw-cfg80211_iter_combinations(wiphy, params,
+					 cyw-cfg80211_iter_sum_ifcombs, &num);
 	if (err)
 		return err;
 	if (num == 0)
@@ -1849,7 +1849,7 @@ int cfg80211_check_combinations(struct wiphy *wiphy,
 
 	return 0;
 }
-EXPORT_SYMBOL(cfg80211_check_combinations);
+EXPORT_SYMBOL(cyw-cfg80211_check_combinations);
 
 int ieee80211_get_ratemask(struct ieee80211_supported_band *sband,
 			   const u8 *rates, unsigned int n_rates,
@@ -1902,10 +1902,10 @@ unsigned int ieee80211_get_num_supported_channels(struct wiphy *wiphy)
 }
 EXPORT_SYMBOL(ieee80211_get_num_supported_channels);
 
-int cfg80211_get_station(struct net_device *dev, const u8 *mac_addr,
+int cyw-cfg80211_get_station(struct net_device *dev, const u8 *mac_addr,
 			 struct station_info *sinfo)
 {
-	struct cfg80211_registered_device *rdev;
+	struct cyw-cfg80211_registered_device *rdev;
 	struct wireless_dev *wdev;
 
 	wdev = dev->ieee80211_ptr;
@@ -1920,9 +1920,9 @@ int cfg80211_get_station(struct net_device *dev, const u8 *mac_addr,
 
 	return rdev_get_station(rdev, dev, mac_addr, sinfo);
 }
-EXPORT_SYMBOL(cfg80211_get_station);
+EXPORT_SYMBOL(cyw-cfg80211_get_station);
 
-void cfg80211_free_nan_func(struct cfg80211_nan_func *f)
+void cyw-cfg80211_free_nan_func(struct cyw-cfg80211_nan_func *f)
 {
 	int i;
 
@@ -1942,9 +1942,9 @@ void cfg80211_free_nan_func(struct cfg80211_nan_func *f)
 	kfree(f->tx_filters);
 	kfree(f);
 }
-EXPORT_SYMBOL(cfg80211_free_nan_func);
+EXPORT_SYMBOL(cyw-cfg80211_free_nan_func);
 
-bool cfg80211_does_bw_fit_range(const struct ieee80211_freq_range *freq_range,
+bool cyw-cfg80211_does_bw_fit_range(const struct ieee80211_freq_range *freq_range,
 				u32 center_freq_khz, u32 bw_khz)
 {
 	u32 start_freq_khz, end_freq_khz;
@@ -1959,7 +1959,7 @@ bool cfg80211_does_bw_fit_range(const struct ieee80211_freq_range *freq_range,
 	return false;
 }
 
-int cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp)
+int cyw-cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp)
 {
 	sinfo->pertid = kcalloc(IEEE80211_NUM_TIDS + 1,
 				sizeof(*(sinfo->pertid)),
@@ -1969,7 +1969,7 @@ int cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp)
 
 	return 0;
 }
-EXPORT_SYMBOL(cfg80211_sinfo_alloc_tid_stats);
+EXPORT_SYMBOL(cyw-cfg80211_sinfo_alloc_tid_stats);
 
 /* See IEEE 802.1H for LLC/SNAP encapsulation/decapsulation */
 /* Ethernet-II snap header (RFC1042 for most EtherTypes) */
@@ -1993,7 +1993,7 @@ struct iapp_layer2_update {
 	u8 xid_info[3];
 } __packed;
 
-void cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr)
+void cyw-cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr)
 {
 	struct iapp_layer2_update *msg;
 	struct sk_buff *skb;
@@ -2025,7 +2025,7 @@ void cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr)
 	memset(skb->cb, 0, sizeof(skb->cb));
 	netif_rx_ni(skb);
 }
-EXPORT_SYMBOL(cfg80211_send_layer2_update);
+EXPORT_SYMBOL(cyw-cfg80211_send_layer2_update);
 
 int ieee80211_get_vht_max_nss(struct ieee80211_vht_cap *cap,
 			      enum ieee80211_vht_chanwidth bw,
@@ -2132,7 +2132,7 @@ int ieee80211_get_vht_max_nss(struct ieee80211_vht_cap *cap,
 }
 EXPORT_SYMBOL(ieee80211_get_vht_max_nss);
 
-bool cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
+bool cyw-cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
 			     bool is_4addr, u8 check_swif)
 
 {
@@ -2153,4 +2153,4 @@ bool cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
 
 	return false;
 }
-EXPORT_SYMBOL(cfg80211_iftype_allowed);
+EXPORT_SYMBOL(cyw-cfg80211_iftype_allowed);

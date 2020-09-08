@@ -22,7 +22,7 @@
 #include <linux/errno.h>
 #include <linux/module.h>
 #include <linux/acpi.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 
 #include <defs.h>
 #include <brcm_hw_ids.h>
@@ -36,7 +36,7 @@
 #include "sdio.h"
 #include "core.h"
 #include "common.h"
-#include "cfg80211.h"
+#include "cyw-cfg80211.h"
 
 #define SDIOH_API_ACCESS_RETRY_LIMIT	2
 
@@ -1133,7 +1133,7 @@ static int brcmf_ops_sdio_suspend(struct device *dev)
 	struct brcmf_bus *bus_if;
 	struct brcmf_sdio_dev *sdiodev;
 	mmc_pm_flag_t sdio_flags;
-	struct brcmf_cfg80211_info *config;
+	struct brcmf_cyw-cfg80211_info *config;
 	int retry = BRCMF_PM_WAIT_MAXRETRY;
 
 	func = container_of(dev, struct sdio_func, dev);
@@ -1148,7 +1148,7 @@ static int brcmf_ops_sdio_suspend(struct device *dev)
 		retry--;
 	}
 	if (!retry && config->pm_state == BRCMF_CFG80211_PM_STATE_SUSPENDING)
-		brcmf_err("timed out wait for cfg80211 suspended\n");
+		brcmf_err("timed out wait for cyw-cfg80211 suspended\n");
 
 	if (func->num != 1)
 		return 0;

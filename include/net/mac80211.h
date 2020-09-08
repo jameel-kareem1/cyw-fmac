@@ -18,7 +18,7 @@
 #include <linux/if_ether.h>
 #include <linux/skbuff.h>
 #include <linux/ieee80211.h>
-#include <net/cfg80211.h>
+#include <net/cyw-cfg80211.h>
 #include <net/codel.h>
 #include <net/ieee80211_radiotap.h>
 #include <asm/unaligned.h>
@@ -223,8 +223,8 @@ enum ieee80211_chanctx_change {
  *	sizeof(void *), size is determined in hw information.
  */
 struct ieee80211_chanctx_conf {
-	struct cfg80211_chan_def def;
-	struct cfg80211_chan_def min_def;
+	struct cyw-cfg80211_chan_def def;
+	struct cyw-cfg80211_chan_def min_def;
 
 	u8 rx_chains_static, rx_chains_dynamic;
 
@@ -549,7 +549,7 @@ struct ieee80211_ftm_responder_params {
  *	Note that with TDLS this can be the case (channel is HT, protection must
  *	be used from this field) even when the BSS association isn't using HT.
  * @cqm_rssi_thold: Connection quality monitor RSSI threshold, a zero value
- *	implies disabled. As with the cfg80211 callback, a change here should
+ *	implies disabled. As with the cyw-cfg80211 callback, a change here should
  *	cause an event to be sent indicating where the current value is in
  *	relation to the newly configured threshold.
  * @cqm_rssi_low: Connection quality monitor RSSI lower threshold, a zero value
@@ -640,7 +640,7 @@ struct ieee80211_bss_conf {
 	u32 cqm_rssi_hyst;
 	s32 cqm_rssi_low;
 	s32 cqm_rssi_high;
-	struct cfg80211_chan_def chandef;
+	struct cyw-cfg80211_chan_def chandef;
 	struct ieee80211_mu_group_data mu_group;
 	__be32 arp_addr_list[IEEE80211_BSS_ARP_ADDR_LIST_LEN];
 	int arp_addr_cnt;
@@ -1510,7 +1510,7 @@ struct ieee80211_conf {
 
 	u8 long_frame_max_tx_count, short_frame_max_tx_count;
 
-	struct cfg80211_chan_def chandef;
+	struct cyw-cfg80211_chan_def chandef;
 	bool radar_enabled;
 	enum ieee80211_smps_mode smps_mode;
 };
@@ -1539,7 +1539,7 @@ struct ieee80211_channel_switch {
 	u64 timestamp;
 	u32 device_timestamp;
 	bool block_tx;
-	struct cfg80211_chan_def chandef;
+	struct cyw-cfg80211_chan_def chandef;
 	u8 count;
 	u32 delay;
 };
@@ -1647,7 +1647,7 @@ static inline bool ieee80211_vif_is_mesh(struct ieee80211_vif *vif)
  * wdev_to_ieee80211_vif - return a vif struct from a wdev
  * @wdev: the wdev to get the vif for
  *
- * This can be used by mac80211 drivers with direct cfg80211 APIs
+ * This can be used by mac80211 drivers with direct cyw-cfg80211 APIs
  * (like the vendor commands) that get a wdev.
  *
  * Note that this function may return %NULL if the given wdev isn't
@@ -1660,7 +1660,7 @@ struct ieee80211_vif *wdev_to_ieee80211_vif(struct wireless_dev *wdev);
  * ieee80211_vif_to_wdev - return a wdev struct from a vif
  * @vif: the vif to get the wdev for
  *
- * This can be used by mac80211 drivers with direct cfg80211 APIs
+ * This can be used by mac80211 drivers with direct cyw-cfg80211 APIs
  * (like the vendor commands) that needs to get the wdev for a vif.
  *
  * Note that this function may return %NULL if the given wdev isn't
@@ -2523,13 +2523,13 @@ static inline void _ieee80211_hw_set(struct ieee80211_hw *hw,
  * struct ieee80211_scan_request - hw scan request
  *
  * @ies: pointers different parts of IEs (in req.ie)
- * @req: cfg80211 request.
+ * @req: cyw-cfg80211 request.
  */
 struct ieee80211_scan_request {
 	struct ieee80211_scan_ies ies;
 
 	/* Keep last */
-	struct cfg80211_scan_request req;
+	struct cyw-cfg80211_scan_request req;
 };
 
 /**
@@ -2547,7 +2547,7 @@ struct ieee80211_scan_request {
  */
 struct ieee80211_tdls_ch_sw_params {
 	struct ieee80211_sta *sta;
-	struct cfg80211_chan_def *chandef;
+	struct cyw-cfg80211_chan_def *chandef;
 	u8 action_code;
 	u32 status;
 	u32 timestamp;
@@ -2836,7 +2836,7 @@ void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb);
  * support for this feature is required, and can be indicated by
  * hardware flags.
  *
- * The default mode will be "automatic", which nl80211/cfg80211
+ * The default mode will be "automatic", which nl80211/cyw-cfg80211
  * defines to be dynamic SMPS in (regular) powersave, and SMPS
  * turned off otherwise.
  *
@@ -3509,9 +3509,9 @@ enum ieee80211_reconfig_type {
  *	estimation algorithm (dynack). To disable dynack set valid value for
  *	coverage class. This callback is not required and may sleep.
  *
- * @testmode_cmd: Implement a cfg80211 test mode command. The passed @vif may
+ * @testmode_cmd: Implement a cyw-cfg80211 test mode command. The passed @vif may
  *	be %NULL. The callback can sleep.
- * @testmode_dump: Implement a cfg80211 test mode dump. The callback can sleep.
+ * @testmode_dump: Implement a cyw-cfg80211 test mode dump. The callback can sleep.
  *
  * @flush: Flush all pending frames from the hardware queue, making sure
  *	that the hardware queues are empty. The @queues parameter is a bitmap
@@ -3731,14 +3731,14 @@ enum ieee80211_reconfig_type {
  *
  * @start_nan: join an existing NAN cluster, or create a new one.
  * @stop_nan: leave the NAN cluster.
- * @nan_change_conf: change NAN configuration. The data in cfg80211_nan_conf
+ * @nan_change_conf: change NAN configuration. The data in cyw-cfg80211_nan_conf
  *	contains full new configuration and changes specify which parameters
  *	are changed with respect to the last NAN config.
  *	The driver gets both full configuration and the changed parameters since
  *	some devices may need the full configuration while others need only the
  *	changed parameters.
  * @add_nan_func: Add a NAN function. Returns 0 on success. The data in
- *	cfg80211_nan_func must not be referenced outside the scope of
+ *	cyw-cfg80211_nan_func must not be referenced outside the scope of
  *	this call.
  * @del_nan_func: Remove a NAN function. The driver must call
  *	ieee80211_nan_func_terminated() with
@@ -3760,7 +3760,7 @@ struct ieee80211_ops {
 	int (*start)(struct ieee80211_hw *hw);
 	void (*stop)(struct ieee80211_hw *hw);
 #ifdef CONFIG_PM
-	int (*suspend)(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan);
+	int (*suspend)(struct ieee80211_hw *hw, struct cyw-cfg80211_wowlan *wowlan);
 	int (*resume)(struct ieee80211_hw *hw);
 	void (*set_wakeup)(struct ieee80211_hw *hw, bool enabled);
 #endif
@@ -3802,7 +3802,7 @@ struct ieee80211_ops {
 				u32 iv32, u16 *phase1key);
 	void (*set_rekey_data)(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif,
-			       struct cfg80211_gtk_rekey_data *data);
+			       struct cyw-cfg80211_gtk_rekey_data *data);
 	void (*set_default_unicast_key)(struct ieee80211_hw *hw,
 					struct ieee80211_vif *vif, int idx);
 	int (*hw_scan)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
@@ -3811,7 +3811,7 @@ struct ieee80211_ops {
 			       struct ieee80211_vif *vif);
 	int (*sched_scan_start)(struct ieee80211_hw *hw,
 				struct ieee80211_vif *vif,
-				struct cfg80211_sched_scan_request *req,
+				struct cyw-cfg80211_sched_scan_request *req,
 				struct ieee80211_scan_ies *ies);
 	int (*sched_scan_stop)(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif);
@@ -3933,7 +3933,7 @@ struct ieee80211_ops {
 			      u32 *tx, u32 *tx_max, u32 *rx, u32 *rx_max);
 	bool (*tx_frames_pending)(struct ieee80211_hw *hw);
 	int (*set_bitrate_mask)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-				const struct cfg80211_bitrate_mask *mask);
+				const struct cyw-cfg80211_bitrate_mask *mask);
 	void (*event_callback)(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif,
 			       const struct ieee80211_event *event);
@@ -3993,7 +3993,7 @@ struct ieee80211_ops {
 #endif
 	void (*channel_switch_beacon)(struct ieee80211_hw *hw,
 				      struct ieee80211_vif *vif,
-				      struct cfg80211_chan_def *chandef);
+				      struct cyw-cfg80211_chan_def *chandef);
 	int (*pre_channel_switch)(struct ieee80211_hw *hw,
 				  struct ieee80211_vif *vif,
 				  struct ieee80211_channel_switch *ch_switch);
@@ -4016,7 +4016,7 @@ struct ieee80211_ops {
 	int (*tdls_channel_switch)(struct ieee80211_hw *hw,
 				   struct ieee80211_vif *vif,
 				   struct ieee80211_sta *sta, u8 oper_class,
-				   struct cfg80211_chan_def *chandef,
+				   struct cyw-cfg80211_chan_def *chandef,
 				   struct sk_buff *tmpl_skb, u32 ch_sw_tm_ie);
 	void (*tdls_cancel_channel_switch)(struct ieee80211_hw *hw,
 					   struct ieee80211_vif *vif,
@@ -4031,15 +4031,15 @@ struct ieee80211_ops {
 
 	int (*start_nan)(struct ieee80211_hw *hw,
 			 struct ieee80211_vif *vif,
-			 struct cfg80211_nan_conf *conf);
+			 struct cyw-cfg80211_nan_conf *conf);
 	int (*stop_nan)(struct ieee80211_hw *hw,
 			struct ieee80211_vif *vif);
 	int (*nan_change_conf)(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif,
-			       struct cfg80211_nan_conf *conf, u32 changes);
+			       struct cyw-cfg80211_nan_conf *conf, u32 changes);
 	int (*add_nan_func)(struct ieee80211_hw *hw,
 			    struct ieee80211_vif *vif,
-			    const struct cfg80211_nan_func *nan_func);
+			    const struct cyw-cfg80211_nan_func *nan_func);
 	void (*del_nan_func)(struct ieee80211_hw *hw,
 			    struct ieee80211_vif *vif,
 			    u8 instance_id);
@@ -4048,11 +4048,11 @@ struct ieee80211_ops {
 				       struct sk_buff *skb);
 	int (*get_ftm_responder_stats)(struct ieee80211_hw *hw,
 				       struct ieee80211_vif *vif,
-				       struct cfg80211_ftm_responder_stats *ftm_stats);
+				       struct cyw-cfg80211_ftm_responder_stats *ftm_stats);
 	int (*start_pmsr)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-			  struct cfg80211_pmsr_request *request);
+			  struct cyw-cfg80211_pmsr_request *request);
 	void (*abort_pmsr)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-			   struct cfg80211_pmsr_request *request);
+			   struct cyw-cfg80211_pmsr_request *request);
 };
 
 /**
@@ -5193,7 +5193,7 @@ void ieee80211_wake_queues(struct ieee80211_hw *hw);
  * @info: information about the completed scan
  */
 void ieee80211_scan_completed(struct ieee80211_hw *hw,
-			      struct cfg80211_scan_info *info);
+			      struct cyw-cfg80211_scan_info *info);
 
 /**
  * ieee80211_sched_scan_results - got results from scheduled scan
@@ -5938,10 +5938,10 @@ struct rate_control_ops {
 
 	void *(*alloc_sta)(void *priv, struct ieee80211_sta *sta, gfp_t gfp);
 	void (*rate_init)(void *priv, struct ieee80211_supported_band *sband,
-			  struct cfg80211_chan_def *chandef,
+			  struct cyw-cfg80211_chan_def *chandef,
 			  struct ieee80211_sta *sta, void *priv_sta);
 	void (*rate_update)(void *priv, struct ieee80211_supported_band *sband,
-			    struct cfg80211_chan_def *chandef,
+			    struct cyw-cfg80211_chan_def *chandef,
 			    struct ieee80211_sta *sta, void *priv_sta,
 			    u32 changed);
 	void (*free_sta)(void *priv, struct ieee80211_sta *sta,
@@ -6112,10 +6112,10 @@ int ieee80211_ave_rssi(struct ieee80211_vif *vif);
  * @wakeup: wakeup reason(s)
  * @gfp: allocation flags
  *
- * See cfg80211_report_wowlan_wakeup().
+ * See cyw-cfg80211_report_wowlan_wakeup().
  */
 void ieee80211_report_wowlan_wakeup(struct ieee80211_vif *vif,
-				    struct cfg80211_wowlan_wakeup *wakeup,
+				    struct cyw-cfg80211_wowlan_wakeup *wakeup,
 				    gfp_t gfp);
 
 /**
@@ -6187,7 +6187,7 @@ void ieee80211_update_p2p_noa(struct ieee80211_noa_data *data, u32 tsf);
  * @reason_code: reason code for the operation, valid for TDLS teardown
  * @gfp: allocation flags
  *
- * See cfg80211_tdls_oper_request().
+ * See cyw-cfg80211_tdls_oper_request().
  */
 void ieee80211_tdls_oper_request(struct ieee80211_vif *vif, const u8 *peer,
 				 enum nl80211_tdls_operation oper,
@@ -6412,7 +6412,7 @@ void ieee80211_nan_func_terminated(struct ieee80211_vif *vif,
  * @gfp: allocation flags
  */
 void ieee80211_nan_func_match(struct ieee80211_vif *vif,
-			      struct cfg80211_nan_match_params *match,
+			      struct cyw-cfg80211_nan_match_params *match,
 			      gfp_t gfp);
 
 #endif /* MAC80211_H */
