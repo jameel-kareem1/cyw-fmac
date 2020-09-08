@@ -12,15 +12,15 @@
 #include <linux/netdevice.h>
 #include <linux/nl80211.h>
 #include <linux/rtnetlink.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include "sysfs.h"
 #include "core.h"
 #include "rdev-ops.h"
 
-static inline struct cyw-cfg80211_registered_device *dev_to_rdev(
+static inline struct cyw_cfg80211_registered_device *dev_to_rdev(
 	struct device *dev)
 {
-	return container_of(dev, struct cyw-cfg80211_registered_device, wiphy.dev);
+	return container_of(dev, struct cyw_cfg80211_registered_device, wiphy.dev);
 }
 
 #define SHOW_FMT(name, fmt, member)					\
@@ -76,9 +76,9 @@ ATTRIBUTE_GROUPS(ieee80211);
 
 static void wiphy_dev_release(struct device *dev)
 {
-	struct cyw-cfg80211_registered_device *rdev = dev_to_rdev(dev);
+	struct cyw_cfg80211_registered_device *rdev = dev_to_rdev(dev);
 
-	cyw-cfg80211_dev_free(rdev);
+	cyw_cfg80211_dev_free(rdev);
 }
 
 static int wiphy_uevent(struct device *dev, struct kobj_uevent_env *env)
@@ -88,17 +88,17 @@ static int wiphy_uevent(struct device *dev, struct kobj_uevent_env *env)
 }
 
 #ifdef CONFIG_PM_SLEEP
-static void cyw-cfg80211_leave_all(struct cyw-cfg80211_registered_device *rdev)
+static void cyw_cfg80211_leave_all(struct cyw_cfg80211_registered_device *rdev)
 {
 	struct wireless_dev *wdev;
 
 	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list)
-		cyw-cfg80211_leave(rdev, wdev);
+		cyw_cfg80211_leave(rdev, wdev);
 }
 
 static int wiphy_suspend(struct device *dev)
 {
-	struct cyw-cfg80211_registered_device *rdev = dev_to_rdev(dev);
+	struct cyw_cfg80211_registered_device *rdev = dev_to_rdev(dev);
 	int ret = 0;
 
 	rdev->suspend_at = get_seconds();
@@ -106,15 +106,15 @@ static int wiphy_suspend(struct device *dev)
 	rtnl_lock();
 	if (rdev->wiphy.registered) {
 		if (!rdev->wiphy.wowlan_config) {
-			cyw-cfg80211_leave_all(rdev);
-			cyw-cfg80211_process_rdev_events(rdev);
+			cyw_cfg80211_leave_all(rdev);
+			cyw_cfg80211_process_rdev_events(rdev);
 		}
 		if (rdev->ops->suspend)
 			ret = rdev_suspend(rdev, rdev->wiphy.wowlan_config);
 		if (ret == 1) {
 			/* Driver refuse to configure wowlan */
-			cyw-cfg80211_leave_all(rdev);
-			cyw-cfg80211_process_rdev_events(rdev);
+			cyw_cfg80211_leave_all(rdev);
+			cyw_cfg80211_process_rdev_events(rdev);
 			ret = rdev_suspend(rdev, NULL);
 		}
 	}
@@ -125,11 +125,11 @@ static int wiphy_suspend(struct device *dev)
 
 static int wiphy_resume(struct device *dev)
 {
-	struct cyw-cfg80211_registered_device *rdev = dev_to_rdev(dev);
+	struct cyw_cfg80211_registered_device *rdev = dev_to_rdev(dev);
 	int ret = 0;
 
 	/* Age scan results with time spent in suspend */
-	cyw-cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
+	cyw_cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
 
 	rtnl_lock();
 	if (rdev->wiphy.registered && rdev->ops->resume)

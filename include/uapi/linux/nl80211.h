@@ -956,7 +956,7 @@
  *
  * @NL80211_CMD_ABORT_SCAN: Stop an ongoing scan. Returns -ENOENT if a scan is
  *	not running. The driver indicates the status of the scan through
- *	cyw-cfg80211_scan_done().
+ *	cyw_cfg80211_scan_done().
  *
  * @NL80211_CMD_START_NAN: Start NAN operation, identified by its
  *	%NL80211_ATTR_WDEV interface. This interface must have been
@@ -2128,7 +2128,7 @@ enum nl80211_commands {
  * @NL80211_ATTR_WIPHY_SELF_MANAGED_REG: flag attribute indicating this device
  *	is self-managing its regulatory information and any regulatory domain
  *	obtained from it is coming from the device's wiphy and not the global
- *	cyw-cfg80211 regdomain.
+ *	cyw_cfg80211 regdomain.
  *
  * @NL80211_ATTR_EXT_FEATURES: extended feature flags contained in a byte
  *	array. The feature flags are identified by their bit index (see &enum
@@ -3640,7 +3640,7 @@ enum nl80211_bitrate_attr {
  * 	wireless core it thinks its knows the regulatory domain we should be in.
  * @NL80211_REGDOM_SET_BY_COUNTRY_IE: the wireless core has received an
  * 	802.11 country information element with regulatory information it
- * 	thinks we should consider. cyw-cfg80211 only processes the country
+ * 	thinks we should consider. cyw_cfg80211 only processes the country
  *	code from the IE, and relies on the regulatory domain information
  *	structure passed by userspace (CRDA) from our wireless-regdb.
  *	If a channel is enabled but the country code indicates it should
@@ -4398,7 +4398,7 @@ enum nl80211_bss {
 /**
  * enum nl80211_bss_status - BSS "status"
  * @NL80211_BSS_STATUS_AUTHENTICATED: Authenticated with this BSS.
- *	Note that this is no longer used since cyw-cfg80211 no longer
+ *	Note that this is no longer used since cyw_cfg80211 no longer
  *	keeps track of whether or not authentication was done with
  *	a given BSS.
  * @NL80211_BSS_STATUS_ASSOCIATED: Associated with this BSS.
@@ -5300,7 +5300,7 @@ enum nl80211_ap_sme_features {
  *	Note that even for drivers that support this, the default is to add
  *	stations in authenticated/associated state, so to add unauthenticated
  *	stations the authenticated/associated bits have to be set in the mask.
- * @NL80211_FEATURE_ADVERTISE_CHAN_LIMITS: cyw-cfg80211 advertises channel limits
+ * @NL80211_FEATURE_ADVERTISE_CHAN_LIMITS: cyw_cfg80211 advertises channel limits
  *	(HT40, VHT 80/160 MHz) if this flag is set
  * @NL80211_FEATURE_USERSPACE_MPM: This driver supports a userspace Mesh
  *	Peering Management entity which may be implemented by registering for
@@ -5339,7 +5339,7 @@ enum nl80211_ap_sme_features {
  *	needs to be able to handle Block-Ack agreements and other things.
  * @NL80211_FEATURE_MAC_ON_CREATE: Device supports configuring
  *	the vif's MAC address upon creation.
- *	See 'macaddr' field in the vif_params (cyw-cfg80211.h).
+ *	See 'macaddr' field in the vif_params (cyw_cfg80211.h).
  * @NL80211_FEATURE_TDLS_CHANNEL_SWITCH: Driver supports channel switching when
  *	operating as a TDLS peer.
  * @NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR: This device/driver supports using a
@@ -5797,7 +5797,7 @@ enum nl80211_crit_proto_id {
 /**
  * enum nl80211_rxmgmt_flags - flags for received management frame.
  *
- * Used by cyw-cfg80211_rx_mgmt()
+ * Used by cyw_cfg80211_rx_mgmt()
  *
  * @NL80211_RXMGMT_FLAG_ANSWERED: frame was answered by device/driver.
  * @NL80211_RXMGMT_FLAG_EXTERNAL_AUTH: Host driver intends to offload

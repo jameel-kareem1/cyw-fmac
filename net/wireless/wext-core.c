@@ -14,7 +14,7 @@
 #include <linux/wireless.h>
 #include <linux/uaccess.h>
 #include <linux/export.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include <net/iw_handler.h>
 #include <net/netlink.h>
 #include <net/wext.h>
@@ -904,7 +904,7 @@ int call_commit_handler(struct net_device *dev)
 	else
 		return 0;		/* Command completed successfully */
 #else
-	/* cyw-cfg80211 has no commit */
+	/* cyw_cfg80211 has no commit */
 	return 0;
 #endif
 }

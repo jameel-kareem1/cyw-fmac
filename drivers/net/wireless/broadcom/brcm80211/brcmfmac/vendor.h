@@ -46,7 +46,7 @@ struct brcmf_phy_temp_evt {
 } __packed;
 
 /**
- * struct brcmf_vndr_dcmd_hdr - message header for cyw-cfg80211 vendor command dcmd
+ * struct brcmf_vndr_dcmd_hdr - message header for cyw_cfg80211 vendor command dcmd
  *				support
  *
  * @cmd: common dongle cmd definition

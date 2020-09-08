@@ -6,7 +6,7 @@
 #endif
 
 #if defined(CPTCFG_CFG80211) && defined(CPTCFG_CFG80211)
-#error "You must not have cyw-cfg80211 built into your kernel if you want to enable it"
+#error "You must not have cyw_cfg80211 built into your kernel if you want to enable it"
 #endif
 
 #endif /* __BACKPORT_CHECKS */

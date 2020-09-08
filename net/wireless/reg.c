@@ -57,7 +57,7 @@
 #include <linux/verification.h>
 #include <linux/moduleparam.h>
 #include <linux/firmware.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include "core.h"
 #include "reg.h"
 #include "rdev-ops.h"
@@ -111,7 +111,7 @@ static struct platform_device *reg_pdev;
  * information to give us an alpha2.
  * (protected by RTNL, can be read under RCU)
  */
-const struct ieee80211_regdomain __rcu *cyw-cfg80211_regdomain;
+const struct ieee80211_regdomain __rcu *cyw_cfg80211_regdomain;
 
 /*
  * Number of devices that registered to the core
@@ -134,9 +134,9 @@ static u32 reg_is_indoor_portid;
 static void restore_regulatory_settings(bool reset_user, bool cached);
 static void print_regdomain(const struct ieee80211_regdomain *rd);
 
-static const struct ieee80211_regdomain *get_cyw-cfg80211_regdom(void)
+static const struct ieee80211_regdomain *get_cyw_cfg80211_regdom(void)
 {
-	return rcu_dereference_rtnl(cyw-cfg80211_regdomain);
+	return rcu_dereference_rtnl(cyw_cfg80211_regdomain);
 }
 
 const struct ieee80211_regdomain *get_wiphy_regdom(struct wiphy *wiphy)
@@ -164,7 +164,7 @@ enum nl80211_dfs_regions reg_get_dfs_region(struct wiphy *wiphy)
 	const struct ieee80211_regdomain *regd = NULL;
 	const struct ieee80211_regdomain *wiphy_regd = NULL;
 
-	regd = get_cyw-cfg80211_regdom();
+	regd = get_cyw_cfg80211_regdom();
 	if (!wiphy)
 		goto out;
 
@@ -175,7 +175,7 @@ enum nl80211_dfs_regions reg_get_dfs_region(struct wiphy *wiphy)
 	if (wiphy_regd->dfs_region == regd->dfs_region)
 		goto out;
 
-	pr_debug("%s: device specific dfs_region (%s) disagrees with cyw-cfg80211's central dfs_region (%s)\n",
+	pr_debug("%s: device specific dfs_region (%s) disagrees with cyw_cfg80211's central dfs_region (%s)\n",
 		 dev_name(&wiphy->dev),
 		 reg_dfs_region_str(wiphy_regd->dfs_region),
 		 reg_dfs_region_str(regd->dfs_region));
@@ -259,12 +259,12 @@ static const struct ieee80211_regdomain world_regdom = {
 };
 
 /* protected by RTNL */
-static const struct ieee80211_regdomain *cyw-cfg80211_world_regdom =
+static const struct ieee80211_regdomain *cyw_cfg80211_world_regdom =
 	&world_regdom;
 
 static char *ieee80211_regdom = "00";
 static char user_alpha2[2];
-static const struct ieee80211_regdomain *cyw-cfg80211_user_regdom;
+static const struct ieee80211_regdomain *cyw_cfg80211_user_regdom;
 
 module_param(ieee80211_regdom, charp, 0444);
 MODULE_PARM_DESC(ieee80211_regdom, "IEEE 802.11 regulatory domain code");
@@ -305,21 +305,21 @@ static void reset_regdomains(bool full_reset,
 
 	ASSERT_RTNL();
 
-	r = get_cyw-cfg80211_regdom();
+	r = get_cyw_cfg80211_regdom();
 
 	/* avoid freeing static information or freeing something twice */
-	if (r == cyw-cfg80211_world_regdom)
+	if (r == cyw_cfg80211_world_regdom)
 		r = NULL;
-	if (cyw-cfg80211_world_regdom == &world_regdom)
-		cyw-cfg80211_world_regdom = NULL;
+	if (cyw_cfg80211_world_regdom == &world_regdom)
+		cyw_cfg80211_world_regdom = NULL;
 	if (r == &world_regdom)
 		r = NULL;
 
 	rcu_free_regdom(r);
-	rcu_free_regdom(cyw-cfg80211_world_regdom);
+	rcu_free_regdom(cyw_cfg80211_world_regdom);
 
-	cyw-cfg80211_world_regdom = &world_regdom;
-	rcu_assign_pointer(cyw-cfg80211_regdomain, new_regdom);
+	cyw_cfg80211_world_regdom = &world_regdom;
+	rcu_assign_pointer(cyw_cfg80211_regdomain, new_regdom);
 
 	if (!full_reset)
 		return;
@@ -341,7 +341,7 @@ static void update_world_regdomain(const struct ieee80211_regdomain *rd)
 
 	reset_regdomains(false, rd);
 
-	cyw-cfg80211_world_regdom = rd;
+	cyw_cfg80211_world_regdom = rd;
 }
 
 bool is_world_regdom(const char *alpha2)
@@ -397,7 +397,7 @@ static bool alpha2_equal(const char *alpha2_x, const char *alpha2_y)
 
 static bool regdom_changes(const char *alpha2)
 {
-	const struct ieee80211_regdomain *r = get_cyw-cfg80211_regdom();
+	const struct ieee80211_regdomain *r = get_cyw_cfg80211_regdom();
 
 	if (!r)
 		return true;
@@ -443,13 +443,13 @@ reg_copy_regd(const struct ieee80211_regdomain *src_regd)
 	return regd;
 }
 
-static void cyw-cfg80211_save_user_regdom(const struct ieee80211_regdomain *rd)
+static void cyw_cfg80211_save_user_regdom(const struct ieee80211_regdomain *rd)
 {
 	ASSERT_RTNL();
 
-	if (!IS_ERR(cyw-cfg80211_user_regdom))
-		kfree(cyw-cfg80211_user_regdom);
-	cyw-cfg80211_user_regdom = reg_copy_regd(rd);
+	if (!IS_ERR(cyw_cfg80211_user_regdom))
+		kfree(cyw_cfg80211_user_regdom);
+	cyw_cfg80211_user_regdom = reg_copy_regd(rd);
 }
 
 struct reg_regdb_apply_request {
@@ -1140,7 +1140,7 @@ static const struct ieee80211_regdomain *reg_get_regdomain(struct wiphy *wiphy)
 	    wiphy->regd)
 		return get_wiphy_regdom(wiphy);
 
-	return get_cyw-cfg80211_regdom();
+	return get_cyw_cfg80211_regdom();
 }
 
 static unsigned int
@@ -1598,7 +1598,7 @@ freq_reg_info_regd(u32 center_freq,
 		if (!band_rule_found)
 			band_rule_found = freq_in_rule_band(fr, center_freq);
 
-		bw_fits = cyw-cfg80211_does_bw_fit_range(fr, center_freq, bw);
+		bw_fits = cyw_cfg80211_does_bw_fit_range(fr, center_freq, bw);
 
 		if (band_rule_found && bw_fits)
 			return rr;
@@ -1666,11 +1666,11 @@ static uint32_t reg_rule_to_chan_bw_flags(const struct ieee80211_regdomain *regd
 		max_bandwidth_khz = reg_get_max_bandwidth(regd, reg_rule);
 
 	/* If we get a reg_rule we can assume that at least 5Mhz fit */
-	if (!cyw-cfg80211_does_bw_fit_range(freq_range,
+	if (!cyw_cfg80211_does_bw_fit_range(freq_range,
 					MHZ_TO_KHZ(chan->center_freq),
 					MHZ_TO_KHZ(10)))
 		bw_flags |= IEEE80211_CHAN_NO_10MHZ;
-	if (!cyw-cfg80211_does_bw_fit_range(freq_range,
+	if (!cyw_cfg80211_does_bw_fit_range(freq_range,
 					MHZ_TO_KHZ(chan->center_freq),
 					MHZ_TO_KHZ(20)))
 		bw_flags |= IEEE80211_CHAN_NO_20MHZ;
@@ -1909,7 +1909,7 @@ static bool ignore_reg_update(struct wiphy *wiphy,
 
 static bool reg_is_world_roaming(struct wiphy *wiphy)
 {
-	const struct ieee80211_regdomain *cr = get_cyw-cfg80211_regdom();
+	const struct ieee80211_regdomain *cr = get_cyw_cfg80211_regdom();
 	const struct ieee80211_regdomain *wr = get_wiphy_regdom(wiphy);
 	struct regulatory_request *lr = get_last_request();
 
@@ -2000,7 +2000,7 @@ static void wiphy_update_beacon_reg(struct wiphy *wiphy)
 static void reg_process_beacons(struct wiphy *wiphy)
 {
 	/*
-	 * Means we are just firing up cyw-cfg80211, so no beacons would
+	 * Means we are just firing up cyw_cfg80211, so no beacons would
 	 * have been processed yet.
 	 */
 	if (!last_request)
@@ -2108,8 +2108,8 @@ static void reg_call_notifier(struct wiphy *wiphy,
 
 static bool reg_wdev_chan_valid(struct wiphy *wiphy, struct wireless_dev *wdev)
 {
-	struct cyw-cfg80211_chan_def chandef = {};
-	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
+	struct cyw_cfg80211_chan_def chandef = {};
+	struct cyw_cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
 	enum nl80211_iftype iftype;
 
 	wdev_lock(wdev);
@@ -2139,7 +2139,7 @@ static bool reg_wdev_chan_valid(struct wiphy *wiphy, struct wireless_dev *wdev)
 
 		if (!rdev->ops->get_channel ||
 		    rdev_get_channel(rdev, wdev, &chandef))
-			cyw-cfg80211_chandef_create(&chandef,
+			cyw_cfg80211_chandef_create(&chandef,
 						wdev->current_bss->pub.channel,
 						NL80211_CHAN_NO_HT);
 		break;
@@ -2160,10 +2160,10 @@ static bool reg_wdev_chan_valid(struct wiphy *wiphy, struct wireless_dev *wdev)
 	case NL80211_IFTYPE_AP:
 	case NL80211_IFTYPE_P2P_GO:
 	case NL80211_IFTYPE_ADHOC:
-		return cyw-cfg80211_reg_can_beacon_relax(wiphy, &chandef, iftype);
+		return cyw_cfg80211_reg_can_beacon_relax(wiphy, &chandef, iftype);
 	case NL80211_IFTYPE_STATION:
 	case NL80211_IFTYPE_P2P_CLIENT:
-		return cyw-cfg80211_chandef_usable(wiphy, &chandef,
+		return cyw_cfg80211_chandef_usable(wiphy, &chandef,
 					       IEEE80211_CHAN_DISABLED);
 	default:
 		break;
@@ -2179,23 +2179,23 @@ wdev_inactive_unlock:
 static void reg_leave_invalid_chans(struct wiphy *wiphy)
 {
 	struct wireless_dev *wdev;
-	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
+	struct cyw_cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
 
 	ASSERT_RTNL();
 
 	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list)
 		if (!reg_wdev_chan_valid(wiphy, wdev))
-			cyw-cfg80211_leave(rdev, wdev);
+			cyw_cfg80211_leave(rdev, wdev);
 }
 
 static void reg_check_chans_work(struct work_struct *work)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 
 	pr_debug("Verifying active interfaces after reg change\n");
 	rtnl_lock();
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list)
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list)
 		if (!(rdev->wiphy.regulatory_flags &
 		      REGULATORY_IGNORE_STALE_KICKOFF))
 			reg_leave_invalid_chans(&rdev->wiphy);
@@ -2234,7 +2234,7 @@ static void wiphy_update_regulatory(struct wiphy *wiphy,
 		return;
 	}
 
-	lr->dfs_region = get_cyw-cfg80211_regdom()->dfs_region;
+	lr->dfs_region = get_cyw_cfg80211_regdom()->dfs_region;
 
 	for (band = 0; band < NUM_NL80211_BANDS; band++)
 		handle_band(wiphy, initiator, wiphy->bands[band]);
@@ -2246,12 +2246,12 @@ static void wiphy_update_regulatory(struct wiphy *wiphy,
 
 static void update_all_wiphy_regulatory(enum nl80211_reg_initiator initiator)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 	struct wiphy *wiphy;
 
 	ASSERT_RTNL();
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		wiphy = &rdev->wiphy;
 		wiphy_update_regulatory(wiphy, initiator);
 	}
@@ -2513,7 +2513,7 @@ reg_process_hint_driver(struct wiphy *wiphy,
 		return REG_REQ_IGNORE;
 	case REG_REQ_INTERSECT:
 	case REG_REQ_ALREADY_SET:
-		regd = reg_copy_regd(get_cyw-cfg80211_regdom());
+		regd = reg_copy_regd(get_cyw_cfg80211_regdom());
 		if (IS_ERR(regd))
 			return REG_REQ_IGNORE;
 
@@ -2637,19 +2637,19 @@ bool reg_dfs_domain_same(struct wiphy *wiphy1, struct wiphy *wiphy2)
 {
 	const struct ieee80211_regdomain *wiphy1_regd = NULL;
 	const struct ieee80211_regdomain *wiphy2_regd = NULL;
-	const struct ieee80211_regdomain *cyw-cfg80211_regd = NULL;
+	const struct ieee80211_regdomain *cyw_cfg80211_regd = NULL;
 	bool dfs_domain_same;
 
 	rcu_read_lock();
 
-	cyw-cfg80211_regd = rcu_dereference(cyw-cfg80211_regdomain);
+	cyw_cfg80211_regd = rcu_dereference(cyw_cfg80211_regdomain);
 	wiphy1_regd = rcu_dereference(wiphy1->regd);
 	if (!wiphy1_regd)
-		wiphy1_regd = cyw-cfg80211_regd;
+		wiphy1_regd = cyw_cfg80211_regd;
 
 	wiphy2_regd = rcu_dereference(wiphy2->regd);
 	if (!wiphy2_regd)
-		wiphy2_regd = cyw-cfg80211_regd;
+		wiphy2_regd = cyw_cfg80211_regd;
 
 	dfs_domain_same = wiphy1_regd->dfs_region == wiphy2_regd->dfs_region;
 
@@ -2704,11 +2704,11 @@ static void wiphy_share_dfs_chan_state(struct wiphy *dst_wiphy,
 
 static void wiphy_all_share_dfs_chan_state(struct wiphy *wiphy)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 
 	ASSERT_RTNL();
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		if (wiphy == &rdev->wiphy)
 			continue;
 		wiphy_share_dfs_chan_state(wiphy, &rdev->wiphy);
@@ -2771,10 +2771,10 @@ out_free:
 
 static void notify_self_managed_wiphys(struct regulatory_request *request)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 	struct wiphy *wiphy;
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		wiphy = &rdev->wiphy;
 		if (wiphy->regulatory_flags & REGULATORY_WIPHY_SELF_MANAGED &&
 		    request->initiator == NL80211_REGDOM_SET_BY_USER)
@@ -2828,7 +2828,7 @@ static void reg_process_pending_hints(void)
 /* Processes beacon hints -- this has nothing to do with country IEs */
 static void reg_process_pending_beacon_hints(void)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 	struct reg_beacon *pending_beacon, *tmp;
 
 	/* This goes through the _pending_ beacon list */
@@ -2839,7 +2839,7 @@ static void reg_process_pending_beacon_hints(void)
 		list_del_init(&pending_beacon->list);
 
 		/* Applies the beacon hint to current wiphys */
-		list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list)
+		list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list)
 			wiphy_update_new_beacon(&rdev->wiphy, pending_beacon);
 
 		/* Remembers the beacon hint for new wiphys or reg changes */
@@ -2851,14 +2851,14 @@ static void reg_process_pending_beacon_hints(void)
 
 static void reg_process_self_managed_hints(void)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 	struct wiphy *wiphy;
 	const struct ieee80211_regdomain *tmp;
 	const struct ieee80211_regdomain *regd;
 	enum nl80211_band band;
 	struct regulatory_request request = {};
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		wiphy = &rdev->wiphy;
 
 		spin_lock(&reg_requests_lock);
@@ -2911,7 +2911,7 @@ static void queue_regulatory_request(struct regulatory_request *request)
 }
 
 /*
- * Core regulatory hint -- happens during cyw-cfg80211_init()
+ * Core regulatory hint -- happens during cyw_cfg80211_init()
  * and when we restore regulatory settings.
  */
 static int regulatory_hint_core(const char *alpha2)
@@ -3065,7 +3065,7 @@ void regulatory_hint_country_ie(struct wiphy *wiphy, enum nl80211_band band,
 		goto out;
 
 	/*
-	 * We will run this only upon a successful connection on cyw-cfg80211.
+	 * We will run this only upon a successful connection on cyw_cfg80211.
 	 * We leave conflict resolution to the workqueue, where can hold
 	 * the RTNL.
 	 */
@@ -3171,7 +3171,7 @@ static void restore_regulatory_settings(bool reset_user, bool cached)
 	char world_alpha2[2];
 	struct reg_beacon *reg_beacon, *btmp;
 	LIST_HEAD(tmp_reg_req_list);
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 
 	ASSERT_RTNL();
 
@@ -3214,10 +3214,10 @@ static void restore_regulatory_settings(bool reset_user, bool cached)
 	}
 
 	/* First restore to the basic regulatory settings */
-	world_alpha2[0] = cyw-cfg80211_world_regdom->alpha2[0];
-	world_alpha2[1] = cyw-cfg80211_world_regdom->alpha2[1];
+	world_alpha2[0] = cyw_cfg80211_world_regdom->alpha2[0];
+	world_alpha2[1] = cyw_cfg80211_world_regdom->alpha2[1];
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		if (rdev->wiphy.regulatory_flags & REGULATORY_WIPHY_SELF_MANAGED)
 			continue;
 		if (rdev->wiphy.regulatory_flags & REGULATORY_CUSTOM_REG)
@@ -3225,10 +3225,10 @@ static void restore_regulatory_settings(bool reset_user, bool cached)
 	}
 
 	if (cached && (!is_an_alpha2(alpha2) ||
-		       !IS_ERR_OR_NULL(cyw-cfg80211_user_regdom))) {
-		reset_regdomains(false, cyw-cfg80211_world_regdom);
+		       !IS_ERR_OR_NULL(cyw_cfg80211_user_regdom))) {
+		reset_regdomains(false, cyw_cfg80211_world_regdom);
 		update_all_wiphy_regulatory(NL80211_REGDOM_SET_BY_CORE);
-		print_regdomain(get_cyw-cfg80211_regdom());
+		print_regdomain(get_cyw_cfg80211_regdom());
 		nl80211_send_reg_change_event(&core_request_world);
 		reg_set_request_processed();
 
@@ -3245,7 +3245,7 @@ static void restore_regulatory_settings(bool reset_user, bool cached)
 
 			notify_self_managed_wiphys(ureq);
 			reg_update_last_request(ureq);
-			set_regdom(reg_copy_regd(cyw-cfg80211_user_regdom),
+			set_regdom(reg_copy_regd(cyw_cfg80211_user_regdom),
 				   REGD_SOURCE_CACHED);
 		}
 	} else {
@@ -3271,10 +3271,10 @@ static void restore_regulatory_settings(bool reset_user, bool cached)
 
 static bool is_wiphy_all_set_reg_flag(enum ieee80211_regulatory_flags flag)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 	struct wireless_dev *wdev;
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
 			wdev_lock(wdev);
 			if (!(wdev->wiphy->regulatory_flags & flag)) {
@@ -3458,8 +3458,8 @@ static void print_regdomain(const struct ieee80211_regdomain *rd)
 
 	if (is_intersected_alpha2(rd->alpha2)) {
 		if (lr->initiator == NL80211_REGDOM_SET_BY_COUNTRY_IE) {
-			struct cyw-cfg80211_registered_device *rdev;
-			rdev = cyw-cfg80211_rdev_by_wiphy_idx(lr->wiphy_idx);
+			struct cyw_cfg80211_registered_device *rdev;
+			rdev = cyw_cfg80211_rdev_by_wiphy_idx(lr->wiphy_idx);
 			if (rdev) {
 				pr_debug("Current regulatory domain updated by AP to: %c%c\n",
 					rdev->country_ie_alpha2[0],
@@ -3521,7 +3521,7 @@ static int reg_set_rd_user(const struct ieee80211_regdomain *rd,
 		return 0;
 	}
 
-	intersected_rd = regdom_intersect(rd, get_cyw-cfg80211_regdom());
+	intersected_rd = regdom_intersect(rd, get_cyw_cfg80211_regdom());
 	if (!intersected_rd)
 		return -EINVAL;
 
@@ -3570,7 +3570,7 @@ static int reg_set_rd_driver(const struct ieee80211_regdomain *rd,
 		return 0;
 	}
 
-	intersected_rd = regdom_intersect(rd, get_cyw-cfg80211_regdom());
+	intersected_rd = regdom_intersect(rd, get_cyw_cfg80211_regdom());
 	if (!intersected_rd)
 		return -EINVAL;
 
@@ -3654,7 +3654,7 @@ int set_regdom(const struct ieee80211_regdomain *rd,
 		r = reg_set_rd_core(rd);
 		break;
 	case NL80211_REGDOM_SET_BY_USER:
-		cyw-cfg80211_save_user_regdom(rd);
+		cyw_cfg80211_save_user_regdom(rd);
 		r = reg_set_rd_user(rd, lr);
 		user_reset = true;
 		break;
@@ -3685,13 +3685,13 @@ int set_regdom(const struct ieee80211_regdomain *rd,
 	}
 
 	/* This would make this whole thing pointless */
-	if (WARN_ON(!lr->intersect && rd != get_cyw-cfg80211_regdom()))
+	if (WARN_ON(!lr->intersect && rd != get_cyw_cfg80211_regdom()))
 		return -EINVAL;
 
 	/* update all wiphys now with the new established regulatory domain */
 	update_all_wiphy_regulatory(lr->initiator);
 
-	print_regdomain(get_cyw-cfg80211_regdom());
+	print_regdomain(get_cyw_cfg80211_regdom());
 
 	nl80211_send_reg_change_event(lr);
 
@@ -3705,7 +3705,7 @@ static int __regulatory_set_wiphy_regd(struct wiphy *wiphy,
 {
 	const struct ieee80211_regdomain *regd;
 	const struct ieee80211_regdomain *prev_regd;
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 
 	if (WARN_ON(!wiphy || !rd))
 		return -EINVAL;
@@ -3817,7 +3817,7 @@ void wiphy_regulatory_deregister(struct wiphy *wiphy)
  *  5GHz: https://www.fcc.gov/document/5-ghz-unlicensed-spectrum-unii
  *  6GHz: https://www.fcc.gov/document/fcc-proposes-more-spectrum-unlicensed-use-0
  */
-int cyw-cfg80211_get_unii(int freq)
+int cyw_cfg80211_get_unii(int freq)
 {
 	/* UNII-1 */
 	if (freq >= 5150 && freq <= 5250)
@@ -3871,7 +3871,7 @@ bool regulatory_pre_cac_allowed(struct wiphy *wiphy)
 
 	rcu_read_lock();
 
-	regd = rcu_dereference(cyw-cfg80211_regdomain);
+	regd = rcu_dereference(cyw_cfg80211_regdomain);
 	wiphy_regd = rcu_dereference(wiphy->regd);
 	if (!wiphy_regd) {
 		if (regd->dfs_region == NL80211_DFS_ETSI)
@@ -3892,12 +3892,12 @@ bool regulatory_pre_cac_allowed(struct wiphy *wiphy)
 }
 EXPORT_SYMBOL(regulatory_pre_cac_allowed);
 
-static void cyw-cfg80211_check_and_end_cac(struct cyw-cfg80211_registered_device *rdev)
+static void cyw_cfg80211_check_and_end_cac(struct cyw_cfg80211_registered_device *rdev)
 {
 	struct wireless_dev *wdev;
 	/* If we finished CAC or received radar, we should end any
 	 * CAC running on the same channels.
-	 * the check !cyw-cfg80211_chandef_dfs_usable contain 2 options:
+	 * the check !cyw_cfg80211_chandef_dfs_usable contain 2 options:
 	 * either all channels are available - those the CAC_FINISHED
 	 * event has effected another wdev state, or there is a channel
 	 * in unavailable state in wdev chandef - those the RADAR_DETECTED
@@ -3906,24 +3906,24 @@ static void cyw-cfg80211_check_and_end_cac(struct cyw-cfg80211_registered_device
 	 */
 	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
 		if (wdev->cac_started &&
-		    !cyw-cfg80211_chandef_dfs_usable(&rdev->wiphy, &wdev->chandef))
+		    !cyw_cfg80211_chandef_dfs_usable(&rdev->wiphy, &wdev->chandef))
 			rdev_end_cac(rdev, wdev->netdev);
 	}
 }
 
 void regulatory_propagate_dfs_state(struct wiphy *wiphy,
-				    struct cyw-cfg80211_chan_def *chandef,
+				    struct cyw_cfg80211_chan_def *chandef,
 				    enum nl80211_dfs_state dfs_state,
 				    enum nl80211_radar_event event)
 {
-	struct cyw-cfg80211_registered_device *rdev;
+	struct cyw_cfg80211_registered_device *rdev;
 
 	ASSERT_RTNL();
 
-	if (WARN_ON(!cyw-cfg80211_chandef_valid(chandef)))
+	if (WARN_ON(!cyw_cfg80211_chandef_valid(chandef)))
 		return;
 
-	list_for_each_entry(rdev, &cyw-cfg80211_rdev_list, list) {
+	list_for_each_entry(rdev, &cyw_cfg80211_rdev_list, list) {
 		if (wiphy == &rdev->wiphy)
 			continue;
 
@@ -3934,12 +3934,12 @@ void regulatory_propagate_dfs_state(struct wiphy *wiphy,
 					   chandef->chan->center_freq))
 			continue;
 
-		cyw-cfg80211_set_dfs_state(&rdev->wiphy, chandef, dfs_state);
+		cyw_cfg80211_set_dfs_state(&rdev->wiphy, chandef, dfs_state);
 
 		if (event == NL80211_RADAR_DETECTED ||
 		    event == NL80211_RADAR_CAC_FINISHED) {
-			cyw-cfg80211_sched_dfs_chan_update(rdev);
-			cyw-cfg80211_check_and_end_cac(rdev);
+			cyw_cfg80211_sched_dfs_chan_update(rdev);
+			cyw_cfg80211_check_and_end_cac(rdev);
 		}
 
 		nl80211_radar_notify(rdev, chandef, event, NULL, GFP_KERNEL);
@@ -3951,7 +3951,7 @@ static int __init regulatory_init_db(void)
 	int err;
 
 	/*
-	 * It's possible that - due to other bugs/issues - cyw-cfg80211
+	 * It's possible that - due to other bugs/issues - cyw_cfg80211
 	 * never called regulatory_init() below, or that it failed;
 	 * in that case, don't try to do any further work here as
 	 * it's doomed to lead to crashes.
@@ -3964,7 +3964,7 @@ static int __init regulatory_init_db(void)
 		return err;
 
 	/* We always try to get an update for the static regdomain */
-	err = regulatory_hint_core(cyw-cfg80211_world_regdom->alpha2);
+	err = regulatory_hint_core(cyw_cfg80211_world_regdom->alpha2);
 	if (err) {
 		if (err == -ENOMEM) {
 			platform_device_unregister(reg_pdev);
@@ -4004,7 +4004,7 @@ int __init regulatory_init(void)
 	spin_lock_init(&reg_pending_beacons_lock);
 	spin_lock_init(&reg_indoor_lock);
 
-	rcu_assign_pointer(cyw-cfg80211_regdomain, cyw-cfg80211_world_regdom);
+	rcu_assign_pointer(cyw_cfg80211_regdomain, cyw_cfg80211_world_regdom);
 
 	user_alpha2[0] = '9';
 	user_alpha2[1] = '7';
@@ -4051,8 +4051,8 @@ void regulatory_exit(void)
 
 	if (!IS_ERR_OR_NULL(regdb))
 		kfree(regdb);
-	if (!IS_ERR_OR_NULL(cyw-cfg80211_user_regdom))
-		kfree(cyw-cfg80211_user_regdom);
+	if (!IS_ERR_OR_NULL(cyw_cfg80211_user_regdom))
+		kfree(cyw_cfg80211_user_regdom);
 
 	free_regdb_keyring();
 }

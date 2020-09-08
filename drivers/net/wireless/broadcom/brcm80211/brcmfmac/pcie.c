@@ -38,7 +38,7 @@
 #include "chip.h"
 #include "core.h"
 #include "common.h"
-#include "cyw-cfg80211.h"
+#include "cyw_cfg80211.h"
 
 
 enum brcmf_pcie_state {
@@ -2261,7 +2261,7 @@ static int brcmf_pcie_pm_enter_D3(struct device *dev)
 {
 	struct brcmf_pciedev_info *devinfo;
 	struct brcmf_bus *bus;
-	struct brcmf_cyw-cfg80211_info *config;
+	struct brcmf_cyw_cfg80211_info *config;
 	int retry = BRCMF_PM_WAIT_MAXRETRY;
 
 	brcmf_dbg(PCIE, "Enter\n");
@@ -2276,7 +2276,7 @@ static int brcmf_pcie_pm_enter_D3(struct device *dev)
 		retry--;
 	}
 	if (!retry && config->pm_state == BRCMF_CFG80211_PM_STATE_SUSPENDING)
-		brcmf_err(bus, "timed out wait for cyw-cfg80211 suspended\n");
+		brcmf_err(bus, "timed out wait for cyw_cfg80211 suspended\n");
 
 	brcmf_bus_change_state(bus, BRCMF_BUS_DOWN);
 

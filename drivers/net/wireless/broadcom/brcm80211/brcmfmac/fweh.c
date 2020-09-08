@@ -7,7 +7,7 @@
 #include "brcmu_wifi.h"
 #include "brcmu_utils.h"
 
-#include "cyw-cfg80211.h"
+#include "cyw_cfg80211.h"
 #include "core.h"
 #include "debug.h"
 #include "tracepoint.h"
@@ -175,7 +175,7 @@ static void brcmf_fweh_handle_if_event(struct brcmf_pub *drvr,
 					    data);
 
 	if (ifp && ifevent->action == BRCMF_E_IF_DEL) {
-		bool armed = brcmf_cyw-cfg80211_vif_event_armed(drvr->config);
+		bool armed = brcmf_cyw_cfg80211_vif_event_armed(drvr->config);
 
 		/* Default handling in case no-one waits for this event */
 		if (!armed)

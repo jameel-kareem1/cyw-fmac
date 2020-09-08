@@ -64,7 +64,7 @@ enum environment_cap {
  *	domain.
  * @processed: indicates whether or not this requests has already been
  *	processed. When the last request is processed it means that the
- *	currently regulatory domain set on cyw-cfg80211 is updated from
+ *	currently regulatory domain set on cyw_cfg80211 is updated from
  *	CRDA and can be used by other regulatory requests. When a
  *	the last request is not yet processed we must yield until it
  *	is processed before processing any new requests.
@@ -119,7 +119,7 @@ struct regulatory_request {
  *	until their own regulatory domain gets programmed.
  * @REGULATORY_DISABLE_BEACON_HINTS: enable this if your driver needs to
  *	ensure that passive scan flags and beaconing flags may not be lifted by
- *	cyw-cfg80211 due to regulatory beacon hints. For more information on beacon
+ *	cyw_cfg80211 due to regulatory beacon hints. For more information on beacon
  *	hints read the documenation for regulatory_hint_found_beacon()
  * @REGULATORY_COUNTRY_IE_FOLLOW_POWER:  for devices that have a preference
  *	that even though they may have programmed their own custom power
@@ -152,7 +152,7 @@ struct regulatory_request {
  *	regdom management. These devices will ignore all regdom changes not
  *	originating from their own wiphy.
  *	A self-managed wiphys only employs regulatory information obtained from
- *	the FW and driver and does not use other cyw-cfg80211 sources like
+ *	the FW and driver and does not use other cyw_cfg80211 sources like
  *	beacon-hints, country-code IEs and hints from other devices on the same
  *	system. Conversely, a self-managed wiphy does not share its regulatory
  *	hints with other devices in the system. If a system contains several

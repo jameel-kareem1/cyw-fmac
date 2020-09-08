@@ -8,7 +8,7 @@
 #include <linux/ethtool.h>
 #include <linux/module.h>
 #include <linux/inetdevice.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include <net/rtnetlink.h>
 #include <net/addrconf.h>
 #include <net/ieee80211_radiotap.h>
@@ -22,7 +22,7 @@
 #include "fwil_types.h"
 #include "p2p.h"
 #include "pno.h"
-#include "cyw-cfg80211.h"
+#include "cyw_cfg80211.h"
 #include "fwil.h"
 #include "feature.h"
 #include "proto.h"
@@ -364,7 +364,7 @@ static netdev_tx_t brcmf_netdev_start_xmit(struct sk_buff *skb,
 
 	/* determine the priority */
 	if ((skb->priority == 0) || (skb->priority > 7))
-		skb->priority = cyw-cfg80211_classify8021d(skb, NULL);
+		skb->priority = cyw_cfg80211_classify8021d(skb, NULL);
 
 	/* set pacing shift for packet aggregation */
 	sk_pacing_shift_update(skb->sk, 8);
@@ -597,7 +597,7 @@ static int brcmf_netdev_stop(struct net_device *ndev)
 
 	brcmf_dbg(TRACE, "Enter, bsscfgidx=%d\n", ifp->bsscfgidx);
 
-	brcmf_cyw-cfg80211_down(ndev);
+	brcmf_cyw_cfg80211_down(ndev);
 
 	brcmf_net_setcarrier(ifp, false);
 
@@ -628,8 +628,8 @@ static int brcmf_netdev_open(struct net_device *ndev)
 	else
 		ndev->features &= ~NETIF_F_IP_CSUM;
 
-	if (brcmf_cyw-cfg80211_up(ndev)) {
-		bphy_err(drvr, "failed to bring up cyw-cfg80211\n");
+	if (brcmf_cyw_cfg80211_up(ndev)) {
+		bphy_err(drvr, "failed to bring up cyw_cfg80211\n");
 		return -EIO;
 	}
 
@@ -656,9 +656,9 @@ static const struct net_device_ops brcmf_netdev_ops_pri = {
 #endif
 
 #if LINUX_VERSION_IS_LESS(4,12,0)
-static void __brcmf_cyw-cfg80211_free_netdev(struct net_device *ndev)
+static void __brcmf_cyw_cfg80211_free_netdev(struct net_device *ndev)
 {
-	brcmf_cyw-cfg80211_free_netdev(ndev);
+	brcmf_cyw_cfg80211_free_netdev(ndev);
 	free_netdev(ndev);
 }
 #endif
@@ -695,7 +695,7 @@ int brcmf_net_attach(struct brcmf_if *ifp, bool rtnl_locked)
 		goto fail;
 	}
 
-	netdev_set_priv_destructor(ndev, brcmf_cyw-cfg80211_free_netdev);
+	netdev_set_priv_destructor(ndev, brcmf_cyw_cfg80211_free_netdev);
 	brcmf_dbg(INFO, "%s: Broadcom Dongle Host Driver\n", ndev->name);
 	return 0;
 
@@ -713,7 +713,7 @@ static void brcmf_net_detach(struct net_device *ndev, bool rtnl_locked)
 		else
 			unregister_netdev(ndev);
 	} else {
-		brcmf_cyw-cfg80211_free_netdev(ndev);
+		brcmf_cyw_cfg80211_free_netdev(ndev);
 		free_netdev(ndev);
 	}
 }
@@ -741,14 +741,14 @@ static int brcmf_net_p2p_open(struct net_device *ndev)
 {
 	brcmf_dbg(TRACE, "Enter\n");
 
-	return brcmf_cyw-cfg80211_up(ndev);
+	return brcmf_cyw_cfg80211_up(ndev);
 }
 
 static int brcmf_net_p2p_stop(struct net_device *ndev)
 {
 	brcmf_dbg(TRACE, "Enter\n");
 
-	return brcmf_cyw-cfg80211_down(ndev);
+	return brcmf_cyw_cfg80211_down(ndev);
 }
 
 static netdev_tx_t brcmf_net_p2p_start_xmit(struct sk_buff *skb,
@@ -837,7 +837,7 @@ struct brcmf_if *brcmf_add_if(struct brcmf_pub *drvr, s32 bsscfgidx, s32 ifidx,
 			return ERR_PTR(-ENOMEM);
 
 #if LINUX_VERSION_IS_LESS(4,12,0)
-		netdev_set_priv_destructor(ndev, __brcmf_cyw-cfg80211_free_netdev);
+		netdev_set_priv_destructor(ndev, __brcmf_cyw_cfg80211_free_netdev);
 #else
 		netdev_set_def_destructor(ndev);
 #endif
@@ -1158,7 +1158,7 @@ static const struct file_operations bus_reset_fops = {
 	.write	= bus_reset_write,
 };
 
-static int brcmf_bus_started(struct brcmf_pub *drvr, struct cyw-cfg80211_ops *ops)
+static int brcmf_bus_started(struct brcmf_pub *drvr, struct cyw_cfg80211_ops *ops)
 {
 	int ret = -1;
 	struct brcmf_bus *bus_if = drvr->bus_if;
@@ -1195,7 +1195,7 @@ static int brcmf_bus_started(struct brcmf_pub *drvr, struct cyw-cfg80211_ops *op
 
 	brcmf_proto_add_if(drvr, ifp);
 
-	drvr->config = brcmf_cyw-cfg80211_attach(drvr, ops,
+	drvr->config = brcmf_cyw_cfg80211_attach(drvr, ops,
 					     drvr->settings->p2p_enable);
 	if (drvr->config == NULL) {
 		ret = -ENOMEM;
@@ -1244,7 +1244,7 @@ static int brcmf_bus_started(struct brcmf_pub *drvr, struct cyw-cfg80211_ops *op
 fail:
 	bphy_err(drvr, "failed: %d\n", ret);
 	if (drvr->config) {
-		brcmf_cyw-cfg80211_detach(drvr->config);
+		brcmf_cyw_cfg80211_detach(drvr->config);
 		drvr->config = NULL;
 	}
 	brcmf_net_detach(ifp->ndev, false);
@@ -1261,12 +1261,12 @@ fail:
 int brcmf_alloc(struct device *dev, struct brcmf_mp_device *settings)
 {
 	struct wiphy *wiphy;
-	struct cyw-cfg80211_ops *ops;
+	struct cyw_cfg80211_ops *ops;
 	struct brcmf_pub *drvr = NULL;
 
 	brcmf_dbg(TRACE, "Enter\n");
 
-	ops = brcmf_cyw-cfg80211_get_ops(settings);
+	ops = brcmf_cyw_cfg80211_get_ops(settings);
 	if (!ops)
 		return -ENOMEM;
 
@@ -1415,7 +1415,7 @@ void brcmf_detach(struct device *dev)
 
 	if (drvr->config) {
 		brcmf_p2p_detach(&drvr->config->p2p);
-		brcmf_cyw-cfg80211_detach(drvr->config);
+		brcmf_cyw_cfg80211_detach(drvr->config);
 		drvr->config = NULL;
 	}
 }

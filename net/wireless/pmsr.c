@@ -4,17 +4,17 @@
  */
 #ifndef __PMSR_H
 #define __PMSR_H
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include "core.h"
 #include "nl80211.h"
 #include "rdev-ops.h"
 
-static int pmsr_parse_ftm(struct cyw-cfg80211_registered_device *rdev,
+static int pmsr_parse_ftm(struct cyw_cfg80211_registered_device *rdev,
 			  struct nlattr *ftmreq,
-			  struct cyw-cfg80211_pmsr_request_peer *out,
+			  struct cyw_cfg80211_pmsr_request_peer *out,
 			  struct genl_info *info)
 {
-	const struct cyw-cfg80211_pmsr_capabilities *capa = rdev->wiphy.pmsr_capa;
+	const struct cyw_cfg80211_pmsr_capabilities *capa = rdev->wiphy.pmsr_capa;
 	struct nlattr *tb[NL80211_PMSR_FTM_REQ_ATTR_MAX + 1];
 	u32 preamble = NL80211_PREAMBLE_DMG; /* only optional in DMG */
 
@@ -130,9 +130,9 @@ static int pmsr_parse_ftm(struct cyw-cfg80211_registered_device *rdev,
 	return 0;
 }
 
-static int pmsr_parse_peer(struct cyw-cfg80211_registered_device *rdev,
+static int pmsr_parse_peer(struct cyw_cfg80211_registered_device *rdev,
 			   struct nlattr *peer,
-			   struct cyw-cfg80211_pmsr_request_peer *out,
+			   struct cyw_cfg80211_pmsr_request_peer *out,
 			   struct genl_info *info)
 {
 	struct nlattr *tb[NL80211_PMSR_PEER_ATTR_MAX + 1];
@@ -211,9 +211,9 @@ static int pmsr_parse_peer(struct cyw-cfg80211_registered_device *rdev,
 int nl80211_pmsr_start(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr *reqattr = info->attrs[NL80211_ATTR_PEER_MEASUREMENTS];
-	struct cyw-cfg80211_registered_device *rdev = info->user_ptr[0];
+	struct cyw_cfg80211_registered_device *rdev = info->user_ptr[0];
 	struct wireless_dev *wdev = info->user_ptr[1];
-	struct cyw-cfg80211_pmsr_request *req;
+	struct cyw_cfg80211_pmsr_request *req;
 	struct nlattr *peers, *peer;
 	int count, rem, err, idx;
 
@@ -274,7 +274,7 @@ int nl80211_pmsr_start(struct sk_buff *skb, struct genl_info *info)
 	}
 
 	req->n_peers = count;
-	req->cookie = cyw-cfg80211_assign_cookie(rdev);
+	req->cookie = cyw_cfg80211_assign_cookie(rdev);
 	req->nl_portid = genl_info_snd_portid(info);
 
 	err = rdev_start_pmsr(rdev, wdev, req);
@@ -290,15 +290,15 @@ out_err:
 	return err;
 }
 
-void cyw-cfg80211_pmsr_complete(struct wireless_dev *wdev,
-			    struct cyw-cfg80211_pmsr_request *req,
+void cyw_cfg80211_pmsr_complete(struct wireless_dev *wdev,
+			    struct cyw_cfg80211_pmsr_request *req,
 			    gfp_t gfp)
 {
-	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+	struct cyw_cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
 	struct sk_buff *msg;
 	void *hdr;
 
-	trace_cyw-cfg80211_pmsr_complete(wdev->wiphy, wdev, req->cookie);
+	trace_cyw_cfg80211_pmsr_complete(wdev->wiphy, wdev, req->cookie);
 
 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, gfp);
 	if (!msg)
@@ -329,10 +329,10 @@ free_request:
 	spin_unlock_bh(&wdev->pmsr_lock);
 	kfree(req);
 }
-EXPORT_SYMBOL_GPL(cyw-cfg80211_pmsr_complete);
+EXPORT_SYMBOL_GPL(cyw_cfg80211_pmsr_complete);
 
 static int nl80211_pmsr_send_ftm_res(struct sk_buff *msg,
-				     struct cyw-cfg80211_pmsr_result *res)
+				     struct cyw_cfg80211_pmsr_result *res)
 {
 	if (res->status == NL80211_PMSR_STATUS_FAILURE) {
 		if (nla_put_u32(msg, NL80211_PMSR_FTM_RESP_ATTR_FAIL_REASON,
@@ -420,7 +420,7 @@ error:
 }
 
 static int nl80211_pmsr_send_result(struct sk_buff *msg,
-				    struct cyw-cfg80211_pmsr_result *res)
+				    struct cyw_cfg80211_pmsr_result *res)
 {
 	struct nlattr *pmsr, *peers, *peer, *resp, *data, *typedata;
 
@@ -485,17 +485,17 @@ error:
 	return -ENOSPC;
 }
 
-void cyw-cfg80211_pmsr_report(struct wireless_dev *wdev,
-			  struct cyw-cfg80211_pmsr_request *req,
-			  struct cyw-cfg80211_pmsr_result *result,
+void cyw_cfg80211_pmsr_report(struct wireless_dev *wdev,
+			  struct cyw_cfg80211_pmsr_request *req,
+			  struct cyw_cfg80211_pmsr_result *result,
 			  gfp_t gfp)
 {
-	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+	struct cyw_cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
 	struct sk_buff *msg;
 	void *hdr;
 	int err;
 
-	trace_cyw-cfg80211_pmsr_report(wdev->wiphy, wdev, req->cookie,
+	trace_cyw_cfg80211_pmsr_report(wdev->wiphy, wdev, req->cookie,
 				   result->addr);
 
 	/*
@@ -532,12 +532,12 @@ void cyw-cfg80211_pmsr_report(struct wireless_dev *wdev,
 free:
 	nlmsg_free(msg);
 }
-EXPORT_SYMBOL_GPL(cyw-cfg80211_pmsr_report);
+EXPORT_SYMBOL_GPL(cyw_cfg80211_pmsr_report);
 
-static void cyw-cfg80211_pmsr_process_abort(struct wireless_dev *wdev)
+static void cyw_cfg80211_pmsr_process_abort(struct wireless_dev *wdev)
 {
-	struct cyw-cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-	struct cyw-cfg80211_pmsr_request *req, *tmp;
+	struct cyw_cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+	struct cyw_cfg80211_pmsr_request *req, *tmp;
 	LIST_HEAD(free_list);
 
 	lockdep_assert_held(&wdev->mtx);
@@ -557,19 +557,19 @@ static void cyw-cfg80211_pmsr_process_abort(struct wireless_dev *wdev)
 	}
 }
 
-void cyw-cfg80211_pmsr_free_wk(struct work_struct *work)
+void cyw_cfg80211_pmsr_free_wk(struct work_struct *work)
 {
 	struct wireless_dev *wdev = container_of(work, struct wireless_dev,
 						 pmsr_free_wk);
 
 	wdev_lock(wdev);
-	cyw-cfg80211_pmsr_process_abort(wdev);
+	cyw_cfg80211_pmsr_process_abort(wdev);
 	wdev_unlock(wdev);
 }
 
-void cyw-cfg80211_pmsr_wdev_down(struct wireless_dev *wdev)
+void cyw_cfg80211_pmsr_wdev_down(struct wireless_dev *wdev)
 {
-	struct cyw-cfg80211_pmsr_request *req;
+	struct cyw_cfg80211_pmsr_request *req;
 	bool found = false;
 
 	spin_lock_bh(&wdev->pmsr_lock);
@@ -580,14 +580,14 @@ void cyw-cfg80211_pmsr_wdev_down(struct wireless_dev *wdev)
 	spin_unlock_bh(&wdev->pmsr_lock);
 
 	if (found)
-		cyw-cfg80211_pmsr_process_abort(wdev);
+		cyw_cfg80211_pmsr_process_abort(wdev);
 
 	WARN_ON(!list_empty(&wdev->pmsr_list));
 }
 
-void cyw-cfg80211_release_pmsr(struct wireless_dev *wdev, u32 portid)
+void cyw_cfg80211_release_pmsr(struct wireless_dev *wdev, u32 portid)
 {
-	struct cyw-cfg80211_pmsr_request *req;
+	struct cyw_cfg80211_pmsr_request *req;
 
 	spin_lock_bh(&wdev->pmsr_lock);
 	list_for_each_entry(req, &wdev->pmsr_list, list) {

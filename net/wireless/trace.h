@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 #undef TRACE_SYSTEM
-#define TRACE_SYSTEM cyw-cfg80211
+#define TRACE_SYSTEM cyw_cfg80211
 
 #if !defined(__RDEV_OPS_TRACE) || defined(TRACE_HEADER_MULTI_READ)
 #define __RDEV_OPS_TRACE
@@ -9,7 +9,7 @@
 
 #include <linux/rtnetlink.h>
 #include <linux/etherdevice.h>
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 #include "core.h"
 
 #define MAC_ENTRY(entry_mac) __array(u8, entry_mac, ETH_ALEN)
@@ -215,7 +215,7 @@
  *************************************************************/
 
 TRACE_EVENT(rdev_suspend,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_wowlan *wow),
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_wowlan *wow),
 	TP_ARGS(wiphy, wow),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -267,7 +267,7 @@ TRACE_EVENT(rdev_return_int,
 );
 
 TRACE_EVENT(rdev_scan,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_scan_request *request),
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_scan_request *request),
 	TP_ARGS(wiphy, request),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -512,7 +512,7 @@ TRACE_EVENT(rdev_set_default_mgmt_key,
 
 TRACE_EVENT(rdev_start_ap,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_ap_settings *settings),
+		 struct cyw_cfg80211_ap_settings *settings),
 	TP_ARGS(wiphy, netdev, settings),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -554,7 +554,7 @@ TRACE_EVENT(rdev_start_ap,
 
 TRACE_EVENT(rdev_change_beacon,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_beacon_data *info),
+		 struct cyw_cfg80211_beacon_data *info),
 	TP_ARGS(wiphy, netdev, info),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1130,7 +1130,7 @@ TRACE_EVENT(rdev_libertas_set_mesh_channel,
 
 TRACE_EVENT(rdev_set_monitor_channel,
 	TP_PROTO(struct wiphy *wiphy,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1146,7 +1146,7 @@ TRACE_EVENT(rdev_set_monitor_channel,
 
 TRACE_EVENT(rdev_auth,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_auth_request *req),
+		 struct cyw_cfg80211_auth_request *req),
 	TP_ARGS(wiphy, netdev, req),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1170,7 +1170,7 @@ TRACE_EVENT(rdev_auth,
 
 TRACE_EVENT(rdev_assoc,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_assoc_request *req),
+		 struct cyw_cfg80211_assoc_request *req),
 	TP_ARGS(wiphy, netdev, req),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1200,7 +1200,7 @@ TRACE_EVENT(rdev_assoc,
 
 TRACE_EVENT(rdev_deauth,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_deauth_request *req),
+		 struct cyw_cfg80211_deauth_request *req),
 	TP_ARGS(wiphy, netdev, req),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1221,7 +1221,7 @@ TRACE_EVENT(rdev_deauth,
 
 TRACE_EVENT(rdev_disassoc,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_disassoc_request *req),
+		 struct cyw_cfg80211_disassoc_request *req),
 	TP_ARGS(wiphy, netdev, req),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1288,7 +1288,7 @@ TRACE_EVENT(rdev_set_power_mgmt,
 
 TRACE_EVENT(rdev_connect,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_connect_params *sme),
+		 struct cyw_cfg80211_connect_params *sme),
 	TP_ARGS(wiphy, netdev, sme),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1323,7 +1323,7 @@ TRACE_EVENT(rdev_connect,
 
 TRACE_EVENT(rdev_update_connect_params,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_connect_params *sme, u32 changed),
+		 struct cyw_cfg80211_connect_params *sme, u32 changed),
 	TP_ARGS(wiphy, netdev, sme, changed),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1427,7 +1427,7 @@ TRACE_EVENT(rdev_disconnect,
 
 TRACE_EVENT(rdev_join_ibss,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_ibss_params *params),
+		 struct cyw_cfg80211_ibss_params *params),
 	TP_ARGS(wiphy, netdev, params),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1549,7 +1549,7 @@ TRACE_EVENT(rdev_testmode_dump,
 
 TRACE_EVENT(rdev_set_bitrate_mask,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 const u8 *peer, const struct cyw-cfg80211_bitrate_mask *mask),
+		 const u8 *peer, const struct cyw_cfg80211_bitrate_mask *mask),
 	TP_ARGS(wiphy, netdev, peer, mask),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1795,7 +1795,7 @@ TRACE_EVENT(rdev_tdls_oper,
 
 DECLARE_EVENT_CLASS(rdev_pmksa,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_pmksa *pmksa),
+		 struct cyw_cfg80211_pmksa *pmksa),
 	TP_ARGS(wiphy, netdev, pmksa),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1831,13 +1831,13 @@ TRACE_EVENT(rdev_probe_client,
 
 DEFINE_EVENT(rdev_pmksa, rdev_set_pmksa,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_pmksa *pmksa),
+		 struct cyw_cfg80211_pmksa *pmksa),
 	TP_ARGS(wiphy, netdev, pmksa)
 );
 
 DEFINE_EVENT(rdev_pmksa, rdev_del_pmksa,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_pmksa *pmksa),
+		 struct cyw_cfg80211_pmksa *pmksa),
 	TP_ARGS(wiphy, netdev, pmksa)
 );
 
@@ -1898,7 +1898,7 @@ TRACE_EVENT(rdev_cancel_remain_on_channel,
 
 TRACE_EVENT(rdev_mgmt_tx,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
-		 struct cyw-cfg80211_mgmt_tx_params *params),
+		 struct cyw_cfg80211_mgmt_tx_params *params),
 	TP_ARGS(wiphy, wdev, params),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1977,7 +1977,7 @@ DEFINE_EVENT(wiphy_wdev_evt, rdev_get_channel,
 
 TRACE_EVENT(rdev_return_chandef,
 	TP_PROTO(struct wiphy *wiphy, int ret,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, ret, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -1989,7 +1989,7 @@ TRACE_EVENT(rdev_return_chandef,
 		if (ret == 0)
 			CHAN_DEF_ASSIGN(chandef);
 		else
-			CHAN_DEF_ASSIGN((struct cyw-cfg80211_chan_def *)NULL);
+			CHAN_DEF_ASSIGN((struct cyw_cfg80211_chan_def *)NULL);
 		__entry->ret = ret;
 	),
 	TP_printk(WIPHY_PR_FMT ", " CHAN_DEF_PR_FMT ", ret: %d",
@@ -2008,7 +2008,7 @@ DEFINE_EVENT(wiphy_wdev_evt, rdev_stop_p2p_device,
 
 TRACE_EVENT(rdev_start_nan,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
-		 struct cyw-cfg80211_nan_conf *conf),
+		 struct cyw_cfg80211_nan_conf *conf),
 	TP_ARGS(wiphy, wdev, conf),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2030,7 +2030,7 @@ TRACE_EVENT(rdev_start_nan,
 
 TRACE_EVENT(rdev_nan_change_conf,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
-		 struct cyw-cfg80211_nan_conf *conf, u32 changes),
+		 struct cyw_cfg80211_nan_conf *conf, u32 changes),
 	TP_ARGS(wiphy, wdev, conf, changes),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2059,7 +2059,7 @@ DEFINE_EVENT(wiphy_wdev_evt, rdev_stop_nan,
 
 TRACE_EVENT(rdev_add_nan_func,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
-		 const struct cyw-cfg80211_nan_func *func),
+		 const struct cyw_cfg80211_nan_func *func),
 	TP_ARGS(wiphy, wdev, func),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2098,7 +2098,7 @@ TRACE_EVENT(rdev_del_nan_func,
 
 TRACE_EVENT(rdev_set_mac_acl,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_acl_data *params),
+		 struct cyw_cfg80211_acl_data *params),
 	TP_ARGS(wiphy, netdev, params),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2116,7 +2116,7 @@ TRACE_EVENT(rdev_set_mac_acl,
 
 TRACE_EVENT(rdev_update_ft_ies,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_update_ft_ies_params *ftie),
+		 struct cyw_cfg80211_update_ft_ies_params *ftie),
 	TP_ARGS(wiphy, netdev, ftie),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2171,7 +2171,7 @@ TRACE_EVENT(rdev_crit_proto_stop,
 
 TRACE_EVENT(rdev_channel_switch,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_csa_settings *params),
+		 struct cyw_cfg80211_csa_settings *params),
 	TP_ARGS(wiphy, netdev, params),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2208,7 +2208,7 @@ TRACE_EVENT(rdev_channel_switch,
 
 TRACE_EVENT(rdev_set_qos_map,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_qos_map *qos_map),
+		 struct cyw_cfg80211_qos_map *qos_map),
 	TP_ARGS(wiphy, netdev, qos_map),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2226,7 +2226,7 @@ TRACE_EVENT(rdev_set_qos_map,
 
 TRACE_EVENT(rdev_set_ap_chanwidth,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, netdev, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2290,7 +2290,7 @@ TRACE_EVENT(rdev_del_tx_ts,
 TRACE_EVENT(rdev_tdls_channel_switch,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
 		 const u8 *addr, u8 oper_class,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, netdev, addr, oper_class, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2331,7 +2331,7 @@ TRACE_EVENT(rdev_tdls_cancel_channel_switch,
 
 TRACE_EVENT(rdev_set_pmk,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_pmk_conf *pmk_conf),
+		 struct cyw_cfg80211_pmk_conf *pmk_conf),
 
 	TP_ARGS(wiphy, netdev, pmk_conf),
 
@@ -2391,7 +2391,7 @@ TRACE_EVENT(rdev_del_pmk,
 
 TRACE_EVENT(rdev_external_auth,
 	    TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		     struct cyw-cfg80211_external_auth_params *params),
+		     struct cyw_cfg80211_external_auth_params *params),
 	    TP_ARGS(wiphy, netdev, params),
 	    TP_STRUCT__entry(WIPHY_ENTRY
 			     NETDEV_ENTRY
@@ -2414,7 +2414,7 @@ TRACE_EVENT(rdev_external_auth,
 
 TRACE_EVENT(rdev_start_radar_detection,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_chan_def *chandef,
+		 struct cyw_cfg80211_chan_def *chandef,
 		 u32 cac_time_ms),
 	TP_ARGS(wiphy, netdev, chandef, cac_time_ms),
 	TP_STRUCT__entry(
@@ -2460,7 +2460,7 @@ TRACE_EVENT(rdev_set_mcast_rate,
 );
 
 TRACE_EVENT(rdev_set_coalesce,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_coalesce *coalesce),
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_coalesce *coalesce),
 	TP_ARGS(wiphy, coalesce),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2505,7 +2505,7 @@ DEFINE_EVENT(wiphy_wdev_evt, rdev_get_txq_stats,
 
 TRACE_EVENT(rdev_get_ftm_responder_stats,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_ftm_responder_stats *ftm_stats),
+		 struct cyw_cfg80211_ftm_responder_stats *ftm_stats),
 
 	TP_ARGS(wiphy, netdev, ftm_stats),
 
@@ -2558,10 +2558,10 @@ DEFINE_EVENT(wiphy_wdev_cookie_evt, rdev_abort_pmsr,
 );
 
 /*************************************************************
- *	     cyw-cfg80211 exported functions traces		     *
+ *	     cyw_cfg80211 exported functions traces		     *
  *************************************************************/
 
-TRACE_EVENT(cyw-cfg80211_return_bool,
+TRACE_EVENT(cyw_cfg80211_return_bool,
 	TP_PROTO(bool ret),
 	TP_ARGS(ret),
 	TP_STRUCT__entry(
@@ -2573,7 +2573,7 @@ TRACE_EVENT(cyw-cfg80211_return_bool,
 	TP_printk("returned %s", BOOL_TO_STR(__entry->ret))
 );
 
-DECLARE_EVENT_CLASS(cyw-cfg80211_netdev_mac_evt,
+DECLARE_EVENT_CLASS(cyw_cfg80211_netdev_mac_evt,
 	TP_PROTO(struct net_device *netdev, const u8 *macaddr),
 	TP_ARGS(netdev, macaddr),
 	TP_STRUCT__entry(
@@ -2588,7 +2588,7 @@ DECLARE_EVENT_CLASS(cyw-cfg80211_netdev_mac_evt,
 		  NETDEV_PR_ARG, MAC_PR_ARG(macaddr))
 );
 
-DEFINE_EVENT(cyw-cfg80211_netdev_mac_evt, cyw-cfg80211_notify_new_peer_candidate,
+DEFINE_EVENT(cyw_cfg80211_netdev_mac_evt, cyw_cfg80211_notify_new_peer_candidate,
 	TP_PROTO(struct net_device *netdev, const u8 *macaddr),
 	TP_ARGS(netdev, macaddr)
 );
@@ -2605,13 +2605,13 @@ DECLARE_EVENT_CLASS(netdev_evt_only,
 	TP_printk(NETDEV_PR_FMT , NETDEV_PR_ARG)
 );
 
-DEFINE_EVENT(netdev_evt_only, cyw-cfg80211_send_rx_auth,
+DEFINE_EVENT(netdev_evt_only, cyw_cfg80211_send_rx_auth,
 	TP_PROTO(struct net_device *netdev),
 	TP_ARGS(netdev)
 );
 
-TRACE_EVENT(cyw-cfg80211_send_rx_assoc,
-	TP_PROTO(struct net_device *netdev, struct cyw-cfg80211_bss *bss),
+TRACE_EVENT(cyw_cfg80211_send_rx_assoc,
+	TP_PROTO(struct net_device *netdev, struct cyw_cfg80211_bss *bss),
 	TP_ARGS(netdev, bss),
 	TP_STRUCT__entry(
 		NETDEV_ENTRY
@@ -2643,17 +2643,17 @@ DECLARE_EVENT_CLASS(netdev_frame_event,
 		  le16_to_cpup((__le16 *)__get_dynamic_array(frame)))
 );
 
-DEFINE_EVENT(netdev_frame_event, cyw-cfg80211_rx_unprot_mlme_mgmt,
+DEFINE_EVENT(netdev_frame_event, cyw_cfg80211_rx_unprot_mlme_mgmt,
 	TP_PROTO(struct net_device *netdev, const u8 *buf, int len),
 	TP_ARGS(netdev, buf, len)
 );
 
-DEFINE_EVENT(netdev_frame_event, cyw-cfg80211_rx_mlme_mgmt,
+DEFINE_EVENT(netdev_frame_event, cyw_cfg80211_rx_mlme_mgmt,
 	TP_PROTO(struct net_device *netdev, const u8 *buf, int len),
 	TP_ARGS(netdev, buf, len)
 );
 
-TRACE_EVENT(cyw-cfg80211_tx_mlme_mgmt,
+TRACE_EVENT(cyw_cfg80211_tx_mlme_mgmt,
 	TP_PROTO(struct net_device *netdev, const u8 *buf, int len),
 	TP_ARGS(netdev, buf, len),
 	TP_STRUCT__entry(
@@ -2684,17 +2684,17 @@ DECLARE_EVENT_CLASS(netdev_mac_evt,
 		  NETDEV_PR_ARG, MAC_PR_ARG(mac))
 );
 
-DEFINE_EVENT(netdev_mac_evt, cyw-cfg80211_send_auth_timeout,
+DEFINE_EVENT(netdev_mac_evt, cyw_cfg80211_send_auth_timeout,
 	TP_PROTO(struct net_device *netdev, const u8 *mac),
 	TP_ARGS(netdev, mac)
 );
 
-DEFINE_EVENT(netdev_mac_evt, cyw-cfg80211_send_assoc_timeout,
+DEFINE_EVENT(netdev_mac_evt, cyw_cfg80211_send_assoc_timeout,
 	TP_PROTO(struct net_device *netdev, const u8 *mac),
 	TP_ARGS(netdev, mac)
 );
 
-TRACE_EVENT(cyw-cfg80211_michael_mic_failure,
+TRACE_EVENT(cyw_cfg80211_michael_mic_failure,
 	TP_PROTO(struct net_device *netdev, const u8 *addr,
 		 enum nl80211_key_type key_type, int key_id, const u8 *tsc),
 	TP_ARGS(netdev, addr, key_type, key_id, tsc),
@@ -2718,7 +2718,7 @@ TRACE_EVENT(cyw-cfg80211_michael_mic_failure,
 		  __entry->key_id, __entry->tsc)
 );
 
-TRACE_EVENT(cyw-cfg80211_ready_on_channel,
+TRACE_EVENT(cyw_cfg80211_ready_on_channel,
 	TP_PROTO(struct wireless_dev *wdev, u64 cookie,
 		 struct ieee80211_channel *chan,
 		 unsigned int duration),
@@ -2740,7 +2740,7 @@ TRACE_EVENT(cyw-cfg80211_ready_on_channel,
 		  __entry->duration)
 );
 
-TRACE_EVENT(cyw-cfg80211_ready_on_channel_expired,
+TRACE_EVENT(cyw_cfg80211_ready_on_channel_expired,
 	TP_PROTO(struct wireless_dev *wdev, u64 cookie,
 		 struct ieee80211_channel *chan),
 	TP_ARGS(wdev, cookie, chan),
@@ -2758,7 +2758,7 @@ TRACE_EVENT(cyw-cfg80211_ready_on_channel_expired,
 		  WDEV_PR_ARG, __entry->cookie, CHAN_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_tx_mgmt_expired,
+TRACE_EVENT(cyw_cfg80211_tx_mgmt_expired,
 	TP_PROTO(struct wireless_dev *wdev, u64 cookie,
 		 struct ieee80211_channel *chan),
 	TP_ARGS(wdev, cookie, chan),
@@ -2776,7 +2776,7 @@ TRACE_EVENT(cyw-cfg80211_tx_mgmt_expired,
 		  WDEV_PR_ARG, __entry->cookie, CHAN_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_new_sta,
+TRACE_EVENT(cyw_cfg80211_new_sta,
 	TP_PROTO(struct net_device *netdev, const u8 *mac_addr,
 		 struct station_info *sinfo),
 	TP_ARGS(netdev, mac_addr, sinfo),
@@ -2794,12 +2794,12 @@ TRACE_EVENT(cyw-cfg80211_new_sta,
 		  NETDEV_PR_ARG, MAC_PR_ARG(mac_addr))
 );
 
-DEFINE_EVENT(cyw-cfg80211_netdev_mac_evt, cyw-cfg80211_del_sta,
+DEFINE_EVENT(cyw_cfg80211_netdev_mac_evt, cyw_cfg80211_del_sta,
 	TP_PROTO(struct net_device *netdev, const u8 *macaddr),
 	TP_ARGS(netdev, macaddr)
 );
 
-TRACE_EVENT(cyw-cfg80211_rx_mgmt,
+TRACE_EVENT(cyw_cfg80211_rx_mgmt,
 	TP_PROTO(struct wireless_dev *wdev, int freq, int sig_dbm),
 	TP_ARGS(wdev, freq, sig_dbm),
 	TP_STRUCT__entry(
@@ -2816,7 +2816,7 @@ TRACE_EVENT(cyw-cfg80211_rx_mgmt,
 		  WDEV_PR_ARG, __entry->freq, __entry->sig_dbm)
 );
 
-TRACE_EVENT(cyw-cfg80211_mgmt_tx_status,
+TRACE_EVENT(cyw_cfg80211_mgmt_tx_status,
 	TP_PROTO(struct wireless_dev *wdev, u64 cookie, bool ack),
 	TP_ARGS(wdev, cookie, ack),
 	TP_STRUCT__entry(
@@ -2833,7 +2833,7 @@ TRACE_EVENT(cyw-cfg80211_mgmt_tx_status,
 		  WDEV_PR_ARG, __entry->cookie, BOOL_TO_STR(__entry->ack))
 );
 
-TRACE_EVENT(cyw-cfg80211_rx_control_port,
+TRACE_EVENT(cyw_cfg80211_rx_control_port,
 	TP_PROTO(struct net_device *netdev, struct sk_buff *skb,
 		 bool unencrypted),
 	TP_ARGS(netdev, skb, unencrypted),
@@ -2856,7 +2856,7 @@ TRACE_EVENT(cyw-cfg80211_rx_control_port,
 		  __entry->proto, BOOL_TO_STR(__entry->unencrypted))
 );
 
-TRACE_EVENT(cyw-cfg80211_cqm_rssi_notify,
+TRACE_EVENT(cyw_cfg80211_cqm_rssi_notify,
 	TP_PROTO(struct net_device *netdev,
 		 enum nl80211_cqm_rssi_threshold_event rssi_event,
 		 s32 rssi_level),
@@ -2875,8 +2875,8 @@ TRACE_EVENT(cyw-cfg80211_cqm_rssi_notify,
 		  NETDEV_PR_ARG, __entry->rssi_event, __entry->rssi_level)
 );
 
-TRACE_EVENT(cyw-cfg80211_reg_can_beacon,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_chan_def *chandef,
+TRACE_EVENT(cyw_cfg80211_reg_can_beacon,
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_chan_def *chandef,
 		 enum nl80211_iftype iftype, bool check_no_ir),
 	TP_ARGS(wiphy, chandef, iftype, check_no_ir),
 	TP_STRUCT__entry(
@@ -2896,8 +2896,8 @@ TRACE_EVENT(cyw-cfg80211_reg_can_beacon,
 		  BOOL_TO_STR(__entry->check_no_ir))
 );
 
-TRACE_EVENT(cyw-cfg80211_chandef_dfs_required,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_chan_def *chandef),
+TRACE_EVENT(cyw_cfg80211_chandef_dfs_required,
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2911,9 +2911,9 @@ TRACE_EVENT(cyw-cfg80211_chandef_dfs_required,
 		  WIPHY_PR_ARG, CHAN_DEF_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_ch_switch_notify,
+TRACE_EVENT(cyw_cfg80211_ch_switch_notify,
 	TP_PROTO(struct net_device *netdev,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(netdev, chandef),
 	TP_STRUCT__entry(
 		NETDEV_ENTRY
@@ -2927,9 +2927,9 @@ TRACE_EVENT(cyw-cfg80211_ch_switch_notify,
 		  NETDEV_PR_ARG, CHAN_DEF_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_ch_switch_started_notify,
+TRACE_EVENT(cyw_cfg80211_ch_switch_started_notify,
 	TP_PROTO(struct net_device *netdev,
-		 struct cyw-cfg80211_chan_def *chandef),
+		 struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(netdev, chandef),
 	TP_STRUCT__entry(
 		NETDEV_ENTRY
@@ -2943,8 +2943,8 @@ TRACE_EVENT(cyw-cfg80211_ch_switch_started_notify,
 		  NETDEV_PR_ARG, CHAN_DEF_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_radar_event,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_chan_def *chandef),
+TRACE_EVENT(cyw_cfg80211_radar_event,
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_chan_def *chandef),
 	TP_ARGS(wiphy, chandef),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -2958,7 +2958,7 @@ TRACE_EVENT(cyw-cfg80211_radar_event,
 		  WIPHY_PR_ARG, CHAN_DEF_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_cac_event,
+TRACE_EVENT(cyw_cfg80211_cac_event,
 	TP_PROTO(struct net_device *netdev, enum nl80211_radar_event evt),
 	TP_ARGS(netdev, evt),
 	TP_STRUCT__entry(
@@ -2973,7 +2973,7 @@ TRACE_EVENT(cyw-cfg80211_cac_event,
 		  NETDEV_PR_ARG, __entry->evt)
 );
 
-DECLARE_EVENT_CLASS(cyw-cfg80211_rx_evt,
+DECLARE_EVENT_CLASS(cyw_cfg80211_rx_evt,
 	TP_PROTO(struct net_device *netdev, const u8 *addr),
 	TP_ARGS(netdev, addr),
 	TP_STRUCT__entry(
@@ -2987,17 +2987,17 @@ DECLARE_EVENT_CLASS(cyw-cfg80211_rx_evt,
 	TP_printk(NETDEV_PR_FMT ", " MAC_PR_FMT, NETDEV_PR_ARG, MAC_PR_ARG(addr))
 );
 
-DEFINE_EVENT(cyw-cfg80211_rx_evt, cyw-cfg80211_rx_spurious_frame,
+DEFINE_EVENT(cyw_cfg80211_rx_evt, cyw_cfg80211_rx_spurious_frame,
 	TP_PROTO(struct net_device *netdev, const u8 *addr),
 	TP_ARGS(netdev, addr)
 );
 
-DEFINE_EVENT(cyw-cfg80211_rx_evt, cyw-cfg80211_rx_unexpected_4addr_frame,
+DEFINE_EVENT(cyw_cfg80211_rx_evt, cyw_cfg80211_rx_unexpected_4addr_frame,
 	TP_PROTO(struct net_device *netdev, const u8 *addr),
 	TP_ARGS(netdev, addr)
 );
 
-TRACE_EVENT(cyw-cfg80211_ibss_joined,
+TRACE_EVENT(cyw_cfg80211_ibss_joined,
 	TP_PROTO(struct net_device *netdev, const u8 *bssid,
 		 struct ieee80211_channel *channel),
 	TP_ARGS(netdev, bssid, channel),
@@ -3015,7 +3015,7 @@ TRACE_EVENT(cyw-cfg80211_ibss_joined,
 		  NETDEV_PR_ARG, MAC_PR_ARG(bssid), CHAN_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_probe_status,
+TRACE_EVENT(cyw_cfg80211_probe_status,
 	TP_PROTO(struct net_device *netdev, const u8 *addr, u64 cookie,
 		 bool acked),
 	TP_ARGS(netdev, addr, cookie, acked),
@@ -3036,7 +3036,7 @@ TRACE_EVENT(cyw-cfg80211_probe_status,
 		  BOOL_TO_STR(__entry->acked))
 );
 
-TRACE_EVENT(cyw-cfg80211_cqm_pktloss_notify,
+TRACE_EVENT(cyw_cfg80211_cqm_pktloss_notify,
 	TP_PROTO(struct net_device *netdev, const u8 *peer, u32 num_packets),
 	TP_ARGS(netdev, peer, num_packets),
 	TP_STRUCT__entry(
@@ -3053,12 +3053,12 @@ TRACE_EVENT(cyw-cfg80211_cqm_pktloss_notify,
 		  NETDEV_PR_ARG, MAC_PR_ARG(peer), __entry->num_packets)
 );
 
-DEFINE_EVENT(cyw-cfg80211_netdev_mac_evt, cyw-cfg80211_gtk_rekey_notify,
+DEFINE_EVENT(cyw_cfg80211_netdev_mac_evt, cyw_cfg80211_gtk_rekey_notify,
 	TP_PROTO(struct net_device *netdev, const u8 *macaddr),
 	TP_ARGS(netdev, macaddr)
 );
 
-TRACE_EVENT(cyw-cfg80211_pmksa_candidate_notify,
+TRACE_EVENT(cyw_cfg80211_pmksa_candidate_notify,
 	TP_PROTO(struct net_device *netdev, int index, const u8 *bssid,
 		 bool preauth),
 	TP_ARGS(netdev, index, bssid, preauth),
@@ -3079,7 +3079,7 @@ TRACE_EVENT(cyw-cfg80211_pmksa_candidate_notify,
 		  BOOL_TO_STR(__entry->preauth))
 );
 
-TRACE_EVENT(cyw-cfg80211_report_obss_beacon,
+TRACE_EVENT(cyw_cfg80211_report_obss_beacon,
 	TP_PROTO(struct wiphy *wiphy, const u8 *frame, size_t len,
 		 int freq, int sig_dbm),
 	TP_ARGS(wiphy, frame, len, freq, sig_dbm),
@@ -3097,7 +3097,7 @@ TRACE_EVENT(cyw-cfg80211_report_obss_beacon,
 		  WIPHY_PR_ARG, __entry->freq, __entry->sig_dbm)
 );
 
-TRACE_EVENT(cyw-cfg80211_tdls_oper_request,
+TRACE_EVENT(cyw_cfg80211_tdls_oper_request,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev, const u8 *peer,
 		 enum nl80211_tdls_operation oper, u16 reason_code),
 	TP_ARGS(wiphy, netdev, peer, oper, reason_code),
@@ -3120,9 +3120,9 @@ TRACE_EVENT(cyw-cfg80211_tdls_oper_request,
 		  __entry->reason_code)
 	);
 
-TRACE_EVENT(cyw-cfg80211_scan_done,
-	TP_PROTO(struct cyw-cfg80211_scan_request *request,
-		 struct cyw-cfg80211_scan_info *info),
+TRACE_EVENT(cyw_cfg80211_scan_done,
+	TP_PROTO(struct cyw_cfg80211_scan_request *request,
+		 struct cyw_cfg80211_scan_info *info),
 	TP_ARGS(request, info),
 	TP_STRUCT__entry(
 		__field(u32, n_channels)
@@ -3174,17 +3174,17 @@ DECLARE_EVENT_CLASS(wiphy_id_evt,
 	TP_printk(WIPHY_PR_FMT ", id: %llu", WIPHY_PR_ARG, __entry->id)
 );
 
-DEFINE_EVENT(wiphy_id_evt, cyw-cfg80211_sched_scan_stopped,
+DEFINE_EVENT(wiphy_id_evt, cyw_cfg80211_sched_scan_stopped,
 	TP_PROTO(struct wiphy *wiphy, u64 id),
 	TP_ARGS(wiphy, id)
 );
 
-DEFINE_EVENT(wiphy_id_evt, cyw-cfg80211_sched_scan_results,
+DEFINE_EVENT(wiphy_id_evt, cyw_cfg80211_sched_scan_results,
 	TP_PROTO(struct wiphy *wiphy, u64 id),
 	TP_ARGS(wiphy, id)
 );
 
-TRACE_EVENT(cyw-cfg80211_get_bss,
+TRACE_EVENT(cyw_cfg80211_get_bss,
 	TP_PROTO(struct wiphy *wiphy, struct ieee80211_channel *channel,
 		 const u8 *bssid, const u8 *ssid, size_t ssid_len,
 		 enum ieee80211_bss_type bss_type,
@@ -3213,8 +3213,8 @@ TRACE_EVENT(cyw-cfg80211_get_bss,
 		  __entry->privacy)
 );
 
-TRACE_EVENT(cyw-cfg80211_inform_bss_frame,
-	TP_PROTO(struct wiphy *wiphy, struct cyw-cfg80211_inform_bss *data,
+TRACE_EVENT(cyw_cfg80211_inform_bss_frame,
+	TP_PROTO(struct wiphy *wiphy, struct cyw_cfg80211_inform_bss *data,
 		 struct ieee80211_mgmt *mgmt, size_t len),
 	TP_ARGS(wiphy, data, mgmt, len),
 	TP_STRUCT__entry(
@@ -3246,8 +3246,8 @@ TRACE_EVENT(cyw-cfg80211_inform_bss_frame,
 		  MAC_PR_ARG(parent_bssid))
 );
 
-DECLARE_EVENT_CLASS(cyw-cfg80211_bss_evt,
-	TP_PROTO(struct cyw-cfg80211_bss *pub),
+DECLARE_EVENT_CLASS(cyw_cfg80211_bss_evt,
+	TP_PROTO(struct cyw_cfg80211_bss *pub),
 	TP_ARGS(pub),
 	TP_STRUCT__entry(
 		MAC_ENTRY(bssid)
@@ -3260,12 +3260,12 @@ DECLARE_EVENT_CLASS(cyw-cfg80211_bss_evt,
 	TP_printk(MAC_PR_FMT ", " CHAN_PR_FMT, MAC_PR_ARG(bssid), CHAN_PR_ARG)
 );
 
-DEFINE_EVENT(cyw-cfg80211_bss_evt, cyw-cfg80211_return_bss,
-	TP_PROTO(struct cyw-cfg80211_bss *pub),
+DEFINE_EVENT(cyw_cfg80211_bss_evt, cyw_cfg80211_return_bss,
+	TP_PROTO(struct cyw_cfg80211_bss *pub),
 	TP_ARGS(pub)
 );
 
-TRACE_EVENT(cyw-cfg80211_return_uint,
+TRACE_EVENT(cyw_cfg80211_return_uint,
 	TP_PROTO(unsigned int ret),
 	TP_ARGS(ret),
 	TP_STRUCT__entry(
@@ -3277,7 +3277,7 @@ TRACE_EVENT(cyw-cfg80211_return_uint,
 	TP_printk("ret: %d", __entry->ret)
 );
 
-TRACE_EVENT(cyw-cfg80211_return_u32,
+TRACE_EVENT(cyw_cfg80211_return_u32,
 	TP_PROTO(u32 ret),
 	TP_ARGS(ret),
 	TP_STRUCT__entry(
@@ -3289,9 +3289,9 @@ TRACE_EVENT(cyw-cfg80211_return_u32,
 	TP_printk("ret: %u", __entry->ret)
 );
 
-TRACE_EVENT(cyw-cfg80211_report_wowlan_wakeup,
+TRACE_EVENT(cyw_cfg80211_report_wowlan_wakeup,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
-		 struct cyw-cfg80211_wowlan_wakeup *wakeup),
+		 struct cyw_cfg80211_wowlan_wakeup *wakeup),
 	TP_ARGS(wiphy, wdev, wakeup),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -3327,9 +3327,9 @@ TRACE_EVENT(cyw-cfg80211_report_wowlan_wakeup,
 	TP_printk(WIPHY_PR_FMT ", " WDEV_PR_FMT, WIPHY_PR_ARG, WDEV_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_ft_event,
+TRACE_EVENT(cyw_cfg80211_ft_event,
 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		 struct cyw-cfg80211_ft_event_params *ft_event),
+		 struct cyw_cfg80211_ft_event_params *ft_event),
 	TP_ARGS(wiphy, netdev, ft_event),
 	TP_STRUCT__entry(
 		WIPHY_ENTRY
@@ -3353,7 +3353,7 @@ TRACE_EVENT(cyw-cfg80211_ft_event,
 		  WIPHY_PR_ARG, NETDEV_PR_ARG, MAC_PR_ARG(target_ap))
 );
 
-TRACE_EVENT(cyw-cfg80211_stop_iface,
+TRACE_EVENT(cyw_cfg80211_stop_iface,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev),
 	TP_ARGS(wiphy, wdev),
 	TP_STRUCT__entry(
@@ -3368,7 +3368,7 @@ TRACE_EVENT(cyw-cfg80211_stop_iface,
 		  WIPHY_PR_ARG, WDEV_PR_ARG)
 );
 
-TRACE_EVENT(cyw-cfg80211_pmsr_report,
+TRACE_EVENT(cyw_cfg80211_pmsr_report,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev,
 		 u64 cookie, const u8 *addr),
 	TP_ARGS(wiphy, wdev, cookie, addr),
@@ -3390,7 +3390,7 @@ TRACE_EVENT(cyw-cfg80211_pmsr_report,
 		  MAC_PR_ARG(addr))
 );
 
-TRACE_EVENT(cyw-cfg80211_pmsr_complete,
+TRACE_EVENT(cyw_cfg80211_pmsr_complete,
 	TP_PROTO(struct wiphy *wiphy, struct wireless_dev *wdev, u64 cookie),
 	TP_ARGS(wiphy, wdev, cookie),
 	TP_STRUCT__entry(
@@ -3410,7 +3410,7 @@ TRACE_EVENT(cyw-cfg80211_pmsr_complete,
 
 TRACE_EVENT(rdev_update_owe_info,
 	    TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		     struct cyw-cfg80211_update_owe_info *owe_info),
+		     struct cyw_cfg80211_update_owe_info *owe_info),
 	    TP_ARGS(wiphy, netdev, owe_info),
 	    TP_STRUCT__entry(WIPHY_ENTRY
 			     NETDEV_ENTRY
@@ -3428,9 +3428,9 @@ TRACE_EVENT(rdev_update_owe_info,
 		  __entry->status)
 );
 
-TRACE_EVENT(cyw-cfg80211_update_owe_info_event,
+TRACE_EVENT(cyw_cfg80211_update_owe_info_event,
 	    TP_PROTO(struct wiphy *wiphy, struct net_device *netdev,
-		     struct cyw-cfg80211_update_owe_info *owe_info),
+		     struct cyw_cfg80211_update_owe_info *owe_info),
 	    TP_ARGS(wiphy, netdev, owe_info),
 	    TP_STRUCT__entry(WIPHY_ENTRY
 			     NETDEV_ENTRY

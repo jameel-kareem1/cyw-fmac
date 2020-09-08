@@ -5,9 +5,9 @@
 #ifndef WL_CFGP2P_H_
 #define WL_CFGP2P_H_
 
-#include <net/cyw-cfg80211.h>
+#include <net/cyw_cfg80211.h>
 
-struct brcmf_cyw-cfg80211_info;
+struct brcmf_cyw_cfg80211_info;
 
 /**
  * enum p2p_bss_type - different type of BSS configurations.
@@ -33,7 +33,7 @@ enum p2p_bss_type {
  * @private_data: TBD
  */
 struct p2p_bss {
-	struct brcmf_cyw-cfg80211_vif *vif;
+	struct brcmf_cyw_cfg80211_vif *vif;
 	void *private_data;
 };
 
@@ -97,14 +97,14 @@ struct afx_hdl {
 /**
  * struct brcmf_p2p_info - p2p specific driver information.
  *
- * @cfg: driver private data for cyw-cfg80211 interface.
+ * @cfg: driver private data for cyw_cfg80211 interface.
  * @status: status of P2P (see enum brcmf_p2p_status).
  * @dev_addr: P2P device address.
  * @int_addr: P2P interface address.
  * @bss_idx: informate for P2P bss types.
  * @listen_timer: timer for @WL_P2P_DISC_ST_LISTEN discover state.
  * @listen_channel: channel for @WL_P2P_DISC_ST_LISTEN discover state.
- * @remain_on_channel: contains copy of struct used by cyw-cfg80211.
+ * @remain_on_channel: contains copy of struct used by cyw_cfg80211.
  * @remain_on_channel_cookie: cookie counter for remain on channel cmd
  * @next_af_subtype: expected action frame subtype.
  * @send_af_done: indication that action frame tx is complete.
@@ -118,7 +118,7 @@ struct afx_hdl {
  * @wait_for_offchan_complete: wait for off-channel tx completion event.
  */
 struct brcmf_p2p_info {
-	struct brcmf_cyw-cfg80211_info *cfg;
+	struct brcmf_cyw_cfg80211_info *cfg;
 	unsigned long status;
 	u8 dev_addr[ETH_ALEN];
 	u8 conn_int_addr[ETH_ALEN];
@@ -141,21 +141,21 @@ struct brcmf_p2p_info {
 	struct wireless_dev *remin_on_channel_wdev;
 };
 
-s32 brcmf_p2p_attach(struct brcmf_cyw-cfg80211_info *cfg, bool p2pdev_forced);
+s32 brcmf_p2p_attach(struct brcmf_cyw_cfg80211_info *cfg, bool p2pdev_forced);
 void brcmf_p2p_detach(struct brcmf_p2p_info *p2p);
 struct wireless_dev *brcmf_p2p_add_vif(struct wiphy *wiphy, const char *name,
 				       unsigned char name_assign_type,
 				       enum nl80211_iftype type,
 				       struct vif_params *params);
 int brcmf_p2p_del_vif(struct wiphy *wiphy, struct wireless_dev *wdev);
-int brcmf_p2p_ifchange(struct brcmf_cyw-cfg80211_info *cfg,
+int brcmf_p2p_ifchange(struct brcmf_cyw_cfg80211_info *cfg,
 		       enum brcmf_fil_p2p_if_types if_type);
 void brcmf_p2p_ifp_removed(struct brcmf_if *ifp, bool rtnl_locked);
 int brcmf_p2p_start_device(struct wiphy *wiphy, struct wireless_dev *wdev);
 void brcmf_p2p_stop_device(struct wiphy *wiphy, struct wireless_dev *wdev);
 int brcmf_p2p_scan_prep(struct wiphy *wiphy,
-			struct cyw-cfg80211_scan_request *request,
-			struct brcmf_cyw-cfg80211_vif *vif);
+			struct cyw_cfg80211_scan_request *request,
+			struct brcmf_cyw_cfg80211_vif *vif);
 int brcmf_p2p_remain_on_channel(struct wiphy *wiphy, struct wireless_dev *wdev,
 				struct ieee80211_channel *channel,
 				unsigned int duration, u64 *cookie);
@@ -169,11 +169,11 @@ int brcmf_p2p_notify_action_frame_rx(struct brcmf_if *ifp,
 int brcmf_p2p_notify_action_tx_complete(struct brcmf_if *ifp,
 					const struct brcmf_event_msg *e,
 					void *data);
-bool brcmf_p2p_send_action_frame(struct brcmf_cyw-cfg80211_info *cfg,
+bool brcmf_p2p_send_action_frame(struct brcmf_cyw_cfg80211_info *cfg,
 				 struct net_device *ndev,
 				 struct brcmf_fil_af_params_le *af_params,
-				 struct brcmf_cyw-cfg80211_vif *vif);
-bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cyw-cfg80211_info *cfg,
+				 struct brcmf_cyw_cfg80211_vif *vif);
+bool brcmf_p2p_scan_finding_common_channel(struct brcmf_cyw_cfg80211_info *cfg,
 					   struct brcmf_bss_info_le *bi);
 s32 brcmf_p2p_notify_rx_mgmt_p2p_probereq(struct brcmf_if *ifp,
 					  const struct brcmf_event_msg *e,

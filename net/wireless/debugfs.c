@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * cyw-cfg80211 debugfs
+ * cyw_cfg80211 debugfs
  *
  * Copyright 2009	Luis R. Rodriguez <lrodriguez@atheros.com>
  * Copyright 2007	Johannes Berg <johannes@sipsolutions.net>
@@ -102,7 +102,7 @@ static const struct file_operations ht40allow_map_ops = {
 #define DEBUGFS_ADD(name)						\
 	debugfs_create_file(#name, 0444, phyd, &rdev->wiphy, &name## _ops)
 
-void cyw-cfg80211_debugfs_rdev_add(struct cyw-cfg80211_registered_device *rdev)
+void cyw_cfg80211_debugfs_rdev_add(struct cyw_cfg80211_registered_device *rdev)
 {
 	struct dentry *phyd = rdev->wiphy.debugfsdir;
 

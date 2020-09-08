@@ -26,14 +26,14 @@
 /**
  * DOC: Introduction
  *
- * cyw-cfg80211 is the configuration API for 802.11 devices in Linux. It bridges
+ * cyw_cfg80211 is the configuration API for 802.11 devices in Linux. It bridges
  * userspace and drivers, and offers some utility functionality associated
- * with 802.11. cyw-cfg80211 must, directly or indirectly via mac80211, be used
+ * with 802.11. cyw_cfg80211 must, directly or indirectly via mac80211, be used
  * by all modern wireless drivers in Linux, so that they offer a consistent
- * API through nl80211. For backward compatibility, cyw-cfg80211 also offers
+ * API through nl80211. For backward compatibility, cyw_cfg80211 also offers
  * wireless extensions to userspace, but hides them from drivers completely.
  *
- * Additionally, cyw-cfg80211 contains code to help enforce regulatory spectrum
+ * Additionally, cyw_cfg80211 contains code to help enforce regulatory spectrum
  * use restrictions.
  */
 
@@ -41,8 +41,8 @@
 /**
  * DOC: Device registration
  *
- * In order for a driver to use cyw-cfg80211, it must register the hardware device
- * with cyw-cfg80211. This happens through a number of hardware capability structs
+ * In order for a driver to use cyw_cfg80211, it must register the hardware device
+ * with cyw_cfg80211. This happens through a number of hardware capability structs
  * described below.
  *
  * The fundamental structure for each device is the 'wiphy', of which each
@@ -124,7 +124,7 @@ enum ieee80211_channel_flags {
  * struct ieee80211_channel - channel definition
  *
  * This structure describes a single channel for use
- * with cyw-cfg80211.
+ * with cyw_cfg80211.
  *
  * @center_freq: center frequency in MHz
  * @hw_value: hardware-specific value for the channel
@@ -578,7 +578,7 @@ struct key_params {
 };
 
 /**
- * struct cyw-cfg80211_chan_def - channel definition
+ * struct cyw_cfg80211_chan_def - channel definition
  * @chan: the (control) channel
  * @width: channel width
  * @center_freq1: center frequency of first segment
@@ -589,7 +589,7 @@ struct key_params {
  *	chan will define the primary channel and all other
  *	parameters are ignored.
  */
-struct cyw-cfg80211_chan_def {
+struct cyw_cfg80211_chan_def {
 	struct ieee80211_channel *chan;
 	enum nl80211_chan_width width;
 	u32 center_freq1;
@@ -598,14 +598,14 @@ struct cyw-cfg80211_chan_def {
 };
 
 /**
- * cyw-cfg80211_get_chandef_type - return old channel type from chandef
+ * cyw_cfg80211_get_chandef_type - return old channel type from chandef
  * @chandef: the channel definition
  *
  * Return: The old channel type (NOHT, HT20, HT40+/-) from a given
  * chandef, which must have a bandwidth allowing this conversion.
  */
 static inline enum nl80211_channel_type
-cyw-cfg80211_get_chandef_type(const struct cyw-cfg80211_chan_def *chandef)
+cyw_cfg80211_get_chandef_type(const struct cyw_cfg80211_chan_def *chandef)
 {
 	switch (chandef->width) {
 	case NL80211_CHAN_WIDTH_20_NOHT:
@@ -623,19 +623,19 @@ cyw-cfg80211_get_chandef_type(const struct cyw-cfg80211_chan_def *chandef)
 }
 
 /**
- * cyw-cfg80211_chandef_create - create channel definition using channel type
+ * cyw_cfg80211_chandef_create - create channel definition using channel type
  * @chandef: the channel definition struct to fill
  * @channel: the control channel
  * @chantype: the channel type
  *
  * Given a channel type, create a channel definition.
  */
-void cyw-cfg80211_chandef_create(struct cyw-cfg80211_chan_def *chandef,
+void cyw_cfg80211_chandef_create(struct cyw_cfg80211_chan_def *chandef,
 			     struct ieee80211_channel *channel,
 			     enum nl80211_channel_type chantype);
 
 /**
- * cyw-cfg80211_chandef_identical - check if two channel definitions are identical
+ * cyw_cfg80211_chandef_identical - check if two channel definitions are identical
  * @chandef1: first channel definition
  * @chandef2: second channel definition
  *
@@ -643,8 +643,8 @@ void cyw-cfg80211_chandef_create(struct cyw-cfg80211_chan_def *chandef,
  * identical, %false otherwise.
  */
 static inline bool
-cyw-cfg80211_chandef_identical(const struct cyw-cfg80211_chan_def *chandef1,
-			   const struct cyw-cfg80211_chan_def *chandef2)
+cyw_cfg80211_chandef_identical(const struct cyw_cfg80211_chan_def *chandef1,
+			   const struct cyw_cfg80211_chan_def *chandef2)
 {
 	return (chandef1->chan == chandef2->chan &&
 		chandef1->width == chandef2->width &&
@@ -653,58 +653,58 @@ cyw-cfg80211_chandef_identical(const struct cyw-cfg80211_chan_def *chandef1,
 }
 
 /**
- * cyw-cfg80211_chandef_is_edmg - check if chandef represents an EDMG channel
+ * cyw_cfg80211_chandef_is_edmg - check if chandef represents an EDMG channel
  *
  * @chandef: the channel definition
  *
  * Return: %true if EDMG defined, %false otherwise.
  */
 static inline bool
-cyw-cfg80211_chandef_is_edmg(const struct cyw-cfg80211_chan_def *chandef)
+cyw_cfg80211_chandef_is_edmg(const struct cyw_cfg80211_chan_def *chandef)
 {
 	return chandef->edmg.channels || chandef->edmg.bw_config;
 }
 
 /**
- * cyw-cfg80211_chandef_compatible - check if two channel definitions are compatible
+ * cyw_cfg80211_chandef_compatible - check if two channel definitions are compatible
  * @chandef1: first channel definition
  * @chandef2: second channel definition
  *
  * Return: %NULL if the given channel definitions are incompatible,
  * chandef1 or chandef2 otherwise.
  */
-const struct cyw-cfg80211_chan_def *
-cyw-cfg80211_chandef_compatible(const struct cyw-cfg80211_chan_def *chandef1,
-			    const struct cyw-cfg80211_chan_def *chandef2);
+const struct cyw_cfg80211_chan_def *
+cyw_cfg80211_chandef_compatible(const struct cyw_cfg80211_chan_def *chandef1,
+			    const struct cyw_cfg80211_chan_def *chandef2);
 
 /**
- * cyw-cfg80211_chandef_valid - check if a channel definition is valid
+ * cyw_cfg80211_chandef_valid - check if a channel definition is valid
  * @chandef: the channel definition to check
  * Return: %true if the channel definition is valid. %false otherwise.
  */
-bool cyw-cfg80211_chandef_valid(const struct cyw-cfg80211_chan_def *chandef);
+bool cyw_cfg80211_chandef_valid(const struct cyw_cfg80211_chan_def *chandef);
 
 /**
- * cyw-cfg80211_chandef_usable - check if secondary channels can be used
+ * cyw_cfg80211_chandef_usable - check if secondary channels can be used
  * @wiphy: the wiphy to validate against
  * @chandef: the channel definition to check
  * @prohibited_flags: the regulatory channel flags that must not be set
  * Return: %true if secondary channels are usable. %false otherwise.
  */
-bool cyw-cfg80211_chandef_usable(struct wiphy *wiphy,
-			     const struct cyw-cfg80211_chan_def *chandef,
+bool cyw_cfg80211_chandef_usable(struct wiphy *wiphy,
+			     const struct cyw_cfg80211_chan_def *chandef,
 			     u32 prohibited_flags);
 
 /**
- * cyw-cfg80211_chandef_dfs_required - checks if radar detection is required
+ * cyw_cfg80211_chandef_dfs_required - checks if radar detection is required
  * @wiphy: the wiphy to validate against
  * @chandef: the channel definition to check
  * @iftype: the interface type as specified in &enum nl80211_iftype
  * Returns:
  *	1 if radar detection is required, 0 if it is not, < 0 on error
  */
-int cyw-cfg80211_chandef_dfs_required(struct wiphy *wiphy,
-				  const struct cyw-cfg80211_chan_def *chandef,
+int cyw_cfg80211_chandef_dfs_required(struct wiphy *wiphy,
+				  const struct cyw_cfg80211_chan_def *chandef,
 				  enum nl80211_iftype iftype);
 
 /**
@@ -718,7 +718,7 @@ int cyw-cfg80211_chandef_dfs_required(struct wiphy *wiphy,
  * Returns: rate flags which apply for this channel
  */
 static inline enum ieee80211_rate_flags
-ieee80211_chandef_rate_flags(struct cyw-cfg80211_chan_def *chandef)
+ieee80211_chandef_rate_flags(struct cyw_cfg80211_chan_def *chandef)
 {
 	switch (chandef->width) {
 	case NL80211_CHAN_WIDTH_5:
@@ -743,7 +743,7 @@ ieee80211_chandef_rate_flags(struct cyw-cfg80211_chan_def *chandef)
  * Returns: maximum allowed transmission power in dBm for the chandef
  */
 static inline int
-ieee80211_chandef_max_power(struct cyw-cfg80211_chan_def *chandef)
+ieee80211_chandef_max_power(struct cyw_cfg80211_chan_def *chandef)
 {
 	switch (chandef->width) {
 	case NL80211_CHAN_WIDTH_5:
@@ -823,7 +823,7 @@ struct survey_info {
 #define CFG80211_MAX_WEP_KEYS	4
 
 /**
- * struct cyw-cfg80211_crypto_settings - Crypto settings
+ * struct cyw_cfg80211_crypto_settings - Crypto settings
  * @wpa_versions: indicates which, if any, WPA versions are enabled
  *	(from enum nl80211_wpa_versions)
  * @cipher_group: group key cipher suite (or 0 if unset)
@@ -849,7 +849,7 @@ struct survey_info {
  *	offload)
  * @sae_pwd_len: length of SAE password (for devices supporting SAE offload)
  */
-struct cyw-cfg80211_crypto_settings {
+struct cyw_cfg80211_crypto_settings {
 	u32 wpa_versions;
 	u32 cipher_group;
 	int n_ciphers_pairwise;
@@ -868,7 +868,7 @@ struct cyw-cfg80211_crypto_settings {
 };
 
 /**
- * struct cyw-cfg80211_beacon_data - beacon data
+ * struct cyw_cfg80211_beacon_data - beacon data
  * @head: head portion of beacon (before TIM IE)
  *	or %NULL if not changed
  * @tail: tail portion of beacon (after TIM IE)
@@ -894,7 +894,7 @@ struct cyw-cfg80211_crypto_settings {
  * @lci_len: LCI data length
  * @civicloc_len: Civic location data length
  */
-struct cyw-cfg80211_beacon_data {
+struct cyw_cfg80211_beacon_data {
 	const u8 *head, *tail;
 	const u8 *beacon_ies;
 	const u8 *proberesp_ies;
@@ -918,14 +918,14 @@ struct mac_address {
 };
 
 /**
- * struct cyw-cfg80211_acl_data - Access control list data
+ * struct cyw_cfg80211_acl_data - Access control list data
  *
  * @acl_policy: ACL policy to be applied on the station's
  *	entry specified by mac_addr
  * @n_acl_entries: Number of MAC address entries passed
  * @mac_addrs: List of MAC addresses of stations to be used for ACL
  */
-struct cyw-cfg80211_acl_data {
+struct cyw_cfg80211_acl_data {
 	enum nl80211_acl_policy acl_policy;
 	int n_acl_entries;
 
@@ -934,9 +934,9 @@ struct cyw-cfg80211_acl_data {
 };
 
 /*
- * cyw-cfg80211_bitrate_mask - masks for bitrate control
+ * cyw_cfg80211_bitrate_mask - masks for bitrate control
  */
-struct cyw-cfg80211_bitrate_mask {
+struct cyw_cfg80211_bitrate_mask {
 	struct {
 		u32 legacy;
 		u8 ht_mcs[IEEE80211_HT_MCS_MASK_LEN];
@@ -946,18 +946,18 @@ struct cyw-cfg80211_bitrate_mask {
 };
 
 /**
- * enum cyw-cfg80211_ap_settings_flags - AP settings flags
+ * enum cyw_cfg80211_ap_settings_flags - AP settings flags
  *
- * Used by cyw-cfg80211_ap_settings
+ * Used by cyw_cfg80211_ap_settings
  *
  * @AP_SETTINGS_EXTERNAL_AUTH_SUPPORT: AP supports external authentication
  */
-enum cyw-cfg80211_ap_settings_flags {
+enum cyw_cfg80211_ap_settings_flags {
 	AP_SETTINGS_EXTERNAL_AUTH_SUPPORT = BIT(0),
 };
 
 /**
- * struct cyw-cfg80211_ap_settings - AP configuration
+ * struct cyw_cfg80211_ap_settings - AP configuration
  *
  * Used to configure an AP interface.
  *
@@ -987,28 +987,28 @@ enum cyw-cfg80211_ap_settings_flags {
  * @ht_required: stations must support HT
  * @vht_required: stations must support VHT
  * @twt_responder: Enable Target Wait Time
- * @flags: flags, as defined in enum cyw-cfg80211_ap_settings_flags
+ * @flags: flags, as defined in enum cyw_cfg80211_ap_settings_flags
  * @he_obss_pd: OBSS Packet Detection settings
  */
-struct cyw-cfg80211_ap_settings {
-	struct cyw-cfg80211_chan_def chandef;
+struct cyw_cfg80211_ap_settings {
+	struct cyw_cfg80211_chan_def chandef;
 
-	struct cyw-cfg80211_beacon_data beacon;
+	struct cyw_cfg80211_beacon_data beacon;
 
 	int beacon_interval, dtim_period;
 	const u8 *ssid;
 	size_t ssid_len;
 	enum nl80211_hidden_ssid hidden_ssid;
-	struct cyw-cfg80211_crypto_settings crypto;
+	struct cyw_cfg80211_crypto_settings crypto;
 	bool privacy;
 	enum nl80211_auth_type auth_type;
 	enum nl80211_smps_mode smps_mode;
 	int inactivity_timeout;
 	u8 p2p_ctwindow;
 	bool p2p_opp_ps;
-	const struct cyw-cfg80211_acl_data *acl;
+	const struct cyw_cfg80211_acl_data *acl;
 	bool pbss;
-	struct cyw-cfg80211_bitrate_mask beacon_rate;
+	struct cyw_cfg80211_bitrate_mask beacon_rate;
 
 	const struct ieee80211_ht_cap *ht_cap;
 	const struct ieee80211_vht_cap *vht_cap;
@@ -1020,7 +1020,7 @@ struct cyw-cfg80211_ap_settings {
 };
 
 /**
- * struct cyw-cfg80211_csa_settings - channel switch settings
+ * struct cyw_cfg80211_csa_settings - channel switch settings
  *
  * Used for channel switch
  *
@@ -1035,14 +1035,14 @@ struct cyw-cfg80211_ap_settings {
  * @block_tx: whether transmissions should be blocked while changing
  * @count: number of beacons until switch
  */
-struct cyw-cfg80211_csa_settings {
-	struct cyw-cfg80211_chan_def chandef;
-	struct cyw-cfg80211_beacon_data beacon_csa;
+struct cyw_cfg80211_csa_settings {
+	struct cyw_cfg80211_chan_def chandef;
+	struct cyw_cfg80211_beacon_data beacon_csa;
 	const u16 *counter_offsets_beacon;
 	const u16 *counter_offsets_presp;
 	unsigned int n_counter_offsets_beacon;
 	unsigned int n_counter_offsets_presp;
-	struct cyw-cfg80211_beacon_data beacon_after;
+	struct cyw_cfg80211_beacon_data beacon_after;
 	bool radar_required;
 	bool block_tx;
 	u8 count;
@@ -1202,7 +1202,7 @@ struct station_del_parameters {
 };
 
 /**
- * enum cyw-cfg80211_station_type - the type of station being modified
+ * enum cyw_cfg80211_station_type - the type of station being modified
  * @CFG80211_STA_AP_CLIENT: client of an AP interface
  * @CFG80211_STA_AP_CLIENT_UNASSOC: client of an AP interface that is still
  *	unassociated (update properties for this type of client is permitted)
@@ -1219,7 +1219,7 @@ struct station_del_parameters {
  * @CFG80211_STA_MESH_PEER_KERNEL: peer on mesh interface (kernel managed)
  * @CFG80211_STA_MESH_PEER_USER: peer on mesh interface (user managed)
  */
-enum cyw-cfg80211_station_type {
+enum cyw_cfg80211_station_type {
 	CFG80211_STA_AP_CLIENT,
 	CFG80211_STA_AP_CLIENT_UNASSOC,
 	CFG80211_STA_AP_MLME_CLIENT,
@@ -1232,7 +1232,7 @@ enum cyw-cfg80211_station_type {
 };
 
 /**
- * cyw-cfg80211_check_station_change - validate parameter changes
+ * cyw_cfg80211_check_station_change - validate parameter changes
  * @wiphy: the wiphy this operates on
  * @params: the new parameters for a station
  * @statype: the type of station being modified
@@ -1243,9 +1243,9 @@ enum cyw-cfg80211_station_type {
  * not will return an error code. Note that it may modify the parameters for
  * backward compatibility reasons, so don't use them before calling this.
  */
-int cyw-cfg80211_check_station_change(struct wiphy *wiphy,
+int cyw_cfg80211_check_station_change(struct wiphy *wiphy,
 				  struct station_parameters *params,
-				  enum cyw-cfg80211_station_type statype);
+				  enum cyw_cfg80211_station_type statype);
 
 /**
  * enum station_info_rate_flags - bitrate info flags
@@ -1352,7 +1352,7 @@ struct sta_bss_parameters {
 };
 
 /**
- * struct cyw-cfg80211_txq_stats - TXQ statistics for this TID
+ * struct cyw_cfg80211_txq_stats - TXQ statistics for this TID
  * @filled: bitmap of flags using the bits of &enum nl80211_txq_stats to
  *	indicate the relevant values in this struct are filled
  * @backlog_bytes: total number of bytes currently backlogged
@@ -1367,7 +1367,7 @@ struct sta_bss_parameters {
  * @tx_packets: total number of packets dequeued
  * @max_flows: maximum number of flows supported
  */
-struct cyw-cfg80211_txq_stats {
+struct cyw_cfg80211_txq_stats {
 	u32 filled;
 	u32 backlog_bytes;
 	u32 backlog_packets;
@@ -1383,7 +1383,7 @@ struct cyw-cfg80211_txq_stats {
 };
 
 /**
- * struct cyw-cfg80211_tid_stats - per-TID statistics
+ * struct cyw_cfg80211_tid_stats - per-TID statistics
  * @filled: bitmap of flags using the bits of &enum nl80211_tid_stats to
  *	indicate the relevant values in this struct are filled
  * @rx_msdu: number of received MSDUs
@@ -1393,13 +1393,13 @@ struct cyw-cfg80211_txq_stats {
  * @tx_msdu_failed: number of failed transmitted MSDUs
  * @txq_stats: TXQ statistics
  */
-struct cyw-cfg80211_tid_stats {
+struct cyw_cfg80211_tid_stats {
 	u32 filled;
 	u64 rx_msdu;
 	u64 tx_msdu;
 	u64 tx_msdu_retries;
 	u64 tx_msdu_failed;
-	struct cyw-cfg80211_txq_stats txq_stats;
+	struct cyw_cfg80211_txq_stats txq_stats;
 };
 
 #define IEEE80211_MAX_CHAINS	4
@@ -1441,7 +1441,7 @@ struct cyw-cfg80211_tid_stats {
  * @assoc_req_ies: IEs from (Re)Association Request.
  *	This is used only when in AP mode with drivers that do not use
  *	user space MLME/SME implementation. The information is provided for
- *	the cyw-cfg80211_new_sta() calls to notify user space of the IEs.
+ *	the cyw_cfg80211_new_sta() calls to notify user space of the IEs.
  * @assoc_req_ies_len: Length of assoc_req_ies buffer in octets.
  * @sta_flags: station flags mask & values
  * @beacon_loss_count: Number of times beacon loss event has triggered.
@@ -1458,7 +1458,7 @@ struct cyw-cfg80211_tid_stats {
  * @rx_duration: aggregate PPDU duration(usecs) for all the frames from a peer
  * @tx_duration: aggregate PPDU duration(usecs) for all the frames to a peer
  * @airtime_weight: current airtime scheduling weight
- * @pertid: per-TID statistics, see &struct cyw-cfg80211_tid_stats, using the last
+ * @pertid: per-TID statistics, see &struct cyw_cfg80211_tid_stats, using the last
  *	(IEEE80211_NUM_TIDS) index for MSDUs not encapsulated in QoS-MPDUs.
  *	Note that this doesn't use the @filled bit, but is used if non-NULL.
  * @ack_signal: signal strength (in dBm) of the last ACK frame.
@@ -1516,7 +1516,7 @@ struct station_info {
 	u8 rx_beacon_signal_avg;
 	u8 connected_to_gate;
 
-	struct cyw-cfg80211_tid_stats *pertid;
+	struct cyw_cfg80211_tid_stats *pertid;
 	s8 ack_signal;
 	s8 avg_ack_signal;
 
@@ -1530,7 +1530,7 @@ struct station_info {
 
 #if IS_ENABLED(CPTCFG_CFG80211)
 /**
- * cyw-cfg80211_get_station - retrieve information about a given station
+ * cyw_cfg80211_get_station - retrieve information about a given station
  * @dev: the device where the station is supposed to be connected to
  * @mac_addr: the mac address of the station of interest
  * @sinfo: pointer to the structure to fill with the information
@@ -1539,10 +1539,10 @@ struct station_info {
  * otherwise returns a negative error code and the content of sinfo has to be
  * considered undefined.
  */
-int cyw-cfg80211_get_station(struct net_device *dev, const u8 *mac_addr,
+int cyw_cfg80211_get_station(struct net_device *dev, const u8 *mac_addr,
 			 struct station_info *sinfo);
 #else
-static inline int cyw-cfg80211_get_station(struct net_device *dev,
+static inline int cyw_cfg80211_get_station(struct net_device *dev,
 				       const u8 *mac_addr,
 				       struct station_info *sinfo)
 {
@@ -1802,7 +1802,7 @@ struct mesh_config {
  * These parameters are fixed when the mesh is created.
  */
 struct mesh_setup {
-	struct cyw-cfg80211_chan_def chandef;
+	struct cyw_cfg80211_chan_def chandef;
 	const u8 *mesh_id;
 	u8 mesh_id_len;
 	u8 sync_method;
@@ -1818,7 +1818,7 @@ struct mesh_setup {
 	u16 beacon_interval;
 	int mcast_rate[NUM_NL80211_BANDS];
 	u32 basic_rates;
-	struct cyw-cfg80211_bitrate_mask beacon_rate;
+	struct cyw_cfg80211_bitrate_mask beacon_rate;
 	bool userspace_handles_dfs;
 	bool control_port_over_nl80211;
 };
@@ -1830,7 +1830,7 @@ struct mesh_setup {
  * These parameters are fixed when connecting to the network
  */
 struct ocb_setup {
-	struct cyw-cfg80211_chan_def chandef;
+	struct cyw_cfg80211_chan_def chandef;
 };
 
 /**
@@ -1854,7 +1854,7 @@ struct ieee80211_txq_params {
 /**
  * DOC: Scanning and BSS list handling
  *
- * The scanning process itself is fairly simple, but cyw-cfg80211 offers quite
+ * The scanning process itself is fairly simple, but cyw_cfg80211 offers quite
  * a bit of helper functionality. To start a scan, the scan operation will
  * be invoked with a scan definition. This scan definition contains the
  * channels to scan, and the SSIDs to send probe requests for (including the
@@ -1864,28 +1864,28 @@ struct ieee80211_txq_params {
  * well-formed, and will not exceed the maximum length the driver advertised
  * in the wiphy structure.
  *
- * When scanning finds a BSS, cyw-cfg80211 needs to be notified of that, because
+ * When scanning finds a BSS, cyw_cfg80211 needs to be notified of that, because
  * it is responsible for maintaining the BSS list; the driver should not
  * maintain a list itself. For this notification, various functions exist.
  *
  * Since drivers do not maintain a BSS list, there are also a number of
  * functions to search for a BSS and obtain information about it from the
- * BSS structure cyw-cfg80211 maintains. The BSS list is also made available
+ * BSS structure cyw_cfg80211 maintains. The BSS list is also made available
  * to userspace.
  */
 
 /**
- * struct cyw-cfg80211_ssid - SSID description
+ * struct cyw_cfg80211_ssid - SSID description
  * @ssid: the SSID
  * @ssid_len: length of the ssid
  */
-struct cyw-cfg80211_ssid {
+struct cyw_cfg80211_ssid {
 	u8 ssid[IEEE80211_MAX_SSID_LEN];
 	u8 ssid_len;
 };
 
 /**
- * struct cyw-cfg80211_scan_info - information about completed scan
+ * struct cyw_cfg80211_scan_info - information about completed scan
  * @scan_start_tsf: scan start time in terms of the TSF of the BSS that the
  *	wireless device that requested the scan is connected to. If this
  *	information is not available, this field is left zero.
@@ -1893,14 +1893,14 @@ struct cyw-cfg80211_ssid {
  * @aborted: set to true if the scan was aborted for any reason,
  *	userspace will be notified of that
  */
-struct cyw-cfg80211_scan_info {
+struct cyw_cfg80211_scan_info {
 	u64 scan_start_tsf;
 	u8 tsf_bssid[ETH_ALEN] __aligned(2);
 	bool aborted;
 };
 
 /**
- * struct cyw-cfg80211_scan_request - scan request description
+ * struct cyw_cfg80211_scan_request - scan request description
  *
  * @ssids: SSIDs to scan for (active scan only)
  * @n_ssids: number of SSIDs
@@ -1928,8 +1928,8 @@ struct cyw-cfg80211_scan_info {
  *	be taken from the @mac_addr
  * @bssid: BSSID to scan for (most commonly, the wildcard BSSID)
  */
-struct cyw-cfg80211_scan_request {
-	struct cyw-cfg80211_ssid *ssids;
+struct cyw_cfg80211_scan_request {
+	struct cyw_cfg80211_ssid *ssids;
 	int n_ssids;
 	u32 n_channels;
 	enum nl80211_bss_scan_width scan_width;
@@ -1950,7 +1950,7 @@ struct cyw-cfg80211_scan_request {
 	/* internal */
 	struct wiphy *wiphy;
 	unsigned long scan_start;
-	struct cyw-cfg80211_scan_info info;
+	struct cyw_cfg80211_scan_info info;
 	bool notified;
 	bool no_cck;
 
@@ -1970,7 +1970,7 @@ static inline void get_random_mask_addr(u8 *buf, const u8 *addr, const u8 *mask)
 }
 
 /**
- * struct cyw-cfg80211_match_set - sets of attributes to match
+ * struct cyw_cfg80211_match_set - sets of attributes to match
  *
  * @ssid: SSID to be matched; may be zero-length in case of BSSID match
  *	or no match (RSSI only)
@@ -1985,15 +1985,15 @@ static inline void get_random_mask_addr(u8 *buf, const u8 *addr, const u8 *mask)
  *	If not specified for any band, it will be assigned with rssi_thold of
  *	corresponding matchset.
  */
-struct cyw-cfg80211_match_set {
-	struct cyw-cfg80211_ssid ssid;
+struct cyw_cfg80211_match_set {
+	struct cyw_cfg80211_ssid ssid;
 	u8 bssid[ETH_ALEN];
 	s32 rssi_thold;
 	s32 per_band_rssi_thold[NUM_NL80211_BANDS];
 };
 
 /**
- * struct cyw-cfg80211_sched_scan_plan - scan plan for scheduled scan
+ * struct cyw_cfg80211_sched_scan_plan - scan plan for scheduled scan
  *
  * @interval: interval between scheduled scan iterations. In seconds.
  * @iterations: number of scan iterations in this scan plan. Zero means
@@ -2001,24 +2001,24 @@ struct cyw-cfg80211_match_set {
  *	The last scan plan will always have this parameter set to zero,
  *	all other scan plans will have a finite number of iterations.
  */
-struct cyw-cfg80211_sched_scan_plan {
+struct cyw_cfg80211_sched_scan_plan {
 	u32 interval;
 	u32 iterations;
 };
 
 /**
- * struct cyw-cfg80211_bss_select_adjust - BSS selection with RSSI adjustment.
+ * struct cyw_cfg80211_bss_select_adjust - BSS selection with RSSI adjustment.
  *
  * @band: band of BSS which should match for RSSI level adjustment.
  * @delta: value of RSSI level adjustment.
  */
-struct cyw-cfg80211_bss_select_adjust {
+struct cyw_cfg80211_bss_select_adjust {
 	enum nl80211_band band;
 	s8 delta;
 };
 
 /**
- * struct cyw-cfg80211_sched_scan_request - scheduled scan request description
+ * struct cyw_cfg80211_sched_scan_request - scheduled scan request description
  *
  * @reqid: identifies this request.
  * @ssids: SSIDs to scan for (passed in the probe_reqs in active scans)
@@ -2067,20 +2067,20 @@ struct cyw-cfg80211_bss_select_adjust {
  *	belong to the specified band will be penalized by delta dB in relative
  *	comparisions.
  */
-struct cyw-cfg80211_sched_scan_request {
+struct cyw_cfg80211_sched_scan_request {
 	u64 reqid;
-	struct cyw-cfg80211_ssid *ssids;
+	struct cyw_cfg80211_ssid *ssids;
 	int n_ssids;
 	u32 n_channels;
 	enum nl80211_bss_scan_width scan_width;
 	const u8 *ie;
 	size_t ie_len;
 	u32 flags;
-	struct cyw-cfg80211_match_set *match_sets;
+	struct cyw_cfg80211_match_set *match_sets;
 	int n_match_sets;
 	s32 min_rssi_thold;
 	u32 delay;
-	struct cyw-cfg80211_sched_scan_plan *scan_plans;
+	struct cyw_cfg80211_sched_scan_plan *scan_plans;
 	int n_scan_plans;
 
 	u8 mac_addr[ETH_ALEN] __aligned(2);
@@ -2088,7 +2088,7 @@ struct cyw-cfg80211_sched_scan_request {
 
 	bool relative_rssi_set;
 	s8 relative_rssi;
-	struct cyw-cfg80211_bss_select_adjust rssi_adjust;
+	struct cyw_cfg80211_bss_select_adjust rssi_adjust;
 
 	/* internal */
 	struct wiphy *wiphy;
@@ -2105,20 +2105,20 @@ struct cyw-cfg80211_sched_scan_request {
 };
 
 /**
- * enum cyw-cfg80211_signal_type - signal type
+ * enum cyw_cfg80211_signal_type - signal type
  *
  * @CFG80211_SIGNAL_TYPE_NONE: no signal strength information available
  * @CFG80211_SIGNAL_TYPE_MBM: signal strength in mBm (100*dBm)
  * @CFG80211_SIGNAL_TYPE_UNSPEC: signal strength, increasing from 0 through 100
  */
-enum cyw-cfg80211_signal_type {
+enum cyw_cfg80211_signal_type {
 	CFG80211_SIGNAL_TYPE_NONE,
 	CFG80211_SIGNAL_TYPE_MBM,
 	CFG80211_SIGNAL_TYPE_UNSPEC,
 };
 
 /**
- * struct cyw-cfg80211_inform_bss - BSS inform data
+ * struct cyw_cfg80211_inform_bss - BSS inform data
  * @chan: channel the frame was received on
  * @scan_width: scan width that was used
  * @signal: signal strength value, according to the wiphy's
@@ -2137,7 +2137,7 @@ enum cyw-cfg80211_signal_type {
  * @chains: bitmask for filled values in @chain_signal.
  * @chain_signal: per-chain signal strength of last received BSS in dBm.
  */
-struct cyw-cfg80211_inform_bss {
+struct cyw_cfg80211_inform_bss {
 	struct ieee80211_channel *chan;
 	enum nl80211_bss_scan_width scan_width;
 	s32 signal;
@@ -2149,14 +2149,14 @@ struct cyw-cfg80211_inform_bss {
 };
 
 /**
- * struct cyw-cfg80211_bss_ies - BSS entry IE data
+ * struct cyw_cfg80211_bss_ies - BSS entry IE data
  * @tsf: TSF contained in the frame that carried these IEs
  * @rcu_head: internal use, for freeing
  * @len: length of the IEs
  * @from_beacon: these IEs are known to come from a beacon
  * @data: IE data
  */
-struct cyw-cfg80211_bss_ies {
+struct cyw_cfg80211_bss_ies {
 	u64 tsf;
 	struct rcu_head rcu_head;
 	int len;
@@ -2165,7 +2165,7 @@ struct cyw-cfg80211_bss_ies {
 };
 
 /**
- * struct cyw-cfg80211_bss - BSS description
+ * struct cyw_cfg80211_bss - BSS description
  *
  * This structure describes a BSS (which may also be a mesh network)
  * for use in scan results and similar.
@@ -2199,16 +2199,16 @@ struct cyw-cfg80211_bss_ies {
  * @max_bssid_indicator: max number of members in the BSS set
  * @priv: private area for driver use, has at least wiphy->bss_priv_size bytes
  */
-struct cyw-cfg80211_bss {
+struct cyw_cfg80211_bss {
 	struct ieee80211_channel *channel;
 	enum nl80211_bss_scan_width scan_width;
 
-	const struct cyw-cfg80211_bss_ies __rcu *ies;
-	const struct cyw-cfg80211_bss_ies __rcu *beacon_ies;
-	const struct cyw-cfg80211_bss_ies __rcu *proberesp_ies;
+	const struct cyw_cfg80211_bss_ies __rcu *ies;
+	const struct cyw_cfg80211_bss_ies __rcu *beacon_ies;
+	const struct cyw_cfg80211_bss_ies __rcu *proberesp_ies;
 
-	struct cyw-cfg80211_bss *hidden_beacon_bss;
-	struct cyw-cfg80211_bss *transmitted_bss;
+	struct cyw_cfg80211_bss *hidden_beacon_bss;
+	struct cyw_cfg80211_bss *transmitted_bss;
 	struct list_head nontrans_list;
 
 	s32 signal;
@@ -2235,7 +2235,7 @@ struct cyw-cfg80211_bss {
  * rcu_read_lock() must be held when calling this function.
  * Return: %NULL if not found.
  */
-const struct element *ieee80211_bss_get_elem(struct cyw-cfg80211_bss *bss, u8 id);
+const struct element *ieee80211_bss_get_elem(struct cyw_cfg80211_bss *bss, u8 id);
 
 /**
  * ieee80211_bss_get_ie - find IE with given ID
@@ -2246,14 +2246,14 @@ const struct element *ieee80211_bss_get_elem(struct cyw-cfg80211_bss *bss, u8 id
  * rcu_read_lock() must be held when calling this function.
  * Return: %NULL if not found.
  */
-static inline const u8 *ieee80211_bss_get_ie(struct cyw-cfg80211_bss *bss, u8 id)
+static inline const u8 *ieee80211_bss_get_ie(struct cyw_cfg80211_bss *bss, u8 id)
 {
 	return (void *)ieee80211_bss_get_elem(bss, id);
 }
 
 
 /**
- * struct cyw-cfg80211_auth_request - Authentication request data
+ * struct cyw_cfg80211_auth_request - Authentication request data
  *
  * This structure provides information needed to complete IEEE 802.11
  * authentication.
@@ -2272,8 +2272,8 @@ static inline const u8 *ieee80211_bss_get_ie(struct cyw-cfg80211_bss *bss, u8 id
  *	transaction sequence number field.
  * @auth_data_len: Length of auth_data buffer in octets
  */
-struct cyw-cfg80211_auth_request {
-	struct cyw-cfg80211_bss *bss;
+struct cyw_cfg80211_auth_request {
+	struct cyw_cfg80211_bss *bss;
 	const u8 *ie;
 	size_t ie_len;
 	enum nl80211_auth_type auth_type;
@@ -2284,17 +2284,17 @@ struct cyw-cfg80211_auth_request {
 };
 
 /**
- * enum cyw-cfg80211_assoc_req_flags - Over-ride default behaviour in association.
+ * enum cyw_cfg80211_assoc_req_flags - Over-ride default behaviour in association.
  *
  * @ASSOC_REQ_DISABLE_HT:  Disable HT (802.11n)
  * @ASSOC_REQ_DISABLE_VHT:  Disable VHT
  * @ASSOC_REQ_USE_RRM: Declare RRM capability in this association
  * @CONNECT_REQ_EXTERNAL_AUTH_SUPPORT: User space indicates external
  *	authentication capability. Drivers can offload authentication to
- *	userspace if this flag is set. Only applicable for cyw-cfg80211_connect()
+ *	userspace if this flag is set. Only applicable for cyw_cfg80211_connect()
  *	request (connect callback).
  */
-enum cyw-cfg80211_assoc_req_flags {
+enum cyw_cfg80211_assoc_req_flags {
 	ASSOC_REQ_DISABLE_HT			= BIT(0),
 	ASSOC_REQ_DISABLE_VHT			= BIT(1),
 	ASSOC_REQ_USE_RRM			= BIT(2),
@@ -2302,13 +2302,13 @@ enum cyw-cfg80211_assoc_req_flags {
 };
 
 /**
- * struct cyw-cfg80211_assoc_request - (Re)Association request data
+ * struct cyw_cfg80211_assoc_request - (Re)Association request data
  *
  * This structure provides information needed to complete IEEE 802.11
  * (re)association.
  * @bss: The BSS to associate with. If the call is successful the driver is
- *	given a reference that it must give back to cyw-cfg80211_send_rx_assoc()
- *	or to cyw-cfg80211_assoc_timeout(). To ensure proper refcounting, new
+ *	given a reference that it must give back to cyw_cfg80211_send_rx_assoc()
+ *	or to cyw_cfg80211_assoc_timeout(). To ensure proper refcounting, new
  *	association requests while already associating must be rejected.
  * @ie: Extra IEs to add to (Re)Association Request frame or %NULL
  * @ie_len: Length of ie buffer in octets
@@ -2320,7 +2320,7 @@ enum cyw-cfg80211_assoc_req_flags {
  *	the BSSID of the current association, i.e., to the value that is
  *	included in the Current AP address field of the Reassociation Request
  *	frame.
- * @flags:  See &enum cyw-cfg80211_assoc_req_flags
+ * @flags:  See &enum cyw_cfg80211_assoc_req_flags
  * @ht_capa:  HT Capabilities over-rides.  Values set in ht_capa_mask
  *	will be used in ht_capa.  Un-supported values will be ignored.
  * @ht_capa_mask:  The bits of ht_capa which are to be used.
@@ -2333,11 +2333,11 @@ enum cyw-cfg80211_assoc_req_flags {
  *	Request/Response frame or %NULL if FILS is not used. This field starts
  *	with 16 octets of STA Nonce followed by 16 octets of AP Nonce.
  */
-struct cyw-cfg80211_assoc_request {
-	struct cyw-cfg80211_bss *bss;
+struct cyw_cfg80211_assoc_request {
+	struct cyw_cfg80211_bss *bss;
 	const u8 *ie, *prev_bssid;
 	size_t ie_len;
-	struct cyw-cfg80211_crypto_settings crypto;
+	struct cyw_cfg80211_crypto_settings crypto;
 	bool use_mfp;
 	u32 flags;
 	struct ieee80211_ht_cap ht_capa;
@@ -2349,7 +2349,7 @@ struct cyw-cfg80211_assoc_request {
 };
 
 /**
- * struct cyw-cfg80211_deauth_request - Deauthentication request data
+ * struct cyw_cfg80211_deauth_request - Deauthentication request data
  *
  * This structure provides information needed to complete IEEE 802.11
  * deauthentication.
@@ -2361,7 +2361,7 @@ struct cyw-cfg80211_assoc_request {
  * @local_state_change: if set, change local state only and
  *	do not set a deauth frame
  */
-struct cyw-cfg80211_deauth_request {
+struct cyw_cfg80211_deauth_request {
 	const u8 *bssid;
 	const u8 *ie;
 	size_t ie_len;
@@ -2370,7 +2370,7 @@ struct cyw-cfg80211_deauth_request {
 };
 
 /**
- * struct cyw-cfg80211_disassoc_request - Disassociation request data
+ * struct cyw_cfg80211_disassoc_request - Disassociation request data
  *
  * This structure provides information needed to complete IEEE 802.11
  * disassociation.
@@ -2382,8 +2382,8 @@ struct cyw-cfg80211_deauth_request {
  * @local_state_change: This is a request for a local state only, i.e., no
  *	Disassociation frame is to be transmitted.
  */
-struct cyw-cfg80211_disassoc_request {
-	struct cyw-cfg80211_bss *bss;
+struct cyw_cfg80211_disassoc_request {
+	struct cyw_cfg80211_bss *bss;
 	const u8 *ie;
 	size_t ie_len;
 	u16 reason_code;
@@ -2391,7 +2391,7 @@ struct cyw-cfg80211_disassoc_request {
 };
 
 /**
- * struct cyw-cfg80211_ibss_params - IBSS parameters
+ * struct cyw_cfg80211_ibss_params - IBSS parameters
  *
  * This structure defines the IBSS parameters for the join_ibss()
  * method.
@@ -2426,10 +2426,10 @@ struct cyw-cfg80211_disassoc_request {
  * 	CFG80211_MAX_WEP_KEYS WEP keys
  * @wep_tx_key: key index (0..3) of the default TX static WEP key
  */
-struct cyw-cfg80211_ibss_params {
+struct cyw_cfg80211_ibss_params {
 	const u8 *ssid;
 	const u8 *bssid;
-	struct cyw-cfg80211_chan_def chandef;
+	struct cyw_cfg80211_chan_def chandef;
 	const u8 *ie;
 	u8 ssid_len, ie_len;
 	u16 beacon_interval;
@@ -2447,23 +2447,23 @@ struct cyw-cfg80211_ibss_params {
 };
 
 /**
- * struct cyw-cfg80211_bss_selection - connection parameters for BSS selection.
+ * struct cyw_cfg80211_bss_selection - connection parameters for BSS selection.
  *
  * @behaviour: requested BSS selection behaviour.
  * @param: parameters for requestion behaviour.
  * @band_pref: preferred band for %NL80211_BSS_SELECT_ATTR_BAND_PREF.
  * @adjust: parameters for %NL80211_BSS_SELECT_ATTR_RSSI_ADJUST.
  */
-struct cyw-cfg80211_bss_selection {
+struct cyw_cfg80211_bss_selection {
 	enum nl80211_bss_select_attr behaviour;
 	union {
 		enum nl80211_band band_pref;
-		struct cyw-cfg80211_bss_select_adjust adjust;
+		struct cyw_cfg80211_bss_select_adjust adjust;
 	} param;
 };
 
 /**
- * struct cyw-cfg80211_connect_params - Connection parameters
+ * struct cyw_cfg80211_connect_params - Connection parameters
  *
  * This structure provides information needed to complete IEEE 802.11
  * authentication and association.
@@ -2489,7 +2489,7 @@ struct cyw-cfg80211_bss_selection {
  * @key_len: length of WEP key for shared key authentication
  * @key_idx: index of WEP key for shared key authentication
  * @key: WEP key for shared key authentication
- * @flags:  See &enum cyw-cfg80211_assoc_req_flags
+ * @flags:  See &enum cyw_cfg80211_assoc_req_flags
  * @bg_scan_period:  Background scan period in seconds
  *	or -1 to indicate that default value is to be used.
  * @ht_capa:  HT Capabilities over-rides.  Values set in ht_capa_mask
@@ -2525,7 +2525,7 @@ struct cyw-cfg80211_bss_selection {
  *	This may specify multiple channels and bonding options for the driver
  *	to choose from, based on BSS configuration.
  */
-struct cyw-cfg80211_connect_params {
+struct cyw_cfg80211_connect_params {
 	struct ieee80211_channel *channel;
 	struct ieee80211_channel *channel_hint;
 	const u8 *bssid;
@@ -2537,7 +2537,7 @@ struct cyw-cfg80211_connect_params {
 	size_t ie_len;
 	bool privacy;
 	enum nl80211_mfp mfp;
-	struct cyw-cfg80211_crypto_settings crypto;
+	struct cyw_cfg80211_crypto_settings crypto;
 	const u8 *key;
 	u8 key_len, key_idx;
 	u32 flags;
@@ -2547,7 +2547,7 @@ struct cyw-cfg80211_connect_params {
 	struct ieee80211_vht_cap vht_capa;
 	struct ieee80211_vht_cap vht_capa_mask;
 	bool pbss;
-	struct cyw-cfg80211_bss_selection bss_select;
+	struct cyw_cfg80211_bss_selection bss_select;
 	const u8 *prev_bssid;
 	const u8 *fils_erp_username;
 	size_t fils_erp_username_len;
@@ -2561,7 +2561,7 @@ struct cyw-cfg80211_connect_params {
 };
 
 /**
- * enum cyw-cfg80211_connect_params_changed - Connection parameters being updated
+ * enum cyw_cfg80211_connect_params_changed - Connection parameters being updated
  *
  * This enum provides information of all connect parameters that
  * have to be updated as part of update_connect_params() call.
@@ -2571,7 +2571,7 @@ struct cyw-cfg80211_connect_params {
  *	username, erp sequence number and rrk) are updated
  * @UPDATE_AUTH_TYPE: Indicates that authentication type is updated
  */
-enum cyw-cfg80211_connect_params_changed {
+enum cyw_cfg80211_connect_params_changed {
 	UPDATE_ASSOC_IES		= BIT(0),
 	UPDATE_FILS_ERP_INFO		= BIT(1),
 	UPDATE_AUTH_TYPE		= BIT(2),
@@ -2604,7 +2604,7 @@ enum wiphy_params_flags {
 #define IEEE80211_DEFAULT_AIRTIME_WEIGHT	256
 
 /**
- * struct cyw-cfg80211_pmksa - PMK Security Association
+ * struct cyw_cfg80211_pmksa - PMK Security Association
  *
  * This structure is passed to the set/del_pmksa() method for PMKSA
  * caching.
@@ -2622,7 +2622,7 @@ enum wiphy_params_flags {
  *	scope of PMKSA. This is valid only if @ssid_len is non-zero (may be
  *	%NULL).
  */
-struct cyw-cfg80211_pmksa {
+struct cyw_cfg80211_pmksa {
 	const u8 *bssid;
 	const u8 *pmkid;
 	const u8 *pmk;
@@ -2633,7 +2633,7 @@ struct cyw-cfg80211_pmksa {
 };
 
 /**
- * struct cyw-cfg80211_pkt_pattern - packet pattern
+ * struct cyw_cfg80211_pkt_pattern - packet pattern
  * @mask: bitmask where to match pattern and where to ignore bytes,
  *	one bit per byte, in same format as nl80211
  * @pattern: bytes to match where bitmask is 1
@@ -2643,14 +2643,14 @@ struct cyw-cfg80211_pmksa {
  * Internal note: @mask and @pattern are allocated in one chunk of
  * memory, free @mask only!
  */
-struct cyw-cfg80211_pkt_pattern {
+struct cyw_cfg80211_pkt_pattern {
 	const u8 *mask, *pattern;
 	int pattern_len;
 	int pkt_offset;
 };
 
 /**
- * struct cyw-cfg80211_wowlan_tcp - TCP connection parameters
+ * struct cyw_cfg80211_wowlan_tcp - TCP connection parameters
  *
  * @sock: (internal) socket for source port allocation
  * @src: source IP address
@@ -2668,7 +2668,7 @@ struct cyw-cfg80211_pkt_pattern {
  * @tokens_size: length of the tokens buffer
  * @payload_tok: payload token usage configuration
  */
-struct cyw-cfg80211_wowlan_tcp {
+struct cyw_cfg80211_wowlan_tcp {
 	struct socket *sock;
 	__be32 src, dst;
 	u16 src_port, dst_port;
@@ -2685,7 +2685,7 @@ struct cyw-cfg80211_wowlan_tcp {
 };
 
 /**
- * struct cyw-cfg80211_wowlan - Wake on Wireless-LAN support info
+ * struct cyw_cfg80211_wowlan - Wake on Wireless-LAN support info
  *
  * This structure defines the enabled WoWLAN triggers for the device.
  * @any: wake up on any activity -- special trigger if device continues
@@ -2702,18 +2702,18 @@ struct cyw-cfg80211_wowlan_tcp {
  *	NULL if not configured.
  * @nd_config: configuration for the scan to be used for net detect wake.
  */
-struct cyw-cfg80211_wowlan {
+struct cyw_cfg80211_wowlan {
 	bool any, disconnect, magic_pkt, gtk_rekey_failure,
 	     eap_identity_req, four_way_handshake,
 	     rfkill_release;
-	struct cyw-cfg80211_pkt_pattern *patterns;
-	struct cyw-cfg80211_wowlan_tcp *tcp;
+	struct cyw_cfg80211_pkt_pattern *patterns;
+	struct cyw_cfg80211_wowlan_tcp *tcp;
 	int n_patterns;
-	struct cyw-cfg80211_sched_scan_request *nd_config;
+	struct cyw_cfg80211_sched_scan_request *nd_config;
 };
 
 /**
- * struct cyw-cfg80211_coalesce_rules - Coalesce rule parameters
+ * struct cyw_cfg80211_coalesce_rules - Coalesce rule parameters
  *
  * This structure defines coalesce rule for the device.
  * @delay: maximum coalescing delay in msecs.
@@ -2722,27 +2722,27 @@ struct cyw-cfg80211_wowlan {
  * @patterns: array of packet patterns
  * @n_patterns: number of patterns
  */
-struct cyw-cfg80211_coalesce_rules {
+struct cyw_cfg80211_coalesce_rules {
 	int delay;
 	enum nl80211_coalesce_condition condition;
-	struct cyw-cfg80211_pkt_pattern *patterns;
+	struct cyw_cfg80211_pkt_pattern *patterns;
 	int n_patterns;
 };
 
 /**
- * struct cyw-cfg80211_coalesce - Packet coalescing settings
+ * struct cyw_cfg80211_coalesce - Packet coalescing settings
  *
  * This structure defines coalescing settings.
  * @rules: array of coalesce rules
  * @n_rules: number of rules
  */
-struct cyw-cfg80211_coalesce {
-	struct cyw-cfg80211_coalesce_rules *rules;
+struct cyw_cfg80211_coalesce {
+	struct cyw_cfg80211_coalesce_rules *rules;
 	int n_rules;
 };
 
 /**
- * struct cyw-cfg80211_wowlan_nd_match - information about the match
+ * struct cyw_cfg80211_wowlan_nd_match - information about the match
  *
  * @ssid: SSID of the match that triggered the wake up
  * @n_channels: Number of channels where the match occurred.  This
@@ -2750,14 +2750,14 @@ struct cyw-cfg80211_coalesce {
  * @channels: center frequencies of the channels where a match
  *	occurred (in MHz)
  */
-struct cyw-cfg80211_wowlan_nd_match {
-	struct cyw-cfg80211_ssid ssid;
+struct cyw_cfg80211_wowlan_nd_match {
+	struct cyw_cfg80211_ssid ssid;
 	int n_channels;
 	u32 channels[];
 };
 
 /**
- * struct cyw-cfg80211_wowlan_nd_info - net detect wake up information
+ * struct cyw_cfg80211_wowlan_nd_info - net detect wake up information
  *
  * @n_matches: Number of match information instances provided in
  *	@matches.  This value may be zero if the driver can't provide
@@ -2765,13 +2765,13 @@ struct cyw-cfg80211_wowlan_nd_match {
  * @matches: Array of pointers to matches containing information about
  *	the matches that triggered the wake up.
  */
-struct cyw-cfg80211_wowlan_nd_info {
+struct cyw_cfg80211_wowlan_nd_info {
 	int n_matches;
-	struct cyw-cfg80211_wowlan_nd_match *matches[];
+	struct cyw_cfg80211_wowlan_nd_match *matches[];
 };
 
 /**
- * struct cyw-cfg80211_wowlan_wakeup - wakeup report
+ * struct cyw_cfg80211_wowlan_wakeup - wakeup report
  * @disconnect: woke up by getting disconnected
  * @magic_pkt: woke up by receiving magic packet
  * @gtk_rekey_failure: woke up by GTK rekey failure
@@ -2791,7 +2791,7 @@ struct cyw-cfg80211_wowlan_nd_info {
  * @tcp_nomoretokens: TCP data ran out of tokens
  * @net_detect: if not %NULL, woke up because of net detect
  */
-struct cyw-cfg80211_wowlan_wakeup {
+struct cyw_cfg80211_wowlan_wakeup {
 	bool disconnect, magic_pkt, gtk_rekey_failure,
 	     eap_identity_req, four_way_handshake,
 	     rfkill_release, packet_80211,
@@ -2799,21 +2799,21 @@ struct cyw-cfg80211_wowlan_wakeup {
 	s32 pattern_idx;
 	u32 packet_present_len, packet_len;
 	const void *packet;
-	struct cyw-cfg80211_wowlan_nd_info *net_detect;
+	struct cyw_cfg80211_wowlan_nd_info *net_detect;
 };
 
 /**
- * struct cyw-cfg80211_gtk_rekey_data - rekey data
+ * struct cyw_cfg80211_gtk_rekey_data - rekey data
  * @kek: key encryption key (NL80211_KEK_LEN bytes)
  * @kck: key confirmation key (NL80211_KCK_LEN bytes)
  * @replay_ctr: replay counter (NL80211_REPLAY_CTR_LEN bytes)
  */
-struct cyw-cfg80211_gtk_rekey_data {
+struct cyw_cfg80211_gtk_rekey_data {
 	const u8 *kek, *kck, *replay_ctr;
 };
 
 /**
- * struct cyw-cfg80211_update_ft_ies_params - FT IE Information
+ * struct cyw_cfg80211_update_ft_ies_params - FT IE Information
  *
  * This structure provides information needed to update the fast transition IE
  *
@@ -2821,14 +2821,14 @@ struct cyw-cfg80211_gtk_rekey_data {
  * @ie: Fast Transition IEs
  * @ie_len: Length of ft_ie in octets
  */
-struct cyw-cfg80211_update_ft_ies_params {
+struct cyw_cfg80211_update_ft_ies_params {
 	u16 md;
 	const u8 *ie;
 	size_t ie_len;
 };
 
 /**
- * struct cyw-cfg80211_mgmt_tx_params - mgmt tx parameters
+ * struct cyw_cfg80211_mgmt_tx_params - mgmt tx parameters
  *
  * This structure provides information needed to transmit a mgmt frame
  *
@@ -2842,7 +2842,7 @@ struct cyw-cfg80211_update_ft_ies_params {
  * @n_csa_offsets: length of csa_offsets array
  * @csa_offsets: array of all the csa offsets in the frame
  */
-struct cyw-cfg80211_mgmt_tx_params {
+struct cyw_cfg80211_mgmt_tx_params {
 	struct ieee80211_channel *chan;
 	bool offchan;
 	unsigned int wait;
@@ -2855,23 +2855,23 @@ struct cyw-cfg80211_mgmt_tx_params {
 };
 
 /**
- * struct cyw-cfg80211_dscp_exception - DSCP exception
+ * struct cyw_cfg80211_dscp_exception - DSCP exception
  *
  * @dscp: DSCP value that does not adhere to the user priority range definition
  * @up: user priority value to which the corresponding DSCP value belongs
  */
-struct cyw-cfg80211_dscp_exception {
+struct cyw_cfg80211_dscp_exception {
 	u8 dscp;
 	u8 up;
 };
 
 /**
- * struct cyw-cfg80211_dscp_range - DSCP range definition for user priority
+ * struct cyw_cfg80211_dscp_range - DSCP range definition for user priority
  *
  * @low: lowest DSCP value of this user priority range, inclusive
  * @high: highest DSCP value of this user priority range, inclusive
  */
-struct cyw-cfg80211_dscp_range {
+struct cyw_cfg80211_dscp_range {
 	u8 low;
 	u8 high;
 };
@@ -2883,7 +2883,7 @@ struct cyw-cfg80211_dscp_range {
 	(IEEE80211_QOS_MAP_LEN_MIN + 2 * IEEE80211_QOS_MAP_MAX_EX)
 
 /**
- * struct cyw-cfg80211_qos_map - QoS Map Information
+ * struct cyw_cfg80211_qos_map - QoS Map Information
  *
  * This struct defines the Interworking QoS map setting for DSCP values
  *
@@ -2892,14 +2892,14 @@ struct cyw-cfg80211_dscp_range {
  *	the user priority DSCP range definition
  * @up: DSCP range definition for a particular user priority
  */
-struct cyw-cfg80211_qos_map {
+struct cyw_cfg80211_qos_map {
 	u8 num_des;
-	struct cyw-cfg80211_dscp_exception dscp_exception[IEEE80211_QOS_MAP_MAX_EX];
-	struct cyw-cfg80211_dscp_range up[8];
+	struct cyw_cfg80211_dscp_exception dscp_exception[IEEE80211_QOS_MAP_MAX_EX];
+	struct cyw_cfg80211_dscp_range up[8];
 };
 
 /**
- * struct cyw-cfg80211_nan_conf - NAN configuration
+ * struct cyw_cfg80211_nan_conf - NAN configuration
  *
  * This struct defines NAN configuration parameters
  *
@@ -2908,36 +2908,36 @@ struct cyw-cfg80211_qos_map {
  *	For instance, for NL80211_BAND_2GHZ, bit 0 would be set
  *	(i.e. BIT(NL80211_BAND_2GHZ)).
  */
-struct cyw-cfg80211_nan_conf {
+struct cyw_cfg80211_nan_conf {
 	u8 master_pref;
 	u8 bands;
 };
 
 /**
- * enum cyw-cfg80211_nan_conf_changes - indicates changed fields in NAN
+ * enum cyw_cfg80211_nan_conf_changes - indicates changed fields in NAN
  * configuration
  *
  * @CFG80211_NAN_CONF_CHANGED_PREF: master preference
  * @CFG80211_NAN_CONF_CHANGED_BANDS: operating bands
  */
-enum cyw-cfg80211_nan_conf_changes {
+enum cyw_cfg80211_nan_conf_changes {
 	CFG80211_NAN_CONF_CHANGED_PREF = BIT(0),
 	CFG80211_NAN_CONF_CHANGED_BANDS = BIT(1),
 };
 
 /**
- * struct cyw-cfg80211_nan_func_filter - a NAN function Rx / Tx filter
+ * struct cyw_cfg80211_nan_func_filter - a NAN function Rx / Tx filter
  *
  * @filter: the content of the filter
  * @len: the length of the filter
  */
-struct cyw-cfg80211_nan_func_filter {
+struct cyw_cfg80211_nan_func_filter {
 	const u8 *filter;
 	u8 len;
 };
 
 /**
- * struct cyw-cfg80211_nan_func - a NAN function
+ * struct cyw_cfg80211_nan_func - a NAN function
  *
  * @type: &enum nl80211_nan_function_type
  * @service_id: the service ID of the function
@@ -2965,7 +2965,7 @@ struct cyw-cfg80211_nan_func_filter {
  * @instance_id: driver allocated id of the function.
  * @cookie: unique NAN function identifier.
  */
-struct cyw-cfg80211_nan_func {
+struct cyw_cfg80211_nan_func {
 	enum nl80211_nan_function_type type;
 	u8 service_id[NL80211_NAN_FUNC_SERVICE_ID_LEN];
 	u8 publish_type;
@@ -2984,8 +2984,8 @@ struct cyw-cfg80211_nan_func {
 	u8 srf_bf_idx;
 	struct mac_address *srf_macs;
 	int srf_num_macs;
-	struct cyw-cfg80211_nan_func_filter *rx_filters;
-	struct cyw-cfg80211_nan_func_filter *tx_filters;
+	struct cyw_cfg80211_nan_func_filter *rx_filters;
+	struct cyw_cfg80211_nan_func_filter *tx_filters;
 	u8 num_tx_filters;
 	u8 num_rx_filters;
 	u8 instance_id;
@@ -2993,7 +2993,7 @@ struct cyw-cfg80211_nan_func {
 };
 
 /**
- * struct cyw-cfg80211_pmk_conf - PMK configuration
+ * struct cyw_cfg80211_pmk_conf - PMK configuration
  *
  * @aa: authenticator address
  * @pmk_len: PMK length in bytes.
@@ -3002,7 +3002,7 @@ struct cyw-cfg80211_nan_func {
  *	is not PMK-R0). When pmk_r0_name is not NULL, the pmk field
  *	holds PMK-R0.
  */
-struct cyw-cfg80211_pmk_conf {
+struct cyw_cfg80211_pmk_conf {
 	const u8 *aa;
 	u8 pmk_len;
 	const u8 *pmk;
@@ -3010,7 +3010,7 @@ struct cyw-cfg80211_pmk_conf {
 };
 
 /**
- * struct cyw-cfg80211_external_auth_params - Trigger External authentication.
+ * struct cyw_cfg80211_external_auth_params - Trigger External authentication.
  *
  * Commonly used across the external auth request and event interfaces.
  *
@@ -3029,17 +3029,17 @@ struct cyw-cfg80211_pmk_conf {
  *	response command interface (user space to driver).
  * @pmkid: The identifier to refer a PMKSA.
  */
-struct cyw-cfg80211_external_auth_params {
+struct cyw_cfg80211_external_auth_params {
 	enum nl80211_external_auth_action action;
 	u8 bssid[ETH_ALEN] __aligned(2);
-	struct cyw-cfg80211_ssid ssid;
+	struct cyw_cfg80211_ssid ssid;
 	unsigned int key_mgmt_suite;
 	u16 status;
 	const u8 *pmkid;
 };
 
 /**
- * struct cyw-cfg80211_ftm_responder_stats - FTM responder statistics
+ * struct cyw_cfg80211_ftm_responder_stats - FTM responder statistics
  *
  * @filled: bitflag of flags using the bits of &enum nl80211_ftm_stats to
  *	indicate the relevant values in this struct for them
@@ -3059,7 +3059,7 @@ struct cyw-cfg80211_external_auth_params {
  *	for a new scheduling although it already has scheduled FTM slot
  * @out_of_window_triggers_num: total FTM triggers out of scheduled window
  */
-struct cyw-cfg80211_ftm_responder_stats {
+struct cyw_cfg80211_ftm_responder_stats {
 	u32 filled;
 	u32 success_num;
 	u32 partial_num;
@@ -3073,7 +3073,7 @@ struct cyw-cfg80211_ftm_responder_stats {
 };
 
 /**
- * struct cyw-cfg80211_pmsr_ftm_result - FTM result
+ * struct cyw_cfg80211_pmsr_ftm_result - FTM result
  * @failure_reason: if this measurement failed (PMSR status is
  *	%NL80211_PMSR_STATUS_FAILURE), this gives a more precise
  *	reason than just "failure"
@@ -3116,7 +3116,7 @@ struct cyw-cfg80211_ftm_responder_stats {
  * @dist_variance_valid: @dist_variance is valid
  * @dist_spread_valid: @dist_spread is valid
  */
-struct cyw-cfg80211_pmsr_ftm_result {
+struct cyw_cfg80211_pmsr_ftm_result {
 	const u8 *lci;
 	const u8 *civicloc;
 	unsigned int lci_len;
@@ -3153,7 +3153,7 @@ struct cyw-cfg80211_pmsr_ftm_result {
 };
 
 /**
- * struct cyw-cfg80211_pmsr_result - peer measurement result
+ * struct cyw_cfg80211_pmsr_result - peer measurement result
  * @addr: address of the peer
  * @host_time: host time (use ktime_get_boottime() adjust to the time when the
  *	measurement was made)
@@ -3166,7 +3166,7 @@ struct cyw-cfg80211_pmsr_ftm_result {
  *	one type at a time, but you can report multiple results separately and
  *	they're all aggregated for userspace.
  */
-struct cyw-cfg80211_pmsr_result {
+struct cyw_cfg80211_pmsr_result {
 	u64 host_time, ap_tsf;
 	enum nl80211_peer_measurement_status status;
 
@@ -3178,12 +3178,12 @@ struct cyw-cfg80211_pmsr_result {
 	enum nl80211_peer_measurement_type type;
 
 	union {
-		struct cyw-cfg80211_pmsr_ftm_result ftm;
+		struct cyw_cfg80211_pmsr_ftm_result ftm;
 	};
 };
 
 /**
- * struct cyw-cfg80211_pmsr_ftm_request_peer - FTM request data
+ * struct cyw_cfg80211_pmsr_ftm_request_peer - FTM request data
  * @requested: indicates FTM is requested
  * @preamble: frame preamble to use
  * @burst_period: burst period to use
@@ -3197,7 +3197,7 @@ struct cyw-cfg80211_pmsr_result {
  *
  * See also nl80211 for the respective attribute documentation.
  */
-struct cyw-cfg80211_pmsr_ftm_request_peer {
+struct cyw_cfg80211_pmsr_ftm_request_peer {
 	enum nl80211_preamble preamble;
 	u16 burst_period;
 	u8 requested:1,
@@ -3211,36 +3211,36 @@ struct cyw-cfg80211_pmsr_ftm_request_peer {
 };
 
 /**
- * struct cyw-cfg80211_pmsr_request_peer - peer data for a peer measurement request
+ * struct cyw_cfg80211_pmsr_request_peer - peer data for a peer measurement request
  * @addr: MAC address
  * @chandef: channel to use
  * @report_ap_tsf: report the associated AP's TSF
- * @ftm: FTM data, see &struct cyw-cfg80211_pmsr_ftm_request_peer
+ * @ftm: FTM data, see &struct cyw_cfg80211_pmsr_ftm_request_peer
  */
-struct cyw-cfg80211_pmsr_request_peer {
+struct cyw_cfg80211_pmsr_request_peer {
 	u8 addr[ETH_ALEN];
-	struct cyw-cfg80211_chan_def chandef;
+	struct cyw_cfg80211_chan_def chandef;
 	u8 report_ap_tsf:1;
-	struct cyw-cfg80211_pmsr_ftm_request_peer ftm;
+	struct cyw_cfg80211_pmsr_ftm_request_peer ftm;
 };
 
 /**
- * struct cyw-cfg80211_pmsr_request - peer measurement request
- * @cookie: cookie, set by cyw-cfg80211
- * @nl_portid: netlink portid - used by cyw-cfg80211
+ * struct cyw_cfg80211_pmsr_request - peer measurement request
+ * @cookie: cookie, set by cyw_cfg80211
+ * @nl_portid: netlink portid - used by cyw_cfg80211
  * @drv_data: driver data for this request, if required for aborting,
- *	not otherwise freed or anything by cyw-cfg80211
+ *	not otherwise freed or anything by cyw_cfg80211
  * @mac_addr: MAC address used for (randomised) request
  * @mac_addr_mask: MAC address mask used for randomisation, bits that
  *	are 0 in the mask should be randomised, bits that are 1 should
  *	be taken from the @mac_addr
- * @list: used by cyw-cfg80211 to hold on to the request
+ * @list: used by cyw_cfg80211 to hold on to the request
  * @timeout: timeout (in milliseconds) for the whole operation, if
  *	zero it means there's no timeout
  * @n_peers: number of peers to do measurements with
  * @peers: per-peer measurement request data
  */
-struct cyw-cfg80211_pmsr_request {
+struct cyw_cfg80211_pmsr_request {
 	u64 cookie;
 	void *drv_data;
 	u32 n_peers;
@@ -3253,11 +3253,11 @@ struct cyw-cfg80211_pmsr_request {
 
 	struct list_head list;
 
-	struct cyw-cfg80211_pmsr_request_peer peers[];
+	struct cyw_cfg80211_pmsr_request_peer peers[];
 };
 
 /**
- * struct cyw-cfg80211_update_owe_info - OWE Information
+ * struct cyw_cfg80211_update_owe_info - OWE Information
  *
  * This structure provides information needed for the drivers to offload OWE
  * (Opportunistic Wireless Encryption) processing to the user space.
@@ -3275,7 +3275,7 @@ struct cyw-cfg80211_pmsr_request {
  *	the constructed IEs by the user space in the request interface.
  * @ie_len: Length of IEs in octets.
  */
-struct cyw-cfg80211_update_owe_info {
+struct cyw_cfg80211_update_owe_info {
 	u8 peer[ETH_ALEN] __aligned(2);
 	u16 status;
 	const u8 *ie;
@@ -3283,7 +3283,7 @@ struct cyw-cfg80211_update_owe_info {
 };
 
 /**
- * struct cyw-cfg80211_ops - backend description for wireless configuration
+ * struct cyw_cfg80211_ops - backend description for wireless configuration
  *
  * This struct is registered by fullmac card drivers and/or wireless stacks
  * in order to handle configuration requests on their interfaces.
@@ -3340,10 +3340,10 @@ struct cyw-cfg80211_update_owe_info {
  * @add_station: Add a new station.
  * @del_station: Remove a station
  * @change_station: Modify a given station. Note that flags changes are not much
- *	validated in cyw-cfg80211, in particular the auth/assoc/authorized flags
+ *	validated in cyw_cfg80211, in particular the auth/assoc/authorized flags
  *	might come to the driver in invalid combinations -- make sure to check
  *	them, also against the existing state! Drivers must call
- *	cyw-cfg80211_check_station_change() to validate the information.
+ *	cyw_cfg80211_check_station_change() to validate the information.
  * @get_station: get station information for the station identified by @mac
  * @dump_station: dump station callback -- resume dump at index @idx
  *
@@ -3379,11 +3379,11 @@ struct cyw-cfg80211_update_owe_info {
  *	be stored for when a monitor interface becomes active.
  *
  * @scan: Request to do a scan. If returning zero, the scan request is given
- *	the driver, and will be valid until passed to cyw-cfg80211_scan_done().
- *	For scan results, call cyw-cfg80211_inform_bss(); you can call this outside
+ *	the driver, and will be valid until passed to cyw_cfg80211_scan_done().
+ *	For scan results, call cyw_cfg80211_inform_bss(); you can call this outside
  *	the scan/scan_done bracket too.
  * @abort_scan: Tell the driver to abort an ongoing scan. The driver shall
- *	indicate the status of the scan through cyw-cfg80211_scan_done().
+ *	indicate the status of the scan through cyw_cfg80211_scan_done().
  *
  * @auth: Request to authenticate with the specified peer
  *	(invoked with the wireless_dev mutex held)
@@ -3395,10 +3395,10 @@ struct cyw-cfg80211_update_owe_info {
  *	(invoked with the wireless_dev mutex held)
  *
  * @connect: Connect to the ESS with the specified parameters. When connected,
- *	call cyw-cfg80211_connect_result()/cyw-cfg80211_connect_bss() with status code
+ *	call cyw_cfg80211_connect_result()/cyw_cfg80211_connect_bss() with status code
  *	%WLAN_STATUS_SUCCESS. If the connection fails for some reason, call
- *	cyw-cfg80211_connect_result()/cyw-cfg80211_connect_bss() with the status code
- *	from the AP or cyw-cfg80211_connect_timeout() if no frame with status code
+ *	cyw_cfg80211_connect_result()/cyw_cfg80211_connect_bss() with the status code
+ *	from the AP or cyw_cfg80211_connect_timeout() if no frame with status code
  *	was received.
  *	The driver is allowed to roam to other BSSes within the ESS when the
  *	other BSS matches the connect parameters. When such roaming is initiated
@@ -3411,22 +3411,22 @@ struct cyw-cfg80211_update_owe_info {
  *	indication of requesting reassociation.
  *	In both the driver-initiated and new connect() call initiated roaming
  *	cases, the result of roaming is indicated with a call to
- *	cyw-cfg80211_roamed(). (invoked with the wireless_dev mutex held)
+ *	cyw_cfg80211_roamed(). (invoked with the wireless_dev mutex held)
  * @update_connect_params: Update the connect parameters while connected to a
  *	BSS. The updated parameters can be used by driver/firmware for
  *	subsequent BSS selection (roaming) decisions and to form the
  *	Authentication/(Re)Association Request frames. This call does not
  *	request an immediate disassociation or reassociation with the current
  *	BSS, i.e., this impacts only subsequent (re)associations. The bits in
- *	changed are defined in &enum cyw-cfg80211_connect_params_changed.
+ *	changed are defined in &enum cyw_cfg80211_connect_params_changed.
  *	(invoked with the wireless_dev mutex held)
  * @disconnect: Disconnect from the BSS/ESS or stop connection attempts if
- *      connection is in progress. Once done, call cyw-cfg80211_disconnected() in
+ *      connection is in progress. Once done, call cyw_cfg80211_disconnected() in
  *      case connection was already established (invoked with the
- *      wireless_dev mutex held), otherwise call cyw-cfg80211_connect_timeout().
+ *      wireless_dev mutex held), otherwise call cyw_cfg80211_connect_timeout().
  *
  * @join_ibss: Join the specified IBSS (or create if necessary). Once done, call
- *	cyw-cfg80211_ibss_joined(), also call that function when changing BSSID due
+ *	cyw_cfg80211_ibss_joined(), also call that function when changing BSSID due
  *	to a merge.
  *	(invoked with the wireless_dev mutex held)
  * @leave_ibss: Leave the IBSS.
@@ -3450,7 +3450,7 @@ struct cyw-cfg80211_update_owe_info {
  *
  * @set_wds_peer: set the WDS peer for a WDS interface
  *
- * @rfkill_poll: polls the hw rfkill line, use cyw-cfg80211 reporting
+ * @rfkill_poll: polls the hw rfkill line, use cyw_cfg80211 reporting
  *	functions to adjust rfkill hw state
  *
  * @dump_survey: get site survey information.
@@ -3459,7 +3459,7 @@ struct cyw-cfg80211_update_owe_info {
  *	channel for the specified duration to complete an off-channel
  *	operation (e.g., public action frame exchange). When the driver is
  *	ready on the requested channel, it must indicate this with an event
- *	notification by calling cyw-cfg80211_ready_on_channel().
+ *	notification by calling cyw_cfg80211_ready_on_channel().
  * @cancel_remain_on_channel: Cancel an on-going remain-on-channel operation.
  *	This allows the operation to be terminated prior to timeout based on
  *	the duration value.
@@ -3501,7 +3501,7 @@ struct cyw-cfg80211_update_owe_info {
  *	given request id. This call must stop the scheduled scan and be ready
  *	for starting a new one before it returns, i.e. @sched_scan_start may be
  *	called immediately after that again and should not fail in that case.
- *	The driver should not call cyw-cfg80211_sched_scan_stopped() for a requested
+ *	The driver should not call cyw_cfg80211_sched_scan_stopped() for a requested
  *	stop (when this method returns 0).
  *
  * @mgmt_frame_register: Notify driver that a management frame type was
@@ -3518,7 +3518,7 @@ struct cyw-cfg80211_update_owe_info {
  * @tdls_oper: Perform a high-level TDLS operation (e.g. TDLS link setup).
  *
  * @probe_client: probe an associated client, must return a cookie that it
- *	later passes to cyw-cfg80211_probe_status().
+ *	later passes to cyw_cfg80211_probe_status().
  *
  * @set_noack_map: Set the NoAck Map for the TIDs.
  *
@@ -3555,7 +3555,7 @@ struct cyw-cfg80211_update_owe_info {
  * @channel_switch: initiate channel-switch procedure (with CSA). Driver is
  *	responsible for veryfing if the switch is possible. Since this is
  *	inherently tricky driver may decide to disconnect an interface later
- *	with cyw-cfg80211_stop_iface(). This doesn't mean driver can accept
+ *	with cyw_cfg80211_stop_iface(). This doesn't mean driver can accept
  *	everything. It should do it's best to verify requests and reject them
  *	as soon as possible.
  *
@@ -3592,12 +3592,12 @@ struct cyw-cfg80211_update_owe_info {
  *	On success @nan_func ownership is transferred to the driver and
  *	it may access it outside of the scope of this function. The driver
  *	should free the @nan_func when no longer needed by calling
- *	cyw-cfg80211_free_nan_func().
+ *	cyw_cfg80211_free_nan_func().
  *	On success the driver should assign an instance_id in the
  *	provided @nan_func.
  * @del_nan_func: Delete a NAN function.
  * @nan_change_conf: changes NAN configuration. The changed parameters must
- *	be specified in @changes (using &enum cyw-cfg80211_nan_conf_changes);
+ *	be specified in @changes (using &enum cyw_cfg80211_nan_conf_changes);
  *	All other parameters must be ignored.
  *
  * @set_multicast_to_unicast: configure multicast to unicast conversion for BSS
@@ -3630,8 +3630,8 @@ struct cyw-cfg80211_update_owe_info {
  * @probe_mesh_link: Probe direct Mesh peer's link quality by sending data frame
  *	and overrule HWMP path selection algorithm.
  */
-struct cyw-cfg80211_ops {
-	int	(*suspend)(struct wiphy *wiphy, struct cyw-cfg80211_wowlan *wow);
+struct cyw_cfg80211_ops {
+	int	(*suspend)(struct wiphy *wiphy, struct cyw_cfg80211_wowlan *wow);
 	int	(*resume)(struct wiphy *wiphy);
 	void	(*set_wakeup)(struct wiphy *wiphy, bool enabled);
 
@@ -3664,9 +3664,9 @@ struct cyw-cfg80211_ops {
 					u8 key_index);
 
 	int	(*start_ap)(struct wiphy *wiphy, struct net_device *dev,
-			    struct cyw-cfg80211_ap_settings *settings);
+			    struct cyw_cfg80211_ap_settings *settings);
 	int	(*change_beacon)(struct wiphy *wiphy, struct net_device *dev,
-				 struct cyw-cfg80211_beacon_data *info);
+				 struct cyw_cfg80211_beacon_data *info);
 	int	(*stop_ap)(struct wiphy *wiphy, struct net_device *dev);
 
 
@@ -3725,32 +3725,32 @@ struct cyw-cfg80211_ops {
 					     struct ieee80211_channel *chan);
 
 	int	(*set_monitor_channel)(struct wiphy *wiphy,
-				       struct cyw-cfg80211_chan_def *chandef);
+				       struct cyw_cfg80211_chan_def *chandef);
 
 	int	(*scan)(struct wiphy *wiphy,
-			struct cyw-cfg80211_scan_request *request);
+			struct cyw_cfg80211_scan_request *request);
 	void	(*abort_scan)(struct wiphy *wiphy, struct wireless_dev *wdev);
 
 	int	(*auth)(struct wiphy *wiphy, struct net_device *dev,
-			struct cyw-cfg80211_auth_request *req);
+			struct cyw_cfg80211_auth_request *req);
 	int	(*assoc)(struct wiphy *wiphy, struct net_device *dev,
-			 struct cyw-cfg80211_assoc_request *req);
+			 struct cyw_cfg80211_assoc_request *req);
 	int	(*deauth)(struct wiphy *wiphy, struct net_device *dev,
-			  struct cyw-cfg80211_deauth_request *req);
+			  struct cyw_cfg80211_deauth_request *req);
 	int	(*disassoc)(struct wiphy *wiphy, struct net_device *dev,
-			    struct cyw-cfg80211_disassoc_request *req);
+			    struct cyw_cfg80211_disassoc_request *req);
 
 	int	(*connect)(struct wiphy *wiphy, struct net_device *dev,
-			   struct cyw-cfg80211_connect_params *sme);
+			   struct cyw_cfg80211_connect_params *sme);
 	int	(*update_connect_params)(struct wiphy *wiphy,
 					 struct net_device *dev,
-					 struct cyw-cfg80211_connect_params *sme,
+					 struct cyw_cfg80211_connect_params *sme,
 					 u32 changed);
 	int	(*disconnect)(struct wiphy *wiphy, struct net_device *dev,
 			      u16 reason_code);
 
 	int	(*join_ibss)(struct wiphy *wiphy, struct net_device *dev,
-			     struct cyw-cfg80211_ibss_params *params);
+			     struct cyw_cfg80211_ibss_params *params);
 	int	(*leave_ibss)(struct wiphy *wiphy, struct net_device *dev);
 
 	int	(*set_mcast_rate)(struct wiphy *wiphy, struct net_device *dev,
@@ -3779,15 +3779,15 @@ struct cyw-cfg80211_ops {
 	int	(*set_bitrate_mask)(struct wiphy *wiphy,
 				    struct net_device *dev,
 				    const u8 *peer,
-				    const struct cyw-cfg80211_bitrate_mask *mask);
+				    const struct cyw_cfg80211_bitrate_mask *mask);
 
 	int	(*dump_survey)(struct wiphy *wiphy, struct net_device *netdev,
 			int idx, struct survey_info *info);
 
 	int	(*set_pmksa)(struct wiphy *wiphy, struct net_device *netdev,
-			     struct cyw-cfg80211_pmksa *pmksa);
+			     struct cyw_cfg80211_pmksa *pmksa);
 	int	(*del_pmksa)(struct wiphy *wiphy, struct net_device *netdev,
-			     struct cyw-cfg80211_pmksa *pmksa);
+			     struct cyw_cfg80211_pmksa *pmksa);
 	int	(*flush_pmksa)(struct wiphy *wiphy, struct net_device *netdev);
 
 	int	(*remain_on_channel)(struct wiphy *wiphy,
@@ -3800,7 +3800,7 @@ struct cyw-cfg80211_ops {
 					    u64 cookie);
 
 	int	(*mgmt_tx)(struct wiphy *wiphy, struct wireless_dev *wdev,
-			   struct cyw-cfg80211_mgmt_tx_params *params,
+			   struct cyw_cfg80211_mgmt_tx_params *params,
 			   u64 *cookie);
 	int	(*mgmt_tx_cancel_wait)(struct wiphy *wiphy,
 				       struct wireless_dev *wdev,
@@ -3830,12 +3830,12 @@ struct cyw-cfg80211_ops {
 
 	int	(*sched_scan_start)(struct wiphy *wiphy,
 				struct net_device *dev,
-				struct cyw-cfg80211_sched_scan_request *request);
+				struct cyw_cfg80211_sched_scan_request *request);
 	int	(*sched_scan_stop)(struct wiphy *wiphy, struct net_device *dev,
 				   u64 reqid);
 
 	int	(*set_rekey_data)(struct wiphy *wiphy, struct net_device *dev,
-				  struct cyw-cfg80211_gtk_rekey_data *data);
+				  struct cyw_cfg80211_gtk_rekey_data *data);
 
 	int	(*tdls_mgmt)(struct wiphy *wiphy, struct net_device *dev,
 			     const u8 *peer, u8 action_code,  u8 dialog_token,
@@ -3853,7 +3853,7 @@ struct cyw-cfg80211_ops {
 
 	int	(*get_channel)(struct wiphy *wiphy,
 			       struct wireless_dev *wdev,
-			       struct cyw-cfg80211_chan_def *chandef);
+			       struct cyw_cfg80211_chan_def *chandef);
 
 	int	(*start_p2p_device)(struct wiphy *wiphy,
 				    struct wireless_dev *wdev);
@@ -3861,16 +3861,16 @@ struct cyw-cfg80211_ops {
 				   struct wireless_dev *wdev);
 
 	int	(*set_mac_acl)(struct wiphy *wiphy, struct net_device *dev,
-			       const struct cyw-cfg80211_acl_data *params);
+			       const struct cyw_cfg80211_acl_data *params);
 
 	int	(*start_radar_detection)(struct wiphy *wiphy,
 					 struct net_device *dev,
-					 struct cyw-cfg80211_chan_def *chandef,
+					 struct cyw_cfg80211_chan_def *chandef,
 					 u32 cac_time_ms);
 	void	(*end_cac)(struct wiphy *wiphy,
 				struct net_device *dev);
 	int	(*update_ft_ies)(struct wiphy *wiphy, struct net_device *dev,
-				 struct cyw-cfg80211_update_ft_ies_params *ftie);
+				 struct cyw_cfg80211_update_ft_ies_params *ftie);
 	int	(*crit_proto_start)(struct wiphy *wiphy,
 				    struct wireless_dev *wdev,
 				    enum nl80211_crit_proto_id protocol,
@@ -3878,18 +3878,18 @@ struct cyw-cfg80211_ops {
 	void	(*crit_proto_stop)(struct wiphy *wiphy,
 				   struct wireless_dev *wdev);
 	int	(*set_coalesce)(struct wiphy *wiphy,
-				struct cyw-cfg80211_coalesce *coalesce);
+				struct cyw_cfg80211_coalesce *coalesce);
 
 	int	(*channel_switch)(struct wiphy *wiphy,
 				  struct net_device *dev,
-				  struct cyw-cfg80211_csa_settings *params);
+				  struct cyw_cfg80211_csa_settings *params);
 
 	int     (*set_qos_map)(struct wiphy *wiphy,
 			       struct net_device *dev,
-			       struct cyw-cfg80211_qos_map *qos_map);
+			       struct cyw_cfg80211_qos_map *qos_map);
 
 	int	(*set_ap_chanwidth)(struct wiphy *wiphy, struct net_device *dev,
-				    struct cyw-cfg80211_chan_def *chandef);
+				    struct cyw_cfg80211_chan_def *chandef);
 
 	int	(*add_tx_ts)(struct wiphy *wiphy, struct net_device *dev,
 			     u8 tsid, const u8 *peer, u8 user_prio,
@@ -3900,20 +3900,20 @@ struct cyw-cfg80211_ops {
 	int	(*tdls_channel_switch)(struct wiphy *wiphy,
 				       struct net_device *dev,
 				       const u8 *addr, u8 oper_class,
-				       struct cyw-cfg80211_chan_def *chandef);
+				       struct cyw_cfg80211_chan_def *chandef);
 	void	(*tdls_cancel_channel_switch)(struct wiphy *wiphy,
 					      struct net_device *dev,
 					      const u8 *addr);
 	int	(*start_nan)(struct wiphy *wiphy, struct wireless_dev *wdev,
-			     struct cyw-cfg80211_nan_conf *conf);
+			     struct cyw_cfg80211_nan_conf *conf);
 	void	(*stop_nan)(struct wiphy *wiphy, struct wireless_dev *wdev);
 	int	(*add_nan_func)(struct wiphy *wiphy, struct wireless_dev *wdev,
-				struct cyw-cfg80211_nan_func *nan_func);
+				struct cyw_cfg80211_nan_func *nan_func);
 	void	(*del_nan_func)(struct wiphy *wiphy, struct wireless_dev *wdev,
 			       u64 cookie);
 	int	(*nan_change_conf)(struct wiphy *wiphy,
 				   struct wireless_dev *wdev,
-				   struct cyw-cfg80211_nan_conf *conf,
+				   struct cyw_cfg80211_nan_conf *conf,
 				   u32 changes);
 
 	int	(*set_multicast_to_unicast)(struct wiphy *wiphy,
@@ -3922,14 +3922,14 @@ struct cyw-cfg80211_ops {
 
 	int	(*get_txq_stats)(struct wiphy *wiphy,
 				 struct wireless_dev *wdev,
-				 struct cyw-cfg80211_txq_stats *txqstats);
+				 struct cyw_cfg80211_txq_stats *txqstats);
 
 	int	(*set_pmk)(struct wiphy *wiphy, struct net_device *dev,
-			   const struct cyw-cfg80211_pmk_conf *conf);
+			   const struct cyw_cfg80211_pmk_conf *conf);
 	int	(*del_pmk)(struct wiphy *wiphy, struct net_device *dev,
 			   const u8 *aa);
 	int     (*external_auth)(struct wiphy *wiphy, struct net_device *dev,
-				 struct cyw-cfg80211_external_auth_params *params);
+				 struct cyw_cfg80211_external_auth_params *params);
 
 	int	(*tx_control_port)(struct wiphy *wiphy,
 				   struct net_device *dev,
@@ -3939,14 +3939,14 @@ struct cyw-cfg80211_ops {
 
 	int	(*get_ftm_responder_stats)(struct wiphy *wiphy,
 				struct net_device *dev,
-				struct cyw-cfg80211_ftm_responder_stats *ftm_stats);
+				struct cyw_cfg80211_ftm_responder_stats *ftm_stats);
 
 	int	(*start_pmsr)(struct wiphy *wiphy, struct wireless_dev *wdev,
-			      struct cyw-cfg80211_pmsr_request *request);
+			      struct cyw_cfg80211_pmsr_request *request);
 	void	(*abort_pmsr)(struct wiphy *wiphy, struct wireless_dev *wdev,
-			      struct cyw-cfg80211_pmsr_request *request);
+			      struct cyw_cfg80211_pmsr_request *request);
 	int	(*update_owe_info)(struct wiphy *wiphy, struct net_device *dev,
-				   struct cyw-cfg80211_update_owe_info *owe_info);
+				   struct cyw_cfg80211_update_owe_info *owe_info);
 	int	(*probe_mesh_link)(struct wiphy *wiphy, struct net_device *dev,
 				   const u8 *buf, size_t len);
 };
@@ -3987,7 +3987,7 @@ struct cyw-cfg80211_ops {
  * @WIPHY_FLAG_HAVE_AP_SME: device integrates AP SME
  * @WIPHY_FLAG_REPORTS_OBSS: the device will report beacons from other BSSes
  *	when there are virtual interfaces in AP mode by calling
- *	cyw-cfg80211_report_obss_beacon().
+ *	cyw_cfg80211_report_obss_beacon().
  * @WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD: When operating as an AP, the device
  *	responds to probe-requests in hardware.
  * @WIPHY_FLAG_OFFCHAN_TX: Device supports direct off-channel TX.
@@ -4204,7 +4204,7 @@ struct wiphy_wowlan_tcp_support {
  * @max_nd_match_sets: maximum number of matchsets for net-detect,
  *	similar, but not necessarily identical, to max_match_sets for
  *	scheduled scans.
- *	See &struct cyw-cfg80211_sched_scan_request.@match_sets for more
+ *	See &struct cyw_cfg80211_sched_scan_request.@match_sets for more
  *	details.
  * @tcp: TCP wakeup support information
  */
@@ -4330,7 +4330,7 @@ struct wiphy_iftype_ext_capab {
 };
 
 /**
- * struct cyw-cfg80211_pmsr_capabilities - cyw-cfg80211 peer measurement capabilities
+ * struct cyw_cfg80211_pmsr_capabilities - cyw_cfg80211 peer measurement capabilities
  * @max_peers: maximum number of peers in a single measurement
  * @report_ap_tsf: can report assoc AP's TSF for radio resource measurement
  * @randomize_mac_addr: can randomize MAC address for measurement
@@ -4347,7 +4347,7 @@ struct wiphy_iftype_ext_capab {
  * @ftm.max_ftms_per_burst: maximum FTMs per burst supported (set to 0 if
  *	not limited)
  */
-struct cyw-cfg80211_pmsr_capabilities {
+struct cyw_cfg80211_pmsr_capabilities {
 	unsigned int max_peers;
 	u8 report_ap_tsf:1,
 	   randomize_mac_addr:1;
@@ -4374,7 +4374,7 @@ struct cyw-cfg80211_pmsr_capabilities {
  * 	the regulatory_hint() API. This can be used by the driver
  *	on the reg_notifier() if it chooses to ignore future
  *	regulatory domain changes caused by other drivers.
- * @signal_type: signal type reported in &struct cyw-cfg80211_bss.
+ * @signal_type: signal type reported in &struct cyw_cfg80211_bss.
  * @cipher_suites: supported cipher suites
  * @n_cipher_suites: number of supported cipher suites
  * @akm_suites: supported AKM suites
@@ -4569,7 +4569,7 @@ struct wiphy {
 
 	u32 ap_sme_capa;
 
-	enum cyw-cfg80211_signal_type signal_type;
+	enum cyw_cfg80211_signal_type signal_type;
 
 	int bss_priv_size;
 	u8 max_scan_ssids;
@@ -4599,7 +4599,7 @@ struct wiphy {
 
 #ifdef CONFIG_PM
 	const struct wiphy_wowlan_support *wowlan;
-	struct cyw-cfg80211_wowlan *wowlan_config;
+	struct cyw_cfg80211_wowlan *wowlan_config;
 #endif
 
 	u16 max_remain_on_channel_duration;
@@ -4635,7 +4635,7 @@ struct wiphy {
 	void (*reg_notifier)(struct wiphy *wiphy,
 			     struct regulatory_request *request);
 
-	/* fields below are read-only, assigned by cyw-cfg80211 */
+	/* fields below are read-only, assigned by cyw_cfg80211 */
 
 	const struct ieee80211_regdomain __rcu *regd;
 
@@ -4683,7 +4683,7 @@ struct wiphy {
 	u8 support_mbssid:1,
 	   support_only_he_mbssid:1;
 
-	const struct cyw-cfg80211_pmsr_capabilities *pmsr_capa;
+	const struct cyw_cfg80211_pmsr_capabilities *pmsr_capa;
 
 	char priv[0] __aligned(NETDEV_ALIGN);
 };
@@ -4756,7 +4756,7 @@ static inline const char *wiphy_name(const struct wiphy *wiphy)
 }
 
 /**
- * wiphy_new_nm - create a new wiphy for use with cyw-cfg80211
+ * wiphy_new_nm - create a new wiphy for use with cyw_cfg80211
  *
  * @ops: The configuration operations for this device
  * @sizeof_priv: The size of the private area to allocate
@@ -4769,11 +4769,11 @@ static inline const char *wiphy_name(const struct wiphy *wiphy)
  * Return: A pointer to the new wiphy. This pointer must be
  * assigned to each netdev's ieee80211_ptr for proper operation.
  */
-struct wiphy *wiphy_new_nm(const struct cyw-cfg80211_ops *ops, int sizeof_priv,
+struct wiphy *wiphy_new_nm(const struct cyw_cfg80211_ops *ops, int sizeof_priv,
 			   const char *requested_name);
 
 /**
- * wiphy_new - create a new wiphy for use with cyw-cfg80211
+ * wiphy_new - create a new wiphy for use with cyw_cfg80211
  *
  * @ops: The configuration operations for this device
  * @sizeof_priv: The size of the private area to allocate
@@ -4784,14 +4784,14 @@ struct wiphy *wiphy_new_nm(const struct cyw-cfg80211_ops *ops, int sizeof_priv,
  * Return: A pointer to the new wiphy. This pointer must be
  * assigned to each netdev's ieee80211_ptr for proper operation.
  */
-static inline struct wiphy *wiphy_new(const struct cyw-cfg80211_ops *ops,
+static inline struct wiphy *wiphy_new(const struct cyw_cfg80211_ops *ops,
 				      int sizeof_priv)
 {
 	return wiphy_new_nm(ops, sizeof_priv, NULL);
 }
 
 /**
- * wiphy_register - register a wiphy with cyw-cfg80211
+ * wiphy_register - register a wiphy with cyw_cfg80211
  *
  * @wiphy: The wiphy to register.
  *
@@ -4800,7 +4800,7 @@ static inline struct wiphy *wiphy_new(const struct cyw-cfg80211_ops *ops,
 int wiphy_register(struct wiphy *wiphy);
 
 /**
- * wiphy_unregister - deregister a wiphy from cyw-cfg80211
+ * wiphy_unregister - deregister a wiphy from cyw_cfg80211
  *
  * @wiphy: The wiphy to unregister.
  *
@@ -4818,10 +4818,10 @@ void wiphy_unregister(struct wiphy *wiphy);
 void wiphy_free(struct wiphy *wiphy);
 
 /* internal structs */
-struct cyw-cfg80211_conn;
-struct cyw-cfg80211_internal_bss;
-struct cyw-cfg80211_cached_keys;
-struct cyw-cfg80211_cqm_config;
+struct cyw_cfg80211_conn;
+struct cyw_cfg80211_internal_bss;
+struct cyw_cfg80211_cached_keys;
+struct cyw_cfg80211_cqm_config;
 
 /**
  * struct wireless_dev - wireless device state
@@ -4830,10 +4830,10 @@ struct cyw-cfg80211_cqm_config;
  * that uses the ieee80211_ptr field in struct net_device (this
  * is intentional so it can be allocated along with the netdev.)
  * It need not be registered then as netdev registration will
- * be intercepted by cyw-cfg80211 to see the new wireless device.
+ * be intercepted by cyw_cfg80211 to see the new wireless device.
  *
  * For non-netdev uses, it must also be allocated by the driver
- * in response to the cyw-cfg80211 callbacks that require it, as
+ * in response to the cyw_cfg80211 callbacks that require it, as
  * there's no netdev registration in that case it may not be
  * allocated outside of callback operations that return it.
  *
@@ -4868,7 +4868,7 @@ struct cyw-cfg80211_cqm_config;
  * @use_4addr: indicates 4addr mode is used on this interface, must be
  *	set by driver (if supported) on add_interface BEFORE registering the
  *	netdev and may otherwise be used by driver read-only, will be update
- *	by cyw-cfg80211 on change_interface
+ *	by cyw_cfg80211 on change_interface
  * @mgmt_registrations: list of registrations for management frames
  * @mgmt_registrations_lock: lock for the list
  * @mtx: mutex used to lock data in this struct, may be used by drivers
@@ -4885,7 +4885,7 @@ struct cyw-cfg80211_cqm_config;
  * @ps_timeout: dynamic powersave timeout
  * @ap_unexpected_nlportid: (private) netlink port ID of application
  *	registered for unexpected class 3 frames (AP mode)
- * @conn: (private) cyw-cfg80211 software SME connection state machine data
+ * @conn: (private) cyw_cfg80211 software SME connection state machine data
  * @connect_keys: (private) keys to set after connection is established
  * @conn_bss_type: connecting/connected BSS type
  * @conn_owner_nlportid: (private) connection owner socket port ID
@@ -4906,7 +4906,7 @@ struct wireless_dev {
 	struct wiphy *wiphy;
 	enum nl80211_iftype iftype;
 
-	/* the remainder of this struct should be private to cyw-cfg80211 */
+	/* the remainder of this struct should be private to cyw_cfg80211 */
 	struct list_head list;
 	struct net_device *netdev;
 
@@ -4924,8 +4924,8 @@ struct wireless_dev {
 	/* currently used for IBSS and SME - might be rearranged later */
 	u8 ssid[IEEE80211_MAX_SSID_LEN];
 	u8 ssid_len, mesh_id_len, mesh_id_up_len;
-	struct cyw-cfg80211_conn *conn;
-	struct cyw-cfg80211_cached_keys *connect_keys;
+	struct cyw_cfg80211_conn *conn;
+	struct cyw_cfg80211_cached_keys *connect_keys;
 	enum ieee80211_bss_type conn_bss_type;
 	u32 conn_owner_nlportid;
 
@@ -4935,9 +4935,9 @@ struct wireless_dev {
 	struct list_head event_list;
 	spinlock_t event_lock;
 
-	struct cyw-cfg80211_internal_bss *current_bss; /* associated / joined */
-	struct cyw-cfg80211_chan_def preset_chandef;
-	struct cyw-cfg80211_chan_def chandef;
+	struct cyw_cfg80211_internal_bss *current_bss; /* associated / joined */
+	struct cyw_cfg80211_chan_def preset_chandef;
+	struct cyw_cfg80211_chan_def chandef;
 
 	bool ibss_fixed;
 	bool ibss_dfs_possible;
@@ -4959,9 +4959,9 @@ struct wireless_dev {
 #ifdef CPTCFG_CFG80211_WEXT
 	/* wext data */
 	struct {
-		struct cyw-cfg80211_ibss_params ibss;
-		struct cyw-cfg80211_connect_params connect;
-		struct cyw-cfg80211_cached_keys *keys;
+		struct cyw_cfg80211_ibss_params ibss;
+		struct cyw_cfg80211_connect_params connect;
+		struct cyw_cfg80211_cached_keys *keys;
 		const u8 *ie;
 		size_t ie_len;
 		u8 bssid[ETH_ALEN];
@@ -4972,7 +4972,7 @@ struct wireless_dev {
 	} wext;
 #endif
 
-	struct cyw-cfg80211_cqm_config *cqm_config;
+	struct cyw_cfg80211_cqm_config *cqm_config;
 
 	struct list_head pmsr_list;
 	spinlock_t pmsr_lock;
@@ -5008,7 +5008,7 @@ static inline void *wdev_priv(struct wireless_dev *wdev)
 /**
  * DOC: Utility functions
  *
- * cyw-cfg80211 offers a number of utility functions that can be useful.
+ * cyw_cfg80211 offers a number of utility functions that can be useful.
  */
 
 /**
@@ -5181,7 +5181,7 @@ unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr);
 /**
  * DOC: Data path helpers
  *
- * In addition to generic utilities, cyw-cfg80211 also offers
+ * In addition to generic utilities, cyw_cfg80211 also offers
  * functions that help implement the data path for devices
  * that do not do the 802.11/802.3 conversion on the device.
  */
@@ -5235,16 +5235,16 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
 			      const u8 *check_da, const u8 *check_sa);
 
 /**
- * cyw-cfg80211_classify8021d - determine the 802.1p/1d tag for a data frame
+ * cyw_cfg80211_classify8021d - determine the 802.1p/1d tag for a data frame
  * @skb: the data frame
  * @qos_map: Interworking QoS mapping or %NULL if not in use
  * Return: The 802.1p/1d tag.
  */
-unsigned int cyw-cfg80211_classify8021d(struct sk_buff *skb,
-				    struct cyw-cfg80211_qos_map *qos_map);
+unsigned int cyw_cfg80211_classify8021d(struct sk_buff *skb,
+				    struct cyw_cfg80211_qos_map *qos_map);
 
 /**
- * cyw-cfg80211_find_elem_match - match information element and byte array in data
+ * cyw_cfg80211_find_elem_match - match information element and byte array in data
  *
  * @eid: element ID
  * @ies: data consisting of IEs
@@ -5252,7 +5252,7 @@ unsigned int cyw-cfg80211_classify8021d(struct sk_buff *skb,
  * @match: byte array to match
  * @match_len: number of bytes in the match array
  * @match_offset: offset in the IE data where the byte array should match.
- *	Note the difference to cyw-cfg80211_find_ie_match() which considers
+ *	Note the difference to cyw_cfg80211_find_ie_match() which considers
  *	the offset to start from the element ID byte, but here we take
  *	the data portion instead.
  *
@@ -5266,12 +5266,12 @@ unsigned int cyw-cfg80211_classify8021d(struct sk_buff *skb,
  * byte array to match.
  */
 const struct element *
-cyw-cfg80211_find_elem_match(u8 eid, const u8 *ies, unsigned int len,
+cyw_cfg80211_find_elem_match(u8 eid, const u8 *ies, unsigned int len,
 			 const u8 *match, unsigned int match_len,
 			 unsigned int match_offset);
 
 /**
- * cyw-cfg80211_find_ie_match - match information element and byte array in data
+ * cyw_cfg80211_find_ie_match - match information element and byte array in data
  *
  * @eid: element ID
  * @ies: data consisting of IEs
@@ -5295,7 +5295,7 @@ cyw-cfg80211_find_elem_match(u8 eid, const u8 *ies, unsigned int len,
  * byte array to match.
  */
 static inline const u8 *
-cyw-cfg80211_find_ie_match(u8 eid, const u8 *ies, unsigned int len,
+cyw_cfg80211_find_ie_match(u8 eid, const u8 *ies, unsigned int len,
 		       const u8 *match, unsigned int match_len,
 		       unsigned int match_offset)
 {
@@ -5306,14 +5306,14 @@ cyw-cfg80211_find_ie_match(u8 eid, const u8 *ies, unsigned int len,
 		    (!match_len && match_offset)))
 		return NULL;
 
-	return (void *)cyw-cfg80211_find_elem_match(eid, ies, len,
+	return (void *)cyw_cfg80211_find_elem_match(eid, ies, len,
 						match, match_len,
 						match_offset ?
 							match_offset - 2 : 0);
 }
 
 /**
- * cyw-cfg80211_find_elem - find information element in data
+ * cyw_cfg80211_find_elem - find information element in data
  *
  * @eid: element ID
  * @ies: data consisting of IEs
@@ -5328,13 +5328,13 @@ cyw-cfg80211_find_ie_match(u8 eid, const u8 *ies, unsigned int len,
  * having to fit into the given data.
  */
 static inline const struct element *
-cyw-cfg80211_find_elem(u8 eid, const u8 *ies, int len)
+cyw_cfg80211_find_elem(u8 eid, const u8 *ies, int len)
 {
-	return cyw-cfg80211_find_elem_match(eid, ies, len, NULL, 0, 0);
+	return cyw_cfg80211_find_elem_match(eid, ies, len, NULL, 0, 0);
 }
 
 /**
- * cyw-cfg80211_find_ie - find information element in data
+ * cyw_cfg80211_find_ie - find information element in data
  *
  * @eid: element ID
  * @ies: data consisting of IEs
@@ -5348,13 +5348,13 @@ cyw-cfg80211_find_elem(u8 eid, const u8 *ies, int len)
  * Note: There are no checks on the element length other than
  * having to fit into the given data.
  */
-static inline const u8 *cyw-cfg80211_find_ie(u8 eid, const u8 *ies, int len)
+static inline const u8 *cyw_cfg80211_find_ie(u8 eid, const u8 *ies, int len)
 {
-	return cyw-cfg80211_find_ie_match(eid, ies, len, NULL, 0, 0);
+	return cyw_cfg80211_find_ie_match(eid, ies, len, NULL, 0, 0);
 }
 
 /**
- * cyw-cfg80211_find_ext_elem - find information element with EID Extension in data
+ * cyw_cfg80211_find_ext_elem - find information element with EID Extension in data
  *
  * @ext_eid: element ID Extension
  * @ies: data consisting of IEs
@@ -5369,14 +5369,14 @@ static inline const u8 *cyw-cfg80211_find_ie(u8 eid, const u8 *ies, int len)
  * having to fit into the given data.
  */
 static inline const struct element *
-cyw-cfg80211_find_ext_elem(u8 ext_eid, const u8 *ies, int len)
+cyw_cfg80211_find_ext_elem(u8 ext_eid, const u8 *ies, int len)
 {
-	return cyw-cfg80211_find_elem_match(WLAN_EID_EXTENSION, ies, len,
+	return cyw_cfg80211_find_elem_match(WLAN_EID_EXTENSION, ies, len,
 					&ext_eid, 1, 0);
 }
 
 /**
- * cyw-cfg80211_find_ext_ie - find information element with EID Extension in data
+ * cyw_cfg80211_find_ext_ie - find information element with EID Extension in data
  *
  * @ext_eid: element ID Extension
  * @ies: data consisting of IEs
@@ -5390,14 +5390,14 @@ cyw-cfg80211_find_ext_elem(u8 ext_eid, const u8 *ies, int len)
  * Note: There are no checks on the element length other than
  * having to fit into the given data.
  */
-static inline const u8 *cyw-cfg80211_find_ext_ie(u8 ext_eid, const u8 *ies, int len)
+static inline const u8 *cyw_cfg80211_find_ext_ie(u8 ext_eid, const u8 *ies, int len)
 {
-	return cyw-cfg80211_find_ie_match(WLAN_EID_EXTENSION, ies, len,
+	return cyw_cfg80211_find_ie_match(WLAN_EID_EXTENSION, ies, len,
 				      &ext_eid, 1, 2);
 }
 
 /**
- * cyw-cfg80211_find_vendor_elem - find vendor specific information element in data
+ * cyw_cfg80211_find_vendor_elem - find vendor specific information element in data
  *
  * @oui: vendor OUI
  * @oui_type: vendor-specific OUI type (must be < 0xff), negative means any
@@ -5411,12 +5411,12 @@ static inline const u8 *cyw-cfg80211_find_ext_ie(u8 ext_eid, const u8 *ies, int 
  * Note: There are no checks on the element length other than having to fit into
  * the given data.
  */
-const struct element *cyw-cfg80211_find_vendor_elem(unsigned int oui, int oui_type,
+const struct element *cyw_cfg80211_find_vendor_elem(unsigned int oui, int oui_type,
 						const u8 *ies,
 						unsigned int len);
 
 /**
- * cyw-cfg80211_find_vendor_ie - find vendor specific information element in data
+ * cyw_cfg80211_find_vendor_ie - find vendor specific information element in data
  *
  * @oui: vendor OUI
  * @oui_type: vendor-specific OUI type (must be < 0xff), negative means any
@@ -5432,14 +5432,14 @@ const struct element *cyw-cfg80211_find_vendor_elem(unsigned int oui, int oui_ty
  * the given data.
  */
 static inline const u8 *
-cyw-cfg80211_find_vendor_ie(unsigned int oui, int oui_type,
+cyw_cfg80211_find_vendor_ie(unsigned int oui, int oui_type,
 			const u8 *ies, unsigned int len)
 {
-	return (void *)cyw-cfg80211_find_vendor_elem(oui, oui_type, ies, len);
+	return (void *)cyw_cfg80211_find_vendor_elem(oui, oui_type, ies, len);
 }
 
 /**
- * cyw-cfg80211_send_layer2_update - send layer 2 update frame
+ * cyw_cfg80211_send_layer2_update - send layer 2 update frame
  *
  * @dev: network device
  * @addr: STA MAC address
@@ -5447,7 +5447,7 @@ cyw-cfg80211_find_vendor_ie(unsigned int oui, int oui_type,
  * Wireless drivers can use this function to update forwarding tables in bridge
  * devices upon STA association.
  */
-void cyw-cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr);
+void cyw_cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr);
 
 /**
  * DOC: Regulatory enforcement infrastructure
@@ -5471,8 +5471,8 @@ void cyw-cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr);
  * If the driver provides an ISO/IEC 3166 alpha2 userspace will be queried
  * for a regulatory domain structure for the respective country.
  *
- * The wiphy must have been registered to cyw-cfg80211 prior to this call.
- * For cyw-cfg80211 drivers this means you must first use wiphy_register(),
+ * The wiphy must have been registered to cyw_cfg80211 prior to this call.
+ * For cyw_cfg80211 drivers this means you must first use wiphy_register(),
  * for mac80211 drivers you must first use ieee80211_register_hw().
  *
  * Drivers should check the return value, its possible you can get
@@ -5522,7 +5522,7 @@ int regulatory_set_wiphy_regd_sync_rtnl(struct wiphy *wiphy,
  * default channel settings will be disregarded. If no rule is found for a
  * channel on the regulatory domain the channel will be disabled.
  * Drivers using this for a wiphy should also set the wiphy flag
- * REGULATORY_CUSTOM_REG or cyw-cfg80211 will set it for the wiphy
+ * REGULATORY_CUSTOM_REG or cyw_cfg80211 will set it for the wiphy
  * that called this helper.
  */
 void wiphy_apply_custom_regulatory(struct wiphy *wiphy,
@@ -5592,111 +5592,111 @@ int reg_query_regdb_wmm(char *alpha2, int freq,
 			struct ieee80211_reg_rule *rule);
 
 /*
- * callbacks for asynchronous cyw-cfg80211 methods, notification
+ * callbacks for asynchronous cyw_cfg80211 methods, notification
  * functions and BSS handling helpers
  */
 
 /**
- * cyw-cfg80211_scan_done - notify that scan finished
+ * cyw_cfg80211_scan_done - notify that scan finished
  *
  * @request: the corresponding scan request
  * @info: information about the completed scan
  */
-void cyw-cfg80211_scan_done(struct cyw-cfg80211_scan_request *request,
-			struct cyw-cfg80211_scan_info *info);
+void cyw_cfg80211_scan_done(struct cyw_cfg80211_scan_request *request,
+			struct cyw_cfg80211_scan_info *info);
 
 /**
- * cyw-cfg80211_sched_scan_results - notify that new scan results are available
+ * cyw_cfg80211_sched_scan_results - notify that new scan results are available
  *
  * @wiphy: the wiphy which got scheduled scan results
  * @reqid: identifier for the related scheduled scan request
  */
-void cyw-cfg80211_sched_scan_results(struct wiphy *wiphy, u64 reqid);
+void cyw_cfg80211_sched_scan_results(struct wiphy *wiphy, u64 reqid);
 
 /**
- * cyw-cfg80211_sched_scan_stopped - notify that the scheduled scan has stopped
+ * cyw_cfg80211_sched_scan_stopped - notify that the scheduled scan has stopped
  *
  * @wiphy: the wiphy on which the scheduled scan stopped
  * @reqid: identifier for the related scheduled scan request
  *
- * The driver can call this function to inform cyw-cfg80211 that the
+ * The driver can call this function to inform cyw_cfg80211 that the
  * scheduled scan had to be stopped, for whatever reason.  The driver
  * is then called back via the sched_scan_stop operation when done.
  */
-void cyw-cfg80211_sched_scan_stopped(struct wiphy *wiphy, u64 reqid);
+void cyw_cfg80211_sched_scan_stopped(struct wiphy *wiphy, u64 reqid);
 
 /**
- * cyw-cfg80211_sched_scan_stopped_rtnl - notify that the scheduled scan has stopped
+ * cyw_cfg80211_sched_scan_stopped_rtnl - notify that the scheduled scan has stopped
  *
  * @wiphy: the wiphy on which the scheduled scan stopped
  * @reqid: identifier for the related scheduled scan request
  *
- * The driver can call this function to inform cyw-cfg80211 that the
+ * The driver can call this function to inform cyw_cfg80211 that the
  * scheduled scan had to be stopped, for whatever reason.  The driver
  * is then called back via the sched_scan_stop operation when done.
  * This function should be called with rtnl locked.
  */
-void cyw-cfg80211_sched_scan_stopped_rtnl(struct wiphy *wiphy, u64 reqid);
+void cyw_cfg80211_sched_scan_stopped_rtnl(struct wiphy *wiphy, u64 reqid);
 
 /**
- * cyw-cfg80211_inform_bss_frame_data - inform cyw-cfg80211 of a received BSS frame
+ * cyw_cfg80211_inform_bss_frame_data - inform cyw_cfg80211 of a received BSS frame
  * @wiphy: the wiphy reporting the BSS
  * @data: the BSS metadata
  * @mgmt: the management frame (probe response or beacon)
  * @len: length of the management frame
  * @gfp: context flags
  *
- * This informs cyw-cfg80211 that BSS information was found and
+ * This informs cyw_cfg80211 that BSS information was found and
  * the BSS should be updated/added.
  *
- * Return: A referenced struct, must be released with cyw-cfg80211_put_bss()!
+ * Return: A referenced struct, must be released with cyw_cfg80211_put_bss()!
  * Or %NULL on error.
  */
-struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss_frame_data(struct wiphy *wiphy,
-			       struct cyw-cfg80211_inform_bss *data,
+struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss_frame_data(struct wiphy *wiphy,
+			       struct cyw_cfg80211_inform_bss *data,
 			       struct ieee80211_mgmt *mgmt, size_t len,
 			       gfp_t gfp);
 
-static inline struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss_width_frame(struct wiphy *wiphy,
+static inline struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss_width_frame(struct wiphy *wiphy,
 				struct ieee80211_channel *rx_channel,
 				enum nl80211_bss_scan_width scan_width,
 				struct ieee80211_mgmt *mgmt, size_t len,
 				s32 signal, gfp_t gfp)
 {
-	struct cyw-cfg80211_inform_bss data = {
+	struct cyw_cfg80211_inform_bss data = {
 		.chan = rx_channel,
 		.scan_width = scan_width,
 		.signal = signal,
 	};
 
-	return cyw-cfg80211_inform_bss_frame_data(wiphy, &data, mgmt, len, gfp);
+	return cyw_cfg80211_inform_bss_frame_data(wiphy, &data, mgmt, len, gfp);
 }
 
-static inline struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss_frame(struct wiphy *wiphy,
+static inline struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss_frame(struct wiphy *wiphy,
 			  struct ieee80211_channel *rx_channel,
 			  struct ieee80211_mgmt *mgmt, size_t len,
 			  s32 signal, gfp_t gfp)
 {
-	struct cyw-cfg80211_inform_bss data = {
+	struct cyw_cfg80211_inform_bss data = {
 		.chan = rx_channel,
 		.scan_width = NL80211_BSS_CHAN_WIDTH_20,
 		.signal = signal,
 	};
 
-	return cyw-cfg80211_inform_bss_frame_data(wiphy, &data, mgmt, len, gfp);
+	return cyw_cfg80211_inform_bss_frame_data(wiphy, &data, mgmt, len, gfp);
 }
 
 /**
- * cyw-cfg80211_gen_new_bssid - generate a nontransmitted BSSID for multi-BSSID
+ * cyw_cfg80211_gen_new_bssid - generate a nontransmitted BSSID for multi-BSSID
  * @bssid: transmitter BSSID
  * @max_bssid: max BSSID indicator, taken from Multiple BSSID element
  * @mbssid_index: BSSID index, taken from Multiple BSSID index element
  * @new_bssid: calculated nontransmitted BSSID
  */
-static inline void cyw-cfg80211_gen_new_bssid(const u8 *bssid, u8 max_bssid,
+static inline void cyw_cfg80211_gen_new_bssid(const u8 *bssid, u8 max_bssid,
 					  u8 mbssid_index, u8 *new_bssid)
 {
 	u64 bssid_u64 = ether_addr_to_u64(bssid);
@@ -5711,15 +5711,15 @@ static inline void cyw-cfg80211_gen_new_bssid(const u8 *bssid, u8 max_bssid,
 }
 
 /**
- * cyw-cfg80211_is_element_inherited - returns if element ID should be inherited
+ * cyw_cfg80211_is_element_inherited - returns if element ID should be inherited
  * @element: element to check
  * @non_inherit_element: non inheritance element
  */
-bool cyw-cfg80211_is_element_inherited(const struct element *element,
+bool cyw_cfg80211_is_element_inherited(const struct element *element,
 				   const struct element *non_inherit_element);
 
 /**
- * cyw-cfg80211_merge_profile - merges a MBSSID profile if it is split between IEs
+ * cyw_cfg80211_merge_profile - merges a MBSSID profile if it is split between IEs
  * @ie: ies
  * @ielen: length of IEs
  * @mbssid_elem: current MBSSID element
@@ -5727,26 +5727,26 @@ bool cyw-cfg80211_is_element_inherited(const struct element *element,
  * @merged_ie: location of the merged profile
  * @max_copy_len: max merged profile length
  */
-size_t cyw-cfg80211_merge_profile(const u8 *ie, size_t ielen,
+size_t cyw_cfg80211_merge_profile(const u8 *ie, size_t ielen,
 			      const struct element *mbssid_elem,
 			      const struct element *sub_elem,
 			      u8 *merged_ie, size_t max_copy_len);
 
 /**
- * enum cyw-cfg80211_bss_frame_type - frame type that the BSS data came from
+ * enum cyw_cfg80211_bss_frame_type - frame type that the BSS data came from
  * @CFG80211_BSS_FTYPE_UNKNOWN: driver doesn't know whether the data is
  *	from a beacon or probe response
  * @CFG80211_BSS_FTYPE_BEACON: data comes from a beacon
  * @CFG80211_BSS_FTYPE_PRESP: data comes from a probe response
  */
-enum cyw-cfg80211_bss_frame_type {
+enum cyw_cfg80211_bss_frame_type {
 	CFG80211_BSS_FTYPE_UNKNOWN,
 	CFG80211_BSS_FTYPE_BEACON,
 	CFG80211_BSS_FTYPE_PRESP,
 };
 
 /**
- * cyw-cfg80211_inform_bss_data - inform cyw-cfg80211 of a new BSS
+ * cyw_cfg80211_inform_bss_data - inform cyw_cfg80211 of a new BSS
  *
  * @wiphy: the wiphy reporting the BSS
  * @data: the BSS metadata
@@ -5759,61 +5759,61 @@ enum cyw-cfg80211_bss_frame_type {
  * @ielen: length of the additional IEs
  * @gfp: context flags
  *
- * This informs cyw-cfg80211 that BSS information was found and
+ * This informs cyw_cfg80211 that BSS information was found and
  * the BSS should be updated/added.
  *
- * Return: A referenced struct, must be released with cyw-cfg80211_put_bss()!
+ * Return: A referenced struct, must be released with cyw_cfg80211_put_bss()!
  * Or %NULL on error.
  */
-struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss_data(struct wiphy *wiphy,
-			 struct cyw-cfg80211_inform_bss *data,
-			 enum cyw-cfg80211_bss_frame_type ftype,
+struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss_data(struct wiphy *wiphy,
+			 struct cyw_cfg80211_inform_bss *data,
+			 enum cyw_cfg80211_bss_frame_type ftype,
 			 const u8 *bssid, u64 tsf, u16 capability,
 			 u16 beacon_interval, const u8 *ie, size_t ielen,
 			 gfp_t gfp);
 
-static inline struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss_width(struct wiphy *wiphy,
+static inline struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss_width(struct wiphy *wiphy,
 			  struct ieee80211_channel *rx_channel,
 			  enum nl80211_bss_scan_width scan_width,
-			  enum cyw-cfg80211_bss_frame_type ftype,
+			  enum cyw_cfg80211_bss_frame_type ftype,
 			  const u8 *bssid, u64 tsf, u16 capability,
 			  u16 beacon_interval, const u8 *ie, size_t ielen,
 			  s32 signal, gfp_t gfp)
 {
-	struct cyw-cfg80211_inform_bss data = {
+	struct cyw_cfg80211_inform_bss data = {
 		.chan = rx_channel,
 		.scan_width = scan_width,
 		.signal = signal,
 	};
 
-	return cyw-cfg80211_inform_bss_data(wiphy, &data, ftype, bssid, tsf,
+	return cyw_cfg80211_inform_bss_data(wiphy, &data, ftype, bssid, tsf,
 					capability, beacon_interval, ie, ielen,
 					gfp);
 }
 
-static inline struct cyw-cfg80211_bss * __must_check
-cyw-cfg80211_inform_bss(struct wiphy *wiphy,
+static inline struct cyw_cfg80211_bss * __must_check
+cyw_cfg80211_inform_bss(struct wiphy *wiphy,
 		    struct ieee80211_channel *rx_channel,
-		    enum cyw-cfg80211_bss_frame_type ftype,
+		    enum cyw_cfg80211_bss_frame_type ftype,
 		    const u8 *bssid, u64 tsf, u16 capability,
 		    u16 beacon_interval, const u8 *ie, size_t ielen,
 		    s32 signal, gfp_t gfp)
 {
-	struct cyw-cfg80211_inform_bss data = {
+	struct cyw_cfg80211_inform_bss data = {
 		.chan = rx_channel,
 		.scan_width = NL80211_BSS_CHAN_WIDTH_20,
 		.signal = signal,
 	};
 
-	return cyw-cfg80211_inform_bss_data(wiphy, &data, ftype, bssid, tsf,
+	return cyw_cfg80211_inform_bss_data(wiphy, &data, ftype, bssid, tsf,
 					capability, beacon_interval, ie, ielen,
 					gfp);
 }
 
 /**
- * cyw-cfg80211_get_bss - get a BSS reference
+ * cyw_cfg80211_get_bss - get a BSS reference
  * @wiphy: the wiphy this BSS struct belongs to
  * @channel: the channel to search on (or %NULL)
  * @bssid: the desired BSSID (or %NULL)
@@ -5822,42 +5822,42 @@ cyw-cfg80211_inform_bss(struct wiphy *wiphy,
  * @bss_type: type of BSS, see &enum ieee80211_bss_type
  * @privacy: privacy filter, see &enum ieee80211_privacy
  */
-struct cyw-cfg80211_bss *cyw-cfg80211_get_bss(struct wiphy *wiphy,
+struct cyw_cfg80211_bss *cyw_cfg80211_get_bss(struct wiphy *wiphy,
 				      struct ieee80211_channel *channel,
 				      const u8 *bssid,
 				      const u8 *ssid, size_t ssid_len,
 				      enum ieee80211_bss_type bss_type,
 				      enum ieee80211_privacy privacy);
-static inline struct cyw-cfg80211_bss *
-cyw-cfg80211_get_ibss(struct wiphy *wiphy,
+static inline struct cyw_cfg80211_bss *
+cyw_cfg80211_get_ibss(struct wiphy *wiphy,
 		  struct ieee80211_channel *channel,
 		  const u8 *ssid, size_t ssid_len)
 {
-	return cyw-cfg80211_get_bss(wiphy, channel, NULL, ssid, ssid_len,
+	return cyw_cfg80211_get_bss(wiphy, channel, NULL, ssid, ssid_len,
 				IEEE80211_BSS_TYPE_IBSS,
 				IEEE80211_PRIVACY_ANY);
 }
 
 /**
- * cyw-cfg80211_ref_bss - reference BSS struct
+ * cyw_cfg80211_ref_bss - reference BSS struct
  * @wiphy: the wiphy this BSS struct belongs to
  * @bss: the BSS struct to reference
  *
  * Increments the refcount of the given BSS struct.
  */
-void cyw-cfg80211_ref_bss(struct wiphy *wiphy, struct cyw-cfg80211_bss *bss);
+void cyw_cfg80211_ref_bss(struct wiphy *wiphy, struct cyw_cfg80211_bss *bss);
 
 /**
- * cyw-cfg80211_put_bss - unref BSS struct
+ * cyw_cfg80211_put_bss - unref BSS struct
  * @wiphy: the wiphy this BSS struct belongs to
  * @bss: the BSS struct
  *
  * Decrements the refcount of the given BSS struct.
  */
-void cyw-cfg80211_put_bss(struct wiphy *wiphy, struct cyw-cfg80211_bss *bss);
+void cyw_cfg80211_put_bss(struct wiphy *wiphy, struct cyw_cfg80211_bss *bss);
 
 /**
- * cyw-cfg80211_unlink_bss - unlink BSS from internal data structures
+ * cyw_cfg80211_unlink_bss - unlink BSS from internal data structures
  * @wiphy: the wiphy
  * @bss: the bss to remove
  *
@@ -5866,10 +5866,10 @@ void cyw-cfg80211_put_bss(struct wiphy *wiphy, struct cyw-cfg80211_bss *bss);
  * function when you detect a BSS is gone. Normally BSSes will also time
  * out, so it is not necessary to use this function at all.
  */
-void cyw-cfg80211_unlink_bss(struct wiphy *wiphy, struct cyw-cfg80211_bss *bss);
+void cyw_cfg80211_unlink_bss(struct wiphy *wiphy, struct cyw_cfg80211_bss *bss);
 
 /**
- * cyw-cfg80211_bss_iter - iterate all BSS entries
+ * cyw_cfg80211_bss_iter - iterate all BSS entries
  *
  * This function iterates over the BSS entries associated with the given wiphy
  * and calls the callback for the iterated BSS. The iterator function is not
@@ -5881,15 +5881,15 @@ void cyw-cfg80211_unlink_bss(struct wiphy *wiphy, struct cyw-cfg80211_bss *bss);
  * @iter: the iterator function to call
  * @iter_data: an argument to the iterator function
  */
-void cyw-cfg80211_bss_iter(struct wiphy *wiphy,
-		       struct cyw-cfg80211_chan_def *chandef,
+void cyw_cfg80211_bss_iter(struct wiphy *wiphy,
+		       struct cyw_cfg80211_chan_def *chandef,
 		       void (*iter)(struct wiphy *wiphy,
-				    struct cyw-cfg80211_bss *bss,
+				    struct cyw_cfg80211_bss *bss,
 				    void *data),
 		       void *iter_data);
 
 static inline enum nl80211_bss_scan_width
-cyw-cfg80211_chandef_to_scan_width(const struct cyw-cfg80211_chan_def *chandef)
+cyw_cfg80211_chandef_to_scan_width(const struct cyw_cfg80211_chan_def *chandef)
 {
 	switch (chandef->width) {
 	case NL80211_CHAN_WIDTH_5:
@@ -5902,41 +5902,41 @@ cyw-cfg80211_chandef_to_scan_width(const struct cyw-cfg80211_chan_def *chandef)
 }
 
 /**
- * cyw-cfg80211_rx_mlme_mgmt - notification of processed MLME management frame
+ * cyw_cfg80211_rx_mlme_mgmt - notification of processed MLME management frame
  * @dev: network device
  * @buf: authentication frame (header + body)
  * @len: length of the frame data
  *
  * This function is called whenever an authentication, disassociation or
  * deauthentication frame has been received and processed in station mode.
- * After being asked to authenticate via cyw-cfg80211_ops::auth() the driver must
- * call either this function or cyw-cfg80211_auth_timeout().
- * After being asked to associate via cyw-cfg80211_ops::assoc() the driver must
- * call either this function or cyw-cfg80211_auth_timeout().
+ * After being asked to authenticate via cyw_cfg80211_ops::auth() the driver must
+ * call either this function or cyw_cfg80211_auth_timeout().
+ * After being asked to associate via cyw_cfg80211_ops::assoc() the driver must
+ * call either this function or cyw_cfg80211_auth_timeout().
  * While connected, the driver must calls this for received and processed
  * disassociation and deauthentication frames. If the frame couldn't be used
  * because it was unprotected, the driver must call the function
- * cyw-cfg80211_rx_unprot_mlme_mgmt() instead.
+ * cyw_cfg80211_rx_unprot_mlme_mgmt() instead.
  *
  * This function may sleep. The caller must hold the corresponding wdev's mutex.
  */
-void cyw-cfg80211_rx_mlme_mgmt(struct net_device *dev, const u8 *buf, size_t len);
+void cyw_cfg80211_rx_mlme_mgmt(struct net_device *dev, const u8 *buf, size_t len);
 
 /**
- * cyw-cfg80211_auth_timeout - notification of timed out authentication
+ * cyw_cfg80211_auth_timeout - notification of timed out authentication
  * @dev: network device
  * @addr: The MAC address of the device with which the authentication timed out
  *
  * This function may sleep. The caller must hold the corresponding wdev's
  * mutex.
  */
-void cyw-cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
+void cyw_cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
 
 /**
- * cyw-cfg80211_rx_assoc_resp - notification of processed association response
+ * cyw_cfg80211_rx_assoc_resp - notification of processed association response
  * @dev: network device
  * @bss: the BSS that association was requested with, ownership of the pointer
- *	moves to cyw-cfg80211 in this call
+ *	moves to cyw_cfg80211 in this call
  * @buf: (Re)Association Response frame (header + body)
  * @len: length of the frame data
  * @uapsd_queues: bitmap of queues configured for uapsd. Same format
@@ -5944,28 +5944,28 @@ void cyw-cfg80211_auth_timeout(struct net_device *dev, const u8 *addr);
  * @req_ies: information elements from the (Re)Association Request frame
  * @req_ies_len: length of req_ies data
  *
- * After being asked to associate via cyw-cfg80211_ops::assoc() the driver must
- * call either this function or cyw-cfg80211_auth_timeout().
+ * After being asked to associate via cyw_cfg80211_ops::assoc() the driver must
+ * call either this function or cyw_cfg80211_auth_timeout().
  *
  * This function may sleep. The caller must hold the corresponding wdev's mutex.
  */
-void cyw-cfg80211_rx_assoc_resp(struct net_device *dev,
-			    struct cyw-cfg80211_bss *bss,
+void cyw_cfg80211_rx_assoc_resp(struct net_device *dev,
+			    struct cyw_cfg80211_bss *bss,
 			    const u8 *buf, size_t len,
 			    int uapsd_queues,
 			    const u8 *req_ies, size_t req_ies_len);
 
 /**
- * cyw-cfg80211_assoc_timeout - notification of timed out association
+ * cyw_cfg80211_assoc_timeout - notification of timed out association
  * @dev: network device
  * @bss: The BSS entry with which association timed out.
  *
  * This function may sleep. The caller must hold the corresponding wdev's mutex.
  */
-void cyw-cfg80211_assoc_timeout(struct net_device *dev, struct cyw-cfg80211_bss *bss);
+void cyw_cfg80211_assoc_timeout(struct net_device *dev, struct cyw_cfg80211_bss *bss);
 
 /**
- * cyw-cfg80211_abandon_assoc - notify cyw-cfg80211 of abandoned association attempt
+ * cyw_cfg80211_abandon_assoc - notify cyw_cfg80211 of abandoned association attempt
  * @dev: network device
  * @bss: The BSS entry with which association was abandoned.
  *
@@ -5973,10 +5973,10 @@ void cyw-cfg80211_assoc_timeout(struct net_device *dev, struct cyw-cfg80211_bss 
  * an association attempt was abandoned.
  * This function may sleep. The caller must hold the corresponding wdev's mutex.
  */
-void cyw-cfg80211_abandon_assoc(struct net_device *dev, struct cyw-cfg80211_bss *bss);
+void cyw_cfg80211_abandon_assoc(struct net_device *dev, struct cyw_cfg80211_bss *bss);
 
 /**
- * cyw-cfg80211_tx_mlme_mgmt - notification of transmitted deauth/disassoc frame
+ * cyw_cfg80211_tx_mlme_mgmt - notification of transmitted deauth/disassoc frame
  * @dev: network device
  * @buf: 802.11 frame (header + body)
  * @len: length of the frame data
@@ -5986,10 +5986,10 @@ void cyw-cfg80211_abandon_assoc(struct net_device *dev, struct cyw-cfg80211_bss 
  * locally generated ones. This function may sleep. The caller must hold the
  * corresponding wdev's mutex.
  */
-void cyw-cfg80211_tx_mlme_mgmt(struct net_device *dev, const u8 *buf, size_t len);
+void cyw_cfg80211_tx_mlme_mgmt(struct net_device *dev, const u8 *buf, size_t len);
 
 /**
- * cyw-cfg80211_rx_unprot_mlme_mgmt - notification of unprotected mlme mgmt frame
+ * cyw_cfg80211_rx_unprot_mlme_mgmt - notification of unprotected mlme mgmt frame
  * @dev: network device
  * @buf: deauthentication frame (header + body)
  * @len: length of the frame data
@@ -5998,11 +5998,11 @@ void cyw-cfg80211_tx_mlme_mgmt(struct net_device *dev, const u8 *buf, size_t len
  * frame has been dropped in station mode because of MFP being used but the
  * frame was not protected. This function may sleep.
  */
-void cyw-cfg80211_rx_unprot_mlme_mgmt(struct net_device *dev,
+void cyw_cfg80211_rx_unprot_mlme_mgmt(struct net_device *dev,
 				  const u8 *buf, size_t len);
 
 /**
- * cyw-cfg80211_michael_mic_failure - notification of Michael MIC failure (TKIP)
+ * cyw_cfg80211_michael_mic_failure - notification of Michael MIC failure (TKIP)
  * @dev: network device
  * @addr: The source MAC address of the frame
  * @key_type: The key type that the received frame used
@@ -6014,30 +6014,30 @@ void cyw-cfg80211_rx_unprot_mlme_mgmt(struct net_device *dev,
  * received frame. This matches with MLME-MICHAELMICFAILURE.indication()
  * primitive.
  */
-void cyw-cfg80211_michael_mic_failure(struct net_device *dev, const u8 *addr,
+void cyw_cfg80211_michael_mic_failure(struct net_device *dev, const u8 *addr,
 				  enum nl80211_key_type key_type, int key_id,
 				  const u8 *tsc, gfp_t gfp);
 
 /**
- * cyw-cfg80211_ibss_joined - notify cyw-cfg80211 that device joined an IBSS
+ * cyw_cfg80211_ibss_joined - notify cyw_cfg80211 that device joined an IBSS
  *
  * @dev: network device
  * @bssid: the BSSID of the IBSS joined
  * @channel: the channel of the IBSS joined
  * @gfp: allocation flags
  *
- * This function notifies cyw-cfg80211 that the device joined an IBSS or
+ * This function notifies cyw_cfg80211 that the device joined an IBSS or
  * switched to a different BSSID. Before this function can be called,
  * either a beacon has to have been received from the IBSS, or one of
- * the cyw-cfg80211_inform_bss{,_frame} functions must have been called
+ * the cyw_cfg80211_inform_bss{,_frame} functions must have been called
  * with the locally generated beacon -- this guarantees that there is
- * always a scan result for this IBSS. cyw-cfg80211 will handle the rest.
+ * always a scan result for this IBSS. cyw_cfg80211 will handle the rest.
  */
-void cyw-cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid,
+void cyw_cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid,
 			  struct ieee80211_channel *channel, gfp_t gfp);
 
 /**
- * cyw-cfg80211_notify_new_candidate - notify cyw-cfg80211 of a new mesh peer candidate
+ * cyw_cfg80211_notify_new_candidate - notify cyw_cfg80211 of a new mesh peer candidate
  *
  * @dev: network device
  * @macaddr: the MAC address of the new candidate
@@ -6045,30 +6045,30 @@ void cyw-cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid,
  * @ie_len: length of the information elements buffer
  * @gfp: allocation flags
  *
- * This function notifies cyw-cfg80211 that the mesh peer candidate has been
+ * This function notifies cyw_cfg80211 that the mesh peer candidate has been
  * detected, most likely via a beacon or, less likely, via a probe response.
- * cyw-cfg80211 then sends a notification to userspace.
+ * cyw_cfg80211 then sends a notification to userspace.
  */
-void cyw-cfg80211_notify_new_peer_candidate(struct net_device *dev,
+void cyw_cfg80211_notify_new_peer_candidate(struct net_device *dev,
 		const u8 *macaddr, const u8 *ie, u8 ie_len,
 		int sig_dbm, gfp_t gfp);
 
 /**
  * DOC: RFkill integration
  *
- * RFkill integration in cyw-cfg80211 is almost invisible to drivers,
- * as cyw-cfg80211 automatically registers an rfkill instance for each
+ * RFkill integration in cyw_cfg80211 is almost invisible to drivers,
+ * as cyw_cfg80211 automatically registers an rfkill instance for each
  * wireless device it knows about. Soft kill is also translated
  * into disconnecting and turning all interfaces off, drivers are
  * expected to turn off the device when all interfaces are down.
  *
  * However, devices may have a hard RFkill line, in which case they
- * also need to interact with the rfkill subsystem, via cyw-cfg80211.
+ * also need to interact with the rfkill subsystem, via cyw_cfg80211.
  * They can do this with a few helper functions documented here.
  */
 
 /**
- * wiphy_rfkill_set_hw_state - notify cyw-cfg80211 about hw block state
+ * wiphy_rfkill_set_hw_state - notify cyw_cfg80211 about hw block state
  * @wiphy: the wiphy
  * @blocked: block status
  */
@@ -6106,12 +6106,12 @@ void wiphy_rfkill_stop_polling(struct wiphy *wiphy);
  * managers etc. need.
  */
 
-struct sk_buff *__cyw-cfg80211_alloc_reply_skb(struct wiphy *wiphy,
+struct sk_buff *__cyw_cfg80211_alloc_reply_skb(struct wiphy *wiphy,
 					   enum nl80211_commands cmd,
 					   enum nl80211_attrs attr,
 					   int approxlen);
 
-struct sk_buff *__cyw-cfg80211_alloc_event_skb(struct wiphy *wiphy,
+struct sk_buff *__cyw_cfg80211_alloc_event_skb(struct wiphy *wiphy,
 					   struct wireless_dev *wdev,
 					   enum nl80211_commands cmd,
 					   enum nl80211_attrs attr,
@@ -6119,10 +6119,10 @@ struct sk_buff *__cyw-cfg80211_alloc_event_skb(struct wiphy *wiphy,
 					   int vendor_event_idx,
 					   int approxlen, gfp_t gfp);
 
-void __cyw-cfg80211_send_event_skb(struct sk_buff *skb, gfp_t gfp);
+void __cyw_cfg80211_send_event_skb(struct sk_buff *skb, gfp_t gfp);
 
 /**
- * cyw-cfg80211_vendor_cmd_alloc_reply_skb - allocate vendor command reply
+ * cyw_cfg80211_vendor_cmd_alloc_reply_skb - allocate vendor command reply
  * @wiphy: the wiphy
  * @approxlen: an upper bound of the length of the data that will
  *	be put into the skb
@@ -6139,22 +6139,22 @@ void __cyw-cfg80211_send_event_skb(struct sk_buff *skb, gfp_t gfp);
  * which can then read that data out of the vendor data attribute.
  * You must not modify the skb in any other way.
  *
- * When done, call cyw-cfg80211_vendor_cmd_reply() with the skb and return
+ * When done, call cyw_cfg80211_vendor_cmd_reply() with the skb and return
  * its error code as the result of the doit() operation.
  *
  * Return: An allocated and pre-filled skb. %NULL if any errors happen.
  */
 static inline struct sk_buff *
-cyw-cfg80211_vendor_cmd_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
+cyw_cfg80211_vendor_cmd_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
 {
-	return __cyw-cfg80211_alloc_reply_skb(wiphy, NL80211_CMD_VENDOR,
+	return __cyw_cfg80211_alloc_reply_skb(wiphy, NL80211_CMD_VENDOR,
 					  NL80211_ATTR_VENDOR_DATA, approxlen);
 }
 
 /**
- * cyw-cfg80211_vendor_cmd_reply - send the reply skb
+ * cyw_cfg80211_vendor_cmd_reply - send the reply skb
  * @skb: The skb, must have been allocated with
- *	cyw-cfg80211_vendor_cmd_alloc_reply_skb()
+ *	cyw_cfg80211_vendor_cmd_alloc_reply_skb()
  *
  * Since calling this function will usually be the last thing
  * before returning from the vendor command doit() you should
@@ -6163,19 +6163,19 @@ cyw-cfg80211_vendor_cmd_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
  *
  * Return: An error code or 0 on success.
  */
-int cyw-cfg80211_vendor_cmd_reply(struct sk_buff *skb);
+int cyw_cfg80211_vendor_cmd_reply(struct sk_buff *skb);
 
 /**
- * cyw-cfg80211_vendor_cmd_get_sender
+ * cyw_cfg80211_vendor_cmd_get_sender
  * @wiphy: the wiphy
  *
  * Return the current netlink port ID in a vendor command handler.
  * Valid to call only there.
  */
-unsigned int cyw-cfg80211_vendor_cmd_get_sender(struct wiphy *wiphy);
+unsigned int cyw_cfg80211_vendor_cmd_get_sender(struct wiphy *wiphy);
 
 /**
- * cyw-cfg80211_vendor_event_alloc - allocate vendor-specific event skb
+ * cyw_cfg80211_vendor_event_alloc - allocate vendor-specific event skb
  * @wiphy: the wiphy
  * @wdev: the wireless device
  * @event_idx: index of the vendor event in the wiphy's vendor_events
@@ -6190,22 +6190,22 @@ unsigned int cyw-cfg80211_vendor_cmd_get_sender(struct wiphy *wiphy);
  * wireless device are added to the event message before the vendor data
  * attribute.
  *
- * When done filling the skb, call cyw-cfg80211_vendor_event() with the
+ * When done filling the skb, call cyw_cfg80211_vendor_event() with the
  * skb to send the event.
  *
  * Return: An allocated and pre-filled skb. %NULL if any errors happen.
  */
 static inline struct sk_buff *
-cyw-cfg80211_vendor_event_alloc(struct wiphy *wiphy, struct wireless_dev *wdev,
+cyw_cfg80211_vendor_event_alloc(struct wiphy *wiphy, struct wireless_dev *wdev,
 			     int approxlen, int event_idx, gfp_t gfp)
 {
-	return __cyw-cfg80211_alloc_event_skb(wiphy, wdev, NL80211_CMD_VENDOR,
+	return __cyw_cfg80211_alloc_event_skb(wiphy, wdev, NL80211_CMD_VENDOR,
 					  NL80211_ATTR_VENDOR_DATA,
 					  0, event_idx, approxlen, gfp);
 }
 
 /**
- * cyw-cfg80211_vendor_event_alloc_ucast - alloc unicast vendor-specific event skb
+ * cyw_cfg80211_vendor_event_alloc_ucast - alloc unicast vendor-specific event skb
  * @wiphy: the wiphy
  * @wdev: the wireless device
  * @event_idx: index of the vendor event in the wiphy's vendor_events
@@ -6216,40 +6216,40 @@ cyw-cfg80211_vendor_event_alloc(struct wiphy *wiphy, struct wireless_dev *wdev,
  *
  * This function allocates and pre-fills an skb for an event to send to
  * a specific (userland) socket. This socket would previously have been
- * obtained by cyw-cfg80211_vendor_cmd_get_sender(), and the caller MUST take
+ * obtained by cyw_cfg80211_vendor_cmd_get_sender(), and the caller MUST take
  * care to register a netlink notifier to see when the socket closes.
  *
  * If wdev != NULL, both the ifindex and identifier of the specified
  * wireless device are added to the event message before the vendor data
  * attribute.
  *
- * When done filling the skb, call cyw-cfg80211_vendor_event() with the
+ * When done filling the skb, call cyw_cfg80211_vendor_event() with the
  * skb to send the event.
  *
  * Return: An allocated and pre-filled skb. %NULL if any errors happen.
  */
 static inline struct sk_buff *
-cyw-cfg80211_vendor_event_alloc_ucast(struct wiphy *wiphy,
+cyw_cfg80211_vendor_event_alloc_ucast(struct wiphy *wiphy,
 				  struct wireless_dev *wdev,
 				  unsigned int portid, int approxlen,
 				  int event_idx, gfp_t gfp)
 {
-	return __cyw-cfg80211_alloc_event_skb(wiphy, wdev, NL80211_CMD_VENDOR,
+	return __cyw_cfg80211_alloc_event_skb(wiphy, wdev, NL80211_CMD_VENDOR,
 					  NL80211_ATTR_VENDOR_DATA,
 					  portid, event_idx, approxlen, gfp);
 }
 
 /**
- * cyw-cfg80211_vendor_event - send the event
- * @skb: The skb, must have been allocated with cyw-cfg80211_vendor_event_alloc()
+ * cyw_cfg80211_vendor_event - send the event
+ * @skb: The skb, must have been allocated with cyw_cfg80211_vendor_event_alloc()
  * @gfp: allocation flags
  *
  * This function sends the given @skb, which must have been allocated
- * by cyw-cfg80211_vendor_event_alloc(), as an event. It always consumes it.
+ * by cyw_cfg80211_vendor_event_alloc(), as an event. It always consumes it.
  */
-static inline void cyw-cfg80211_vendor_event(struct sk_buff *skb, gfp_t gfp)
+static inline void cyw_cfg80211_vendor_event(struct sk_buff *skb, gfp_t gfp)
 {
-	__cyw-cfg80211_send_event_skb(skb, gfp);
+	__cyw_cfg80211_send_event_skb(skb, gfp);
 }
 
 #ifdef CPTCFG_NL80211_TESTMODE
@@ -6265,7 +6265,7 @@ static inline void cyw-cfg80211_vendor_event(struct sk_buff *skb, gfp_t gfp)
  */
 
 /**
- * cyw-cfg80211_testmode_alloc_reply_skb - allocate testmode reply
+ * cyw_cfg80211_testmode_alloc_reply_skb - allocate testmode reply
  * @wiphy: the wiphy
  * @approxlen: an upper bound of the length of the data that will
  *	be put into the skb
@@ -6282,22 +6282,22 @@ static inline void cyw-cfg80211_vendor_event(struct sk_buff *skb, gfp_t gfp)
  * which can then read that data out of the testdata attribute. You
  * must not modify the skb in any other way.
  *
- * When done, call cyw-cfg80211_testmode_reply() with the skb and return
+ * When done, call cyw_cfg80211_testmode_reply() with the skb and return
  * its error code as the result of the @testmode_cmd operation.
  *
  * Return: An allocated and pre-filled skb. %NULL if any errors happen.
  */
 static inline struct sk_buff *
-cyw-cfg80211_testmode_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
+cyw_cfg80211_testmode_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
 {
-	return __cyw-cfg80211_alloc_reply_skb(wiphy, NL80211_CMD_TESTMODE,
+	return __cyw_cfg80211_alloc_reply_skb(wiphy, NL80211_CMD_TESTMODE,
 					  NL80211_ATTR_TESTDATA, approxlen);
 }
 
 /**
- * cyw-cfg80211_testmode_reply - send the reply skb
+ * cyw_cfg80211_testmode_reply - send the reply skb
  * @skb: The skb, must have been allocated with
- *	cyw-cfg80211_testmode_alloc_reply_skb()
+ *	cyw_cfg80211_testmode_alloc_reply_skb()
  *
  * Since calling this function will usually be the last thing
  * before returning from the @testmode_cmd you should return
@@ -6306,13 +6306,13 @@ cyw-cfg80211_testmode_alloc_reply_skb(struct wiphy *wiphy, int approxlen)
  *
  * Return: An error code or 0 on success.
  */
-static inline int cyw-cfg80211_testmode_reply(struct sk_buff *skb)
+static inline int cyw_cfg80211_testmode_reply(struct sk_buff *skb)
 {
-	return cyw-cfg80211_vendor_cmd_reply(skb);
+	return cyw_cfg80211_vendor_cmd_reply(skb);
 }
 
 /**
- * cyw-cfg80211_testmode_alloc_event_skb - allocate testmode event
+ * cyw_cfg80211_testmode_alloc_event_skb - allocate testmode event
  * @wiphy: the wiphy
  * @approxlen: an upper bound of the length of the data that will
  *	be put into the skb
@@ -6322,37 +6322,37 @@ static inline int cyw-cfg80211_testmode_reply(struct sk_buff *skb)
  * testmode multicast group.
  *
  * The returned skb is set up in the same way as with
- * cyw-cfg80211_testmode_alloc_reply_skb() but prepared for an event. As
+ * cyw_cfg80211_testmode_alloc_reply_skb() but prepared for an event. As
  * there, you should simply add data to it that will then end up in the
  * %NL80211_ATTR_TESTDATA attribute. Again, you must not modify the skb
  * in any other way.
  *
- * When done filling the skb, call cyw-cfg80211_testmode_event() with the
+ * When done filling the skb, call cyw_cfg80211_testmode_event() with the
  * skb to send the event.
  *
  * Return: An allocated and pre-filled skb. %NULL if any errors happen.
  */
 static inline struct sk_buff *
-cyw-cfg80211_testmode_alloc_event_skb(struct wiphy *wiphy, int approxlen, gfp_t gfp)
+cyw_cfg80211_testmode_alloc_event_skb(struct wiphy *wiphy, int approxlen, gfp_t gfp)
 {
-	return __cyw-cfg80211_alloc_event_skb(wiphy, NULL, NL80211_CMD_TESTMODE,
+	return __cyw_cfg80211_alloc_event_skb(wiphy, NULL, NL80211_CMD_TESTMODE,
 					  NL80211_ATTR_TESTDATA, 0, -1,
 					  approxlen, gfp);
 }
 
 /**
- * cyw-cfg80211_testmode_event - send the event
+ * cyw_cfg80211_testmode_event - send the event
  * @skb: The skb, must have been allocated with
- *	cyw-cfg80211_testmode_alloc_event_skb()
+ *	cyw_cfg80211_testmode_alloc_event_skb()
  * @gfp: allocation flags
  *
  * This function sends the given @skb, which must have been allocated
- * by cyw-cfg80211_testmode_alloc_event_skb(), as an event. It always
+ * by cyw_cfg80211_testmode_alloc_event_skb(), as an event. It always
  * consumes it.
  */
-static inline void cyw-cfg80211_testmode_event(struct sk_buff *skb, gfp_t gfp)
+static inline void cyw_cfg80211_testmode_event(struct sk_buff *skb, gfp_t gfp)
 {
-	__cyw-cfg80211_send_event_skb(skb, gfp);
+	__cyw_cfg80211_send_event_skb(skb, gfp);
 }
 
 #define CFG80211_TESTMODE_CMD(cmd)	.testmode_cmd = (cmd),
@@ -6363,7 +6363,7 @@ static inline void cyw-cfg80211_testmode_event(struct sk_buff *skb, gfp_t gfp)
 #endif
 
 /**
- * struct cyw-cfg80211_fils_resp_params - FILS connection response params
+ * struct cyw_cfg80211_fils_resp_params - FILS connection response params
  * @kek: KEK derived from a successful FILS connection (may be %NULL)
  * @kek_len: Length of @fils_kek in octets
  * @update_erp_next_seq_num: Boolean value to specify whether the value in
@@ -6376,7 +6376,7 @@ static inline void cyw-cfg80211_testmode_event(struct sk_buff *skb, gfp_t gfp)
  * @pmkid: A new PMKID if derived from a successful FILS connection or the PMKID
  *	used for this FILS connection (may be %NULL).
  */
-struct cyw-cfg80211_fils_resp_params {
+struct cyw_cfg80211_fils_resp_params {
 	const u8 *kek;
 	size_t kek_len;
 	bool update_erp_next_seq_num;
@@ -6387,7 +6387,7 @@ struct cyw-cfg80211_fils_resp_params {
 };
 
 /**
- * struct cyw-cfg80211_connect_resp_params - Connection response params
+ * struct cyw_cfg80211_connect_resp_params - Connection response params
  * @status: Status code, %WLAN_STATUS_SUCCESS for successful connection, use
  *	%WLAN_STATUS_UNSPECIFIED_FAILURE if your device cannot give you
  *	the real status code for failures. If this call is used to report a
@@ -6398,7 +6398,7 @@ struct cyw-cfg80211_fils_resp_params {
  *	case.
  * @bssid: The BSSID of the AP (may be %NULL)
  * @bss: Entry of bss to which STA got connected to, can be obtained through
- *	cyw-cfg80211_get_bss() (may be %NULL). But it is recommended to store the
+ *	cyw_cfg80211_get_bss() (may be %NULL). But it is recommended to store the
  *	bss from the connect_request and hold a reference to it and return
  *	through this param to avoid a warning if the bss is expired during the
  *	connection, esp. for those drivers implementing connect op.
@@ -6417,21 +6417,21 @@ struct cyw-cfg80211_fils_resp_params {
  * @authorized: Indicates whether the connection is ready to transport
  *	data packets.
  */
-struct cyw-cfg80211_connect_resp_params {
+struct cyw_cfg80211_connect_resp_params {
 	int status;
 	const u8 *bssid;
-	struct cyw-cfg80211_bss *bss;
+	struct cyw_cfg80211_bss *bss;
 	const u8 *req_ie;
 	size_t req_ie_len;
 	const u8 *resp_ie;
 	size_t resp_ie_len;
-	struct cyw-cfg80211_fils_resp_params fils;
+	struct cyw_cfg80211_fils_resp_params fils;
 	enum nl80211_timeout_reason timeout_reason;
 	bool authorized;
 };
 
 /**
- * cyw-cfg80211_connect_done - notify cyw-cfg80211 of connection result
+ * cyw_cfg80211_connect_done - notify cyw_cfg80211 of connection result
  *
  * @dev: network device
  * @params: connection response parameters
@@ -6439,22 +6439,22 @@ struct cyw-cfg80211_connect_resp_params {
  *
  * It should be called by the underlying driver once execution of the connection
  * request from connect() has been completed. This is similar to
- * cyw-cfg80211_connect_bss(), but takes a structure pointer for connection response
- * parameters. Only one of the functions among cyw-cfg80211_connect_bss(),
- * cyw-cfg80211_connect_result(), cyw-cfg80211_connect_timeout(),
- * and cyw-cfg80211_connect_done() should be called.
+ * cyw_cfg80211_connect_bss(), but takes a structure pointer for connection response
+ * parameters. Only one of the functions among cyw_cfg80211_connect_bss(),
+ * cyw_cfg80211_connect_result(), cyw_cfg80211_connect_timeout(),
+ * and cyw_cfg80211_connect_done() should be called.
  */
-void cyw-cfg80211_connect_done(struct net_device *dev,
-			   struct cyw-cfg80211_connect_resp_params *params,
+void cyw_cfg80211_connect_done(struct net_device *dev,
+			   struct cyw_cfg80211_connect_resp_params *params,
 			   gfp_t gfp);
 
 /**
- * cyw-cfg80211_connect_bss - notify cyw-cfg80211 of connection result
+ * cyw_cfg80211_connect_bss - notify cyw_cfg80211 of connection result
  *
  * @dev: network device
  * @bssid: the BSSID of the AP
  * @bss: Entry of bss to which STA got connected to, can be obtained through
- *	cyw-cfg80211_get_bss() (may be %NULL). But it is recommended to store the
+ *	cyw_cfg80211_get_bss() (may be %NULL). But it is recommended to store the
  *	bss from the connect_request and hold a reference to it and return
  *	through this param to avoid a warning if the bss is expired during the
  *	connection, esp. for those drivers implementing connect op.
@@ -6481,19 +6481,19 @@ void cyw-cfg80211_connect_done(struct net_device *dev,
  *
  * It should be called by the underlying driver once execution of the connection
  * request from connect() has been completed. This is similar to
- * cyw-cfg80211_connect_result(), but with the option of identifying the exact bss
+ * cyw_cfg80211_connect_result(), but with the option of identifying the exact bss
  * entry for the connection. Only one of the functions among
- * cyw-cfg80211_connect_bss(), cyw-cfg80211_connect_result(),
- * cyw-cfg80211_connect_timeout(), and cyw-cfg80211_connect_done() should be called.
+ * cyw_cfg80211_connect_bss(), cyw_cfg80211_connect_result(),
+ * cyw_cfg80211_connect_timeout(), and cyw_cfg80211_connect_done() should be called.
  */
 static inline void
-cyw-cfg80211_connect_bss(struct net_device *dev, const u8 *bssid,
-		     struct cyw-cfg80211_bss *bss, const u8 *req_ie,
+cyw_cfg80211_connect_bss(struct net_device *dev, const u8 *bssid,
+		     struct cyw_cfg80211_bss *bss, const u8 *req_ie,
 		     size_t req_ie_len, const u8 *resp_ie,
 		     size_t resp_ie_len, int status, gfp_t gfp,
 		     enum nl80211_timeout_reason timeout_reason)
 {
-	struct cyw-cfg80211_connect_resp_params params;
+	struct cyw_cfg80211_connect_resp_params params;
 
 	memset(&params, 0, sizeof(params));
 	params.status = status;
@@ -6505,11 +6505,11 @@ cyw-cfg80211_connect_bss(struct net_device *dev, const u8 *bssid,
 	params.resp_ie_len = resp_ie_len;
 	params.timeout_reason = timeout_reason;
 
-	cyw-cfg80211_connect_done(dev, &params, gfp);
+	cyw_cfg80211_connect_done(dev, &params, gfp);
 }
 
 /**
- * cyw-cfg80211_connect_result - notify cyw-cfg80211 of connection result
+ * cyw_cfg80211_connect_result - notify cyw_cfg80211 of connection result
  *
  * @dev: network device
  * @bssid: the BSSID of the AP
@@ -6524,23 +6524,23 @@ cyw-cfg80211_connect_bss(struct net_device *dev, const u8 *bssid,
  *
  * It should be called by the underlying driver once execution of the connection
  * request from connect() has been completed. This is similar to
- * cyw-cfg80211_connect_bss() which allows the exact bss entry to be specified. Only
- * one of the functions among cyw-cfg80211_connect_bss(), cyw-cfg80211_connect_result(),
- * cyw-cfg80211_connect_timeout(), and cyw-cfg80211_connect_done() should be called.
+ * cyw_cfg80211_connect_bss() which allows the exact bss entry to be specified. Only
+ * one of the functions among cyw_cfg80211_connect_bss(), cyw_cfg80211_connect_result(),
+ * cyw_cfg80211_connect_timeout(), and cyw_cfg80211_connect_done() should be called.
  */
 static inline void
-cyw-cfg80211_connect_result(struct net_device *dev, const u8 *bssid,
+cyw_cfg80211_connect_result(struct net_device *dev, const u8 *bssid,
 			const u8 *req_ie, size_t req_ie_len,
 			const u8 *resp_ie, size_t resp_ie_len,
 			u16 status, gfp_t gfp)
 {
-	cyw-cfg80211_connect_bss(dev, bssid, NULL, req_ie, req_ie_len, resp_ie,
+	cyw_cfg80211_connect_bss(dev, bssid, NULL, req_ie, req_ie_len, resp_ie,
 			     resp_ie_len, status, gfp,
 			     NL80211_TIMEOUT_UNSPECIFIED);
 }
 
 /**
- * cyw-cfg80211_connect_timeout - notify cyw-cfg80211 of connection timeout
+ * cyw_cfg80211_connect_timeout - notify cyw_cfg80211 of connection timeout
  *
  * @dev: network device
  * @bssid: the BSSID of the AP
@@ -6554,20 +6554,20 @@ cyw-cfg80211_connect_result(struct net_device *dev, const u8 *bssid,
  * received from the AP. This could happen, e.g., due to not being able to send
  * out the Authentication or Association Request frame or timing out while
  * waiting for the response. Only one of the functions among
- * cyw-cfg80211_connect_bss(), cyw-cfg80211_connect_result(),
- * cyw-cfg80211_connect_timeout(), and cyw-cfg80211_connect_done() should be called.
+ * cyw_cfg80211_connect_bss(), cyw_cfg80211_connect_result(),
+ * cyw_cfg80211_connect_timeout(), and cyw_cfg80211_connect_done() should be called.
  */
 static inline void
-cyw-cfg80211_connect_timeout(struct net_device *dev, const u8 *bssid,
+cyw_cfg80211_connect_timeout(struct net_device *dev, const u8 *bssid,
 			 const u8 *req_ie, size_t req_ie_len, gfp_t gfp,
 			 enum nl80211_timeout_reason timeout_reason)
 {
-	cyw-cfg80211_connect_bss(dev, bssid, NULL, req_ie, req_ie_len, NULL, 0, -1,
+	cyw_cfg80211_connect_bss(dev, bssid, NULL, req_ie, req_ie_len, NULL, 0, -1,
 			     gfp, timeout_reason);
 }
 
 /**
- * struct cyw-cfg80211_roam_info - driver initiated roaming information
+ * struct cyw_cfg80211_roam_info - driver initiated roaming information
  *
  * @channel: the channel of the new AP
  * @bss: entry of bss to which STA got roamed (may be %NULL if %bssid is set)
@@ -6581,23 +6581,23 @@ cyw-cfg80211_connect_timeout(struct net_device *dev, const u8 *bssid,
  *	not needed (e.g., when Fast Transition protocol was used), false
  *	otherwise. Ignored for networks that don't use 802.1X authentication.
  */
-struct cyw-cfg80211_roam_info {
+struct cyw_cfg80211_roam_info {
 	struct ieee80211_channel *channel;
-	struct cyw-cfg80211_bss *bss;
+	struct cyw_cfg80211_bss *bss;
 	const u8 *bssid;
 	const u8 *req_ie;
 	size_t req_ie_len;
 	const u8 *resp_ie;
 	size_t resp_ie_len;
-	struct cyw-cfg80211_fils_resp_params fils;
+	struct cyw_cfg80211_fils_resp_params fils;
 	bool authorized;
 };
 
 /**
- * cyw-cfg80211_roamed - notify cyw-cfg80211 of roaming
+ * cyw_cfg80211_roamed - notify cyw_cfg80211 of roaming
  *
  * @dev: network device
- * @info: information about the new BSS. struct &cyw-cfg80211_roam_info.
+ * @info: information about the new BSS. struct &cyw_cfg80211_roam_info.
  * @gfp: allocation flags
  *
  * This function may be called with the driver passing either the BSSID of the
@@ -6606,16 +6606,16 @@ struct cyw-cfg80211_roam_info {
  * to another while connected. Drivers which have roaming implemented in
  * firmware should pass the bss entry to avoid a race in bss entry timeout where
  * the bss entry of the new AP is seen in the driver, but gets timed out by the
- * time it is accessed in __cyw-cfg80211_roamed() due to delay in scheduling
+ * time it is accessed in __cyw_cfg80211_roamed() due to delay in scheduling
  * rdev->event_work. In case of any failures, the reference is released
- * either in cyw-cfg80211_roamed() or in __cyw-cfg80211_romed(), Otherwise, it will be
+ * either in cyw_cfg80211_roamed() or in __cyw_cfg80211_romed(), Otherwise, it will be
  * released while diconneting from the current bss.
  */
-void cyw-cfg80211_roamed(struct net_device *dev, struct cyw-cfg80211_roam_info *info,
+void cyw_cfg80211_roamed(struct net_device *dev, struct cyw_cfg80211_roam_info *info,
 		     gfp_t gfp);
 
 /**
- * cyw-cfg80211_port_authorized - notify cyw-cfg80211 of successful security association
+ * cyw_cfg80211_port_authorized - notify cyw_cfg80211 of successful security association
  *
  * @dev: network device
  * @bssid: the BSSID of the AP
@@ -6624,15 +6624,15 @@ void cyw-cfg80211_roamed(struct net_device *dev, struct cyw-cfg80211_roam_info *
  * This function should be called by a driver that supports 4 way handshake
  * offload after a security association was successfully established (i.e.,
  * the 4 way handshake was completed successfully). The call to this function
- * should be preceded with a call to cyw-cfg80211_connect_result(),
- * cyw-cfg80211_connect_done(), cyw-cfg80211_connect_bss() or cyw-cfg80211_roamed() to
+ * should be preceded with a call to cyw_cfg80211_connect_result(),
+ * cyw_cfg80211_connect_done(), cyw_cfg80211_connect_bss() or cyw_cfg80211_roamed() to
  * indicate the 802.11 association.
  */
-void cyw-cfg80211_port_authorized(struct net_device *dev, const u8 *bssid,
+void cyw_cfg80211_port_authorized(struct net_device *dev, const u8 *bssid,
 			      gfp_t gfp);
 
 /**
- * cyw-cfg80211_disconnected - notify cyw-cfg80211 that connection was dropped
+ * cyw_cfg80211_disconnected - notify cyw_cfg80211 that connection was dropped
  *
  * @dev: network device
  * @ie: information elements of the deauth/disassoc frame (may be %NULL)
@@ -6644,12 +6644,12 @@ void cyw-cfg80211_port_authorized(struct net_device *dev, const u8 *bssid,
  * After it calls this function, the driver should enter an idle state
  * and not try to connect to any AP any more.
  */
-void cyw-cfg80211_disconnected(struct net_device *dev, u16 reason,
+void cyw_cfg80211_disconnected(struct net_device *dev, u16 reason,
 			   const u8 *ie, size_t ie_len,
 			   bool locally_generated, gfp_t gfp);
 
 /**
- * cyw-cfg80211_ready_on_channel - notification of remain_on_channel start
+ * cyw_cfg80211_ready_on_channel - notification of remain_on_channel start
  * @wdev: wireless device
  * @cookie: the request cookie
  * @chan: The current channel (from remain_on_channel request)
@@ -6657,88 +6657,88 @@ void cyw-cfg80211_disconnected(struct net_device *dev, u16 reason,
  *	channel
  * @gfp: allocation flags
  */
-void cyw-cfg80211_ready_on_channel(struct wireless_dev *wdev, u64 cookie,
+void cyw_cfg80211_ready_on_channel(struct wireless_dev *wdev, u64 cookie,
 			       struct ieee80211_channel *chan,
 			       unsigned int duration, gfp_t gfp);
 
 /**
- * cyw-cfg80211_remain_on_channel_expired - remain_on_channel duration expired
+ * cyw_cfg80211_remain_on_channel_expired - remain_on_channel duration expired
  * @wdev: wireless device
  * @cookie: the request cookie
  * @chan: The current channel (from remain_on_channel request)
  * @gfp: allocation flags
  */
-void cyw-cfg80211_remain_on_channel_expired(struct wireless_dev *wdev, u64 cookie,
+void cyw_cfg80211_remain_on_channel_expired(struct wireless_dev *wdev, u64 cookie,
 					struct ieee80211_channel *chan,
 					gfp_t gfp);
 
 /**
- * cyw-cfg80211_tx_mgmt_expired - tx_mgmt duration expired
+ * cyw_cfg80211_tx_mgmt_expired - tx_mgmt duration expired
  * @wdev: wireless device
  * @cookie: the requested cookie
  * @chan: The current channel (from tx_mgmt request)
  * @gfp: allocation flags
  */
-void cyw-cfg80211_tx_mgmt_expired(struct wireless_dev *wdev, u64 cookie,
+void cyw_cfg80211_tx_mgmt_expired(struct wireless_dev *wdev, u64 cookie,
 			      struct ieee80211_channel *chan, gfp_t gfp);
 
 /**
- * cyw-cfg80211_sinfo_alloc_tid_stats - allocate per-tid statistics.
+ * cyw_cfg80211_sinfo_alloc_tid_stats - allocate per-tid statistics.
  *
  * @sinfo: the station information
  * @gfp: allocation flags
  */
-int cyw-cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp);
+int cyw_cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp);
 
 /**
- * cyw-cfg80211_sinfo_release_content - release contents of station info
+ * cyw_cfg80211_sinfo_release_content - release contents of station info
  * @sinfo: the station information
  *
  * Releases any potentially allocated sub-information of the station
  * information, but not the struct itself (since it's typically on
  * the stack.)
  */
-static inline void cyw-cfg80211_sinfo_release_content(struct station_info *sinfo)
+static inline void cyw_cfg80211_sinfo_release_content(struct station_info *sinfo)
 {
 	kfree(sinfo->pertid);
 }
 
 /**
- * cyw-cfg80211_new_sta - notify userspace about station
+ * cyw_cfg80211_new_sta - notify userspace about station
  *
  * @dev: the netdev
  * @mac_addr: the station's address
  * @sinfo: the station information
  * @gfp: allocation flags
  */
-void cyw-cfg80211_new_sta(struct net_device *dev, const u8 *mac_addr,
+void cyw_cfg80211_new_sta(struct net_device *dev, const u8 *mac_addr,
 		      struct station_info *sinfo, gfp_t gfp);
 
 /**
- * cyw-cfg80211_del_sta_sinfo - notify userspace about deletion of a station
+ * cyw_cfg80211_del_sta_sinfo - notify userspace about deletion of a station
  * @dev: the netdev
  * @mac_addr: the station's address
  * @sinfo: the station information/statistics
  * @gfp: allocation flags
  */
-void cyw-cfg80211_del_sta_sinfo(struct net_device *dev, const u8 *mac_addr,
+void cyw_cfg80211_del_sta_sinfo(struct net_device *dev, const u8 *mac_addr,
 			    struct station_info *sinfo, gfp_t gfp);
 
 /**
- * cyw-cfg80211_del_sta - notify userspace about deletion of a station
+ * cyw_cfg80211_del_sta - notify userspace about deletion of a station
  *
  * @dev: the netdev
  * @mac_addr: the station's address
  * @gfp: allocation flags
  */
-static inline void cyw-cfg80211_del_sta(struct net_device *dev,
+static inline void cyw_cfg80211_del_sta(struct net_device *dev,
 				    const u8 *mac_addr, gfp_t gfp)
 {
-	cyw-cfg80211_del_sta_sinfo(dev, mac_addr, NULL, gfp);
+	cyw_cfg80211_del_sta_sinfo(dev, mac_addr, NULL, gfp);
 }
 
 /**
- * cyw-cfg80211_conn_failed - connection request failed notification
+ * cyw_cfg80211_conn_failed - connection request failed notification
  *
  * @dev: the netdev
  * @mac_addr: the station's address
@@ -6752,12 +6752,12 @@ static inline void cyw-cfg80211_del_sta(struct net_device *dev,
  * The reason for connection failure can be any of the value from
  * nl80211_connect_failed_reason enum
  */
-void cyw-cfg80211_conn_failed(struct net_device *dev, const u8 *mac_addr,
+void cyw_cfg80211_conn_failed(struct net_device *dev, const u8 *mac_addr,
 			  enum nl80211_connect_failed_reason reason,
 			  gfp_t gfp);
 
 /**
- * cyw-cfg80211_rx_mgmt - notification of received, unprocessed management frame
+ * cyw_cfg80211_rx_mgmt - notification of received, unprocessed management frame
  * @wdev: wireless device receiving the frame
  * @freq: Frequency on which the frame was received in MHz
  * @sig_dbm: signal strength in dBm, or 0 if unknown
@@ -6773,28 +6773,28 @@ void cyw-cfg80211_conn_failed(struct net_device *dev, const u8 *mac_addr,
  * action frames; %false otherwise, in which case for action frames the
  * driver is responsible for rejecting the frame.
  */
-bool cyw-cfg80211_rx_mgmt(struct wireless_dev *wdev, int freq, int sig_dbm,
+bool cyw_cfg80211_rx_mgmt(struct wireless_dev *wdev, int freq, int sig_dbm,
 		      const u8 *buf, size_t len, u32 flags);
 
 /**
- * cyw-cfg80211_mgmt_tx_status - notification of TX status for management frame
+ * cyw_cfg80211_mgmt_tx_status - notification of TX status for management frame
  * @wdev: wireless device receiving the frame
- * @cookie: Cookie returned by cyw-cfg80211_ops::mgmt_tx()
+ * @cookie: Cookie returned by cyw_cfg80211_ops::mgmt_tx()
  * @buf: Management frame (header + body)
  * @len: length of the frame data
  * @ack: Whether frame was acknowledged
  * @gfp: context flags
  *
  * This function is called whenever a management frame was requested to be
- * transmitted with cyw-cfg80211_ops::mgmt_tx() to report the TX status of the
+ * transmitted with cyw_cfg80211_ops::mgmt_tx() to report the TX status of the
  * transmission attempt.
  */
-void cyw-cfg80211_mgmt_tx_status(struct wireless_dev *wdev, u64 cookie,
+void cyw_cfg80211_mgmt_tx_status(struct wireless_dev *wdev, u64 cookie,
 			     const u8 *buf, size_t len, bool ack, gfp_t gfp);
 
 
 /**
- * cyw-cfg80211_rx_control_port - notification about a received control port frame
+ * cyw_cfg80211_rx_control_port - notification about a received control port frame
  * @dev: The device the frame matched to
  * @skb: The skbuf with the control port frame.  It is assumed that the skbuf
  *	is 802.3 formatted (with 802.3 header).  The skb can be non-linear.
@@ -6812,11 +6812,11 @@ void cyw-cfg80211_mgmt_tx_status(struct wireless_dev *wdev, u64 cookie,
  *
  * Return: %true if the frame was passed to userspace
  */
-bool cyw-cfg80211_rx_control_port(struct net_device *dev,
+bool cyw_cfg80211_rx_control_port(struct net_device *dev,
 			      struct sk_buff *skb, bool unencrypted);
 
 /**
- * cyw-cfg80211_cqm_rssi_notify - connection quality monitoring rssi event
+ * cyw_cfg80211_cqm_rssi_notify - connection quality monitoring rssi event
  * @dev: network device
  * @rssi_event: the triggered RSSI event
  * @rssi_level: new RSSI level value or 0 if not available
@@ -6825,12 +6825,12 @@ bool cyw-cfg80211_rx_control_port(struct net_device *dev,
  * This function is called when a configured connection quality monitoring
  * rssi threshold reached event occurs.
  */
-void cyw-cfg80211_cqm_rssi_notify(struct net_device *dev,
+void cyw_cfg80211_cqm_rssi_notify(struct net_device *dev,
 			      enum nl80211_cqm_rssi_threshold_event rssi_event,
 			      s32 rssi_level, gfp_t gfp);
 
 /**
- * cyw-cfg80211_cqm_pktloss_notify - notify userspace about packetloss to peer
+ * cyw_cfg80211_cqm_pktloss_notify - notify userspace about packetloss to peer
  * @dev: network device
  * @peer: peer's MAC address
  * @num_packets: how many packets were lost -- should be a fixed threshold
@@ -6838,11 +6838,11 @@ void cyw-cfg80211_cqm_rssi_notify(struct net_device *dev,
  *	threshold (to account for temporary interference)
  * @gfp: context flags
  */
-void cyw-cfg80211_cqm_pktloss_notify(struct net_device *dev,
+void cyw_cfg80211_cqm_pktloss_notify(struct net_device *dev,
 				 const u8 *peer, u32 num_packets, gfp_t gfp);
 
 /**
- * cyw-cfg80211_cqm_txe_notify - TX error rate event
+ * cyw_cfg80211_cqm_txe_notify - TX error rate event
  * @dev: network device
  * @peer: peer's MAC address
  * @num_packets: how many packets were lost
@@ -6853,31 +6853,31 @@ void cyw-cfg80211_cqm_pktloss_notify(struct net_device *dev,
  * Notify userspace when configured % TX failures over number of packets in a
  * given interval is exceeded.
  */
-void cyw-cfg80211_cqm_txe_notify(struct net_device *dev, const u8 *peer,
+void cyw_cfg80211_cqm_txe_notify(struct net_device *dev, const u8 *peer,
 			     u32 num_packets, u32 rate, u32 intvl, gfp_t gfp);
 
 /**
- * cyw-cfg80211_cqm_beacon_loss_notify - beacon loss event
+ * cyw_cfg80211_cqm_beacon_loss_notify - beacon loss event
  * @dev: network device
  * @gfp: context flags
  *
  * Notify userspace about beacon loss from the connected AP.
  */
-void cyw-cfg80211_cqm_beacon_loss_notify(struct net_device *dev, gfp_t gfp);
+void cyw_cfg80211_cqm_beacon_loss_notify(struct net_device *dev, gfp_t gfp);
 
 /**
- * cyw-cfg80211_radar_event - radar detection event
+ * cyw_cfg80211_radar_event - radar detection event
  * @wiphy: the wiphy
  * @chandef: chandef for the current channel
  * @gfp: context flags
  *
  * This function is called when a radar is detected on the current chanenl.
  */
-void cyw-cfg80211_radar_event(struct wiphy *wiphy,
-			  struct cyw-cfg80211_chan_def *chandef, gfp_t gfp);
+void cyw_cfg80211_radar_event(struct wiphy *wiphy,
+			  struct cyw_cfg80211_chan_def *chandef, gfp_t gfp);
 
 /**
- * cyw-cfg80211_sta_opmode_change_notify - STA's ht/vht operation mode change event
+ * cyw_cfg80211_sta_opmode_change_notify - STA's ht/vht operation mode change event
  * @dev: network device
  * @mac: MAC address of a station which opmode got modified
  * @sta_opmode: station's current opmode value
@@ -6886,12 +6886,12 @@ void cyw-cfg80211_radar_event(struct wiphy *wiphy,
  * Driver should call this function when station's opmode modified via action
  * frame.
  */
-void cyw-cfg80211_sta_opmode_change_notify(struct net_device *dev, const u8 *mac,
+void cyw_cfg80211_sta_opmode_change_notify(struct net_device *dev, const u8 *mac,
 				       struct sta_opmode_info *sta_opmode,
 				       gfp_t gfp);
 
 /**
- * cyw-cfg80211_cac_event - Channel availability check (CAC) event
+ * cyw_cfg80211_cac_event - Channel availability check (CAC) event
  * @netdev: network device
  * @chandef: chandef for the current channel
  * @event: type of event
@@ -6901,34 +6901,34 @@ void cyw-cfg80211_sta_opmode_change_notify(struct net_device *dev, const u8 *mac
  * or aborted. This must be called to notify the completion of a CAC process,
  * also by full-MAC drivers.
  */
-void cyw-cfg80211_cac_event(struct net_device *netdev,
-			const struct cyw-cfg80211_chan_def *chandef,
+void cyw_cfg80211_cac_event(struct net_device *netdev,
+			const struct cyw_cfg80211_chan_def *chandef,
 			enum nl80211_radar_event event, gfp_t gfp);
 
 
 /**
- * cyw-cfg80211_gtk_rekey_notify - notify userspace about driver rekeying
+ * cyw_cfg80211_gtk_rekey_notify - notify userspace about driver rekeying
  * @dev: network device
  * @bssid: BSSID of AP (to avoid races)
  * @replay_ctr: new replay counter
  * @gfp: allocation flags
  */
-void cyw-cfg80211_gtk_rekey_notify(struct net_device *dev, const u8 *bssid,
+void cyw_cfg80211_gtk_rekey_notify(struct net_device *dev, const u8 *bssid,
 			       const u8 *replay_ctr, gfp_t gfp);
 
 /**
- * cyw-cfg80211_pmksa_candidate_notify - notify about PMKSA caching candidate
+ * cyw_cfg80211_pmksa_candidate_notify - notify about PMKSA caching candidate
  * @dev: network device
  * @index: candidate index (the smaller the index, the higher the priority)
  * @bssid: BSSID of AP
  * @preauth: Whether AP advertises support for RSN pre-authentication
  * @gfp: allocation flags
  */
-void cyw-cfg80211_pmksa_candidate_notify(struct net_device *dev, int index,
+void cyw_cfg80211_pmksa_candidate_notify(struct net_device *dev, int index,
 				     const u8 *bssid, bool preauth, gfp_t gfp);
 
 /**
- * cyw-cfg80211_rx_spurious_frame - inform userspace about a spurious frame
+ * cyw_cfg80211_rx_spurious_frame - inform userspace about a spurious frame
  * @dev: The device the frame matched to
  * @addr: the transmitter address
  * @gfp: context flags
@@ -6939,11 +6939,11 @@ void cyw-cfg80211_pmksa_candidate_notify(struct net_device *dev, int index,
  * Return: %true if the frame was passed to userspace (or this failed
  * for a reason other than not having a subscription.)
  */
-bool cyw-cfg80211_rx_spurious_frame(struct net_device *dev,
+bool cyw_cfg80211_rx_spurious_frame(struct net_device *dev,
 				const u8 *addr, gfp_t gfp);
 
 /**
- * cyw-cfg80211_rx_unexpected_4addr_frame - inform about unexpected WDS frame
+ * cyw_cfg80211_rx_unexpected_4addr_frame - inform about unexpected WDS frame
  * @dev: The device the frame matched to
  * @addr: the transmitter address
  * @gfp: context flags
@@ -6955,11 +6955,11 @@ bool cyw-cfg80211_rx_spurious_frame(struct net_device *dev,
  * Return: %true if the frame was passed to userspace (or this failed
  * for a reason other than not having a subscription.)
  */
-bool cyw-cfg80211_rx_unexpected_4addr_frame(struct net_device *dev,
+bool cyw_cfg80211_rx_unexpected_4addr_frame(struct net_device *dev,
 					const u8 *addr, gfp_t gfp);
 
 /**
- * cyw-cfg80211_probe_status - notify userspace about probe status
+ * cyw_cfg80211_probe_status - notify userspace about probe status
  * @dev: the device the probe was sent on
  * @addr: the address of the peer
  * @cookie: the cookie filled in @probe_client previously
@@ -6968,12 +6968,12 @@ bool cyw-cfg80211_rx_unexpected_4addr_frame(struct net_device *dev,
  * @is_valid_ack_signal: indicates the ack_signal is valid or not.
  * @gfp: allocation flags
  */
-void cyw-cfg80211_probe_status(struct net_device *dev, const u8 *addr,
+void cyw_cfg80211_probe_status(struct net_device *dev, const u8 *addr,
 			   u64 cookie, bool acked, s32 ack_signal,
 			   bool is_valid_ack_signal, gfp_t gfp);
 
 /**
- * cyw-cfg80211_report_obss_beacon - report beacon from other APs
+ * cyw_cfg80211_report_obss_beacon - report beacon from other APs
  * @wiphy: The wiphy that received the beacon
  * @frame: the frame
  * @len: length of the frame
@@ -6984,12 +6984,12 @@ void cyw-cfg80211_probe_status(struct net_device *dev, const u8 *addr,
  * received. It is not useful to call this when there is no
  * netdev that is in AP/GO mode.
  */
-void cyw-cfg80211_report_obss_beacon(struct wiphy *wiphy,
+void cyw_cfg80211_report_obss_beacon(struct wiphy *wiphy,
 				 const u8 *frame, size_t len,
 				 int freq, int sig_dbm);
 
 /**
- * cyw-cfg80211_reg_can_beacon - check if beaconing is allowed
+ * cyw_cfg80211_reg_can_beacon - check if beaconing is allowed
  * @wiphy: the wiphy
  * @chandef: the channel definition
  * @iftype: interface type
@@ -6997,12 +6997,12 @@ void cyw-cfg80211_report_obss_beacon(struct wiphy *wiphy,
  * Return: %true if there is no secondary channel or the secondary channel(s)
  * can be used for beaconing (i.e. is not a radar channel etc.)
  */
-bool cyw-cfg80211_reg_can_beacon(struct wiphy *wiphy,
-			     struct cyw-cfg80211_chan_def *chandef,
+bool cyw_cfg80211_reg_can_beacon(struct wiphy *wiphy,
+			     struct cyw_cfg80211_chan_def *chandef,
 			     enum nl80211_iftype iftype);
 
 /**
- * cyw-cfg80211_reg_can_beacon_relax - check if beaconing is allowed with relaxation
+ * cyw_cfg80211_reg_can_beacon_relax - check if beaconing is allowed with relaxation
  * @wiphy: the wiphy
  * @chandef: the channel definition
  * @iftype: interface type
@@ -7014,23 +7014,23 @@ bool cyw-cfg80211_reg_can_beacon(struct wiphy *wiphy,
  *
  * Requires the RTNL to be held.
  */
-bool cyw-cfg80211_reg_can_beacon_relax(struct wiphy *wiphy,
-				   struct cyw-cfg80211_chan_def *chandef,
+bool cyw_cfg80211_reg_can_beacon_relax(struct wiphy *wiphy,
+				   struct cyw_cfg80211_chan_def *chandef,
 				   enum nl80211_iftype iftype);
 
 /*
- * cyw-cfg80211_ch_switch_notify - update wdev channel and notify userspace
+ * cyw_cfg80211_ch_switch_notify - update wdev channel and notify userspace
  * @dev: the device which switched channels
  * @chandef: the new channel definition
  *
  * Caller must acquire wdev_lock, therefore must only be called from sleepable
  * driver context!
  */
-void cyw-cfg80211_ch_switch_notify(struct net_device *dev,
-			       struct cyw-cfg80211_chan_def *chandef);
+void cyw_cfg80211_ch_switch_notify(struct net_device *dev,
+			       struct cyw_cfg80211_chan_def *chandef);
 
 /*
- * cyw-cfg80211_ch_switch_started_notify - notify channel switch start
+ * cyw_cfg80211_ch_switch_started_notify - notify channel switch start
  * @dev: the device on which the channel switch started
  * @chandef: the future channel definition
  * @count: the number of TBTTs until the channel switch happens
@@ -7039,8 +7039,8 @@ void cyw-cfg80211_ch_switch_notify(struct net_device *dev,
  * started, so that it can take appropriate actions (eg. starting
  * channel switch on other vifs), if necessary.
  */
-void cyw-cfg80211_ch_switch_started_notify(struct net_device *dev,
-				       struct cyw-cfg80211_chan_def *chandef,
+void cyw_cfg80211_ch_switch_started_notify(struct net_device *dev,
+				       struct cyw_cfg80211_chan_def *chandef,
 				       u8 count);
 
 /**
@@ -7062,11 +7062,11 @@ bool ieee80211_operating_class_to_band(u8 operating_class,
  *
  * Returns %true if the conversion was successful, %false otherwise.
  */
-bool ieee80211_chandef_to_operating_class(struct cyw-cfg80211_chan_def *chandef,
+bool ieee80211_chandef_to_operating_class(struct cyw_cfg80211_chan_def *chandef,
 					  u8 *op_class);
 
 /*
- * cyw-cfg80211_tdls_oper_request - request userspace to perform TDLS operation
+ * cyw_cfg80211_tdls_oper_request - request userspace to perform TDLS operation
  * @dev: the device on which the operation is requested
  * @peer: the MAC address of the peer device
  * @oper: the requested TDLS operation (NL80211_TDLS_SETUP or
@@ -7080,43 +7080,43 @@ bool ieee80211_chandef_to_operating_class(struct cyw-cfg80211_chan_def *chandef,
  * if it can automatically determine when a TDLS link could be useful (e.g.,
  * based on traffic and signal strength for a peer).
  */
-void cyw-cfg80211_tdls_oper_request(struct net_device *dev, const u8 *peer,
+void cyw_cfg80211_tdls_oper_request(struct net_device *dev, const u8 *peer,
 				enum nl80211_tdls_operation oper,
 				u16 reason_code, gfp_t gfp);
 
 /*
- * cyw-cfg80211_calculate_bitrate - calculate actual bitrate (in 100Kbps units)
+ * cyw_cfg80211_calculate_bitrate - calculate actual bitrate (in 100Kbps units)
  * @rate: given rate_info to calculate bitrate from
  *
  * return 0 if MCS index >= 32
  */
-u32 cyw-cfg80211_calculate_bitrate(struct rate_info *rate);
+u32 cyw_cfg80211_calculate_bitrate(struct rate_info *rate);
 
 /**
- * cyw-cfg80211_unregister_wdev - remove the given wdev
+ * cyw_cfg80211_unregister_wdev - remove the given wdev
  * @wdev: struct wireless_dev to remove
  *
  * Call this function only for wdevs that have no netdev assigned,
  * e.g. P2P Devices. It removes the device from the list so that
  * it can no longer be used. It is necessary to call this function
- * even when cyw-cfg80211 requests the removal of the interface by
+ * even when cyw_cfg80211 requests the removal of the interface by
  * calling the del_virtual_intf() callback. The function must also
  * be called when the driver wishes to unregister the wdev, e.g.
  * when the device is unbound from the driver.
  *
  * Requires the RTNL to be held.
  */
-void cyw-cfg80211_unregister_wdev(struct wireless_dev *wdev);
+void cyw_cfg80211_unregister_wdev(struct wireless_dev *wdev);
 
 /**
- * struct cyw-cfg80211_ft_event - FT Information Elements
+ * struct cyw_cfg80211_ft_event - FT Information Elements
  * @ies: FT IEs
  * @ies_len: length of the FT IE in bytes
  * @target_ap: target AP's MAC address
  * @ric_ies: RIC IE
  * @ric_ies_len: length of the RIC IE in bytes
  */
-struct cyw-cfg80211_ft_event_params {
+struct cyw_cfg80211_ft_event_params {
 	const u8 *ies;
 	size_t ies_len;
 	const u8 *target_ap;
@@ -7125,15 +7125,15 @@ struct cyw-cfg80211_ft_event_params {
 };
 
 /**
- * cyw-cfg80211_ft_event - notify userspace about FT IE and RIC IE
+ * cyw_cfg80211_ft_event - notify userspace about FT IE and RIC IE
  * @netdev: network device
  * @ft_event: IE information
  */
-void cyw-cfg80211_ft_event(struct net_device *netdev,
-		       struct cyw-cfg80211_ft_event_params *ft_event);
+void cyw_cfg80211_ft_event(struct net_device *netdev,
+		       struct cyw_cfg80211_ft_event_params *ft_event);
 
 /**
- * cyw-cfg80211_get_p2p_attr - find and copy a P2P attribute from IE buffer
+ * cyw_cfg80211_get_p2p_attr - find and copy a P2P attribute from IE buffer
  * @ies: the input IE buffer
  * @len: the input length
  * @attr: the attribute ID to find
@@ -7148,7 +7148,7 @@ void cyw-cfg80211_ft_event(struct net_device *netdev,
  * malformed or the attribute can't be found (respectively), or the
  * length of the found attribute (which can be zero).
  */
-int cyw-cfg80211_get_p2p_attr(const u8 *ies, unsigned int len,
+int cyw_cfg80211_get_p2p_attr(const u8 *ies, unsigned int len,
 			  enum ieee80211_p2p_attr_id attr,
 			  u8 *buf, unsigned int bufsize);
 
@@ -7216,7 +7216,7 @@ static inline size_t ieee80211_ie_split(const u8 *ies, size_t ielen,
 }
 
 /**
- * cyw-cfg80211_report_wowlan_wakeup - report wakeup from WoWLAN
+ * cyw_cfg80211_report_wowlan_wakeup - report wakeup from WoWLAN
  * @wdev: the wireless device reporting the wakeup
  * @wakeup: the wakeup report
  * @gfp: allocation flags
@@ -7226,12 +7226,12 @@ static inline size_t ieee80211_ie_split(const u8 *ies, size_t ielen,
  * pass %NULL as the @wakeup parameter to advertise that something
  * else caused the wakeup.
  */
-void cyw-cfg80211_report_wowlan_wakeup(struct wireless_dev *wdev,
-				   struct cyw-cfg80211_wowlan_wakeup *wakeup,
+void cyw_cfg80211_report_wowlan_wakeup(struct wireless_dev *wdev,
+				   struct cyw_cfg80211_wowlan_wakeup *wakeup,
 				   gfp_t gfp);
 
 /**
- * cyw-cfg80211_crit_proto_stopped() - indicate critical protocol stopped by driver.
+ * cyw_cfg80211_crit_proto_stopped() - indicate critical protocol stopped by driver.
  *
  * @wdev: the wireless device for which critical protocol is stopped.
  * @gfp: allocation flags
@@ -7240,7 +7240,7 @@ void cyw-cfg80211_report_wowlan_wakeup(struct wireless_dev *wdev,
  * operation back to normal. One reason could be that the duration given
  * by .crit_proto_start() has expired.
  */
-void cyw-cfg80211_crit_proto_stopped(struct wireless_dev *wdev, gfp_t gfp);
+void cyw_cfg80211_crit_proto_stopped(struct wireless_dev *wdev, gfp_t gfp);
 
 /**
  * ieee80211_get_num_supported_channels - get number of channels device has
@@ -7251,7 +7251,7 @@ void cyw-cfg80211_crit_proto_stopped(struct wireless_dev *wdev, gfp_t gfp);
 unsigned int ieee80211_get_num_supported_channels(struct wiphy *wiphy);
 
 /**
- * cyw-cfg80211_check_combinations - check interface combinations
+ * cyw_cfg80211_check_combinations - check interface combinations
  *
  * @wiphy: the wiphy
  * @params: the interface combinations parameter
@@ -7260,11 +7260,11 @@ unsigned int ieee80211_get_num_supported_channels(struct wiphy *wiphy);
  * combination of interfaces and their types are allowed according to
  * the interface combinations.
  */
-int cyw-cfg80211_check_combinations(struct wiphy *wiphy,
+int cyw_cfg80211_check_combinations(struct wiphy *wiphy,
 				struct iface_combination_params *params);
 
 /**
- * cyw-cfg80211_iter_combinations - iterate over matching combinations
+ * cyw_cfg80211_iter_combinations - iterate over matching combinations
  *
  * @wiphy: the wiphy
  * @params: the interface combinations parameter
@@ -7275,14 +7275,14 @@ int cyw-cfg80211_check_combinations(struct wiphy *wiphy,
  * combinations it fits in at a given moment, e.g. for channel switching
  * purposes.
  */
-int cyw-cfg80211_iter_combinations(struct wiphy *wiphy,
+int cyw_cfg80211_iter_combinations(struct wiphy *wiphy,
 			       struct iface_combination_params *params,
 			       void (*iter)(const struct ieee80211_iface_combination *c,
 					    void *data),
 			       void *data);
 
 /*
- * cyw-cfg80211_stop_iface - trigger interface disconnection
+ * cyw_cfg80211_stop_iface - trigger interface disconnection
  *
  * @wiphy: the wiphy
  * @wdev: wireless device
@@ -7293,11 +7293,11 @@ int cyw-cfg80211_iter_combinations(struct wiphy *wiphy,
  *
  * Note: This doesn't need any locks and is asynchronous.
  */
-void cyw-cfg80211_stop_iface(struct wiphy *wiphy, struct wireless_dev *wdev,
+void cyw_cfg80211_stop_iface(struct wiphy *wiphy, struct wireless_dev *wdev,
 			 gfp_t gfp);
 
 /**
- * cyw-cfg80211_shutdown_all_interfaces - shut down all interfaces for a wiphy
+ * cyw_cfg80211_shutdown_all_interfaces - shut down all interfaces for a wiphy
  * @wiphy: the wiphy to shut down
  *
  * This function shuts down all interfaces belonging to this wiphy by
@@ -7308,7 +7308,7 @@ void cyw-cfg80211_stop_iface(struct wiphy *wiphy, struct wireless_dev *wdev,
  * Callers must hold the RTNL and be able to deal with callbacks into
  * the driver while the function is running.
  */
-void cyw-cfg80211_shutdown_all_interfaces(struct wiphy *wiphy);
+void cyw_cfg80211_shutdown_all_interfaces(struct wiphy *wiphy);
 
 /**
  * wiphy_ext_feature_set - set the extended feature flag
@@ -7348,15 +7348,15 @@ wiphy_ext_feature_isset(struct wiphy *wiphy,
 }
 
 /**
- * cyw-cfg80211_free_nan_func - free NAN function
+ * cyw_cfg80211_free_nan_func - free NAN function
  * @f: NAN function that should be freed
  *
  * Frees all the NAN function and all it's allocated members.
  */
-void cyw-cfg80211_free_nan_func(struct cyw-cfg80211_nan_func *f);
+void cyw_cfg80211_free_nan_func(struct cyw_cfg80211_nan_func *f);
 
 /**
- * struct cyw-cfg80211_nan_match_params - NAN match parameters
+ * struct cyw_cfg80211_nan_match_params - NAN match parameters
  * @type: the type of the function that triggered a match. If it is
  *	 %NL80211_NAN_FUNC_SUBSCRIBE it means that we replied to a subscriber.
  *	 If it is %NL80211_NAN_FUNC_PUBLISH, it means that we got a discovery
@@ -7369,7 +7369,7 @@ void cyw-cfg80211_free_nan_func(struct cyw-cfg80211_nan_func *f);
  * @info: the Service Specific Info from the peer (if any)
  * @cookie: unique identifier of the corresponding function
  */
-struct cyw-cfg80211_nan_match_params {
+struct cyw_cfg80211_nan_match_params {
 	enum nl80211_nan_function_type type;
 	u8 inst_id;
 	u8 peer_inst_id;
@@ -7380,7 +7380,7 @@ struct cyw-cfg80211_nan_match_params {
 };
 
 /**
- * cyw-cfg80211_nan_match - report a match for a NAN function.
+ * cyw_cfg80211_nan_match - report a match for a NAN function.
  * @wdev: the wireless device reporting the match
  * @match: match notification parameters
  * @gfp: allocation flags
@@ -7389,11 +7389,11 @@ struct cyw-cfg80211_nan_match_params {
  * can be a subscribe that had a match or a solicited publish that
  * was sent. It can also be a follow up that was received.
  */
-void cyw-cfg80211_nan_match(struct wireless_dev *wdev,
-			struct cyw-cfg80211_nan_match_params *match, gfp_t gfp);
+void cyw_cfg80211_nan_match(struct wireless_dev *wdev,
+			struct cyw_cfg80211_nan_match_params *match, gfp_t gfp);
 
 /**
- * cyw-cfg80211_nan_func_terminated - notify about NAN function termination.
+ * cyw_cfg80211_nan_func_terminated - notify about NAN function termination.
  *
  * @wdev: the wireless device reporting the match
  * @inst_id: the local instance id
@@ -7403,39 +7403,39 @@ void cyw-cfg80211_nan_match(struct wireless_dev *wdev,
  *
  * This function reports that the a NAN function is terminated.
  */
-void cyw-cfg80211_nan_func_terminated(struct wireless_dev *wdev,
+void cyw_cfg80211_nan_func_terminated(struct wireless_dev *wdev,
 				  u8 inst_id,
 				  enum nl80211_nan_func_term_reason reason,
 				  u64 cookie, gfp_t gfp);
 
 /* ethtool helper */
-void cyw-cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info);
+void cyw_cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info);
 
 /**
- * cyw-cfg80211_external_auth_request - userspace request for authentication
+ * cyw_cfg80211_external_auth_request - userspace request for authentication
  * @netdev: network device
  * @params: External authentication parameters
  * @gfp: allocation flags
  * Returns: 0 on success, < 0 on error
  */
-int cyw-cfg80211_external_auth_request(struct net_device *netdev,
-				   struct cyw-cfg80211_external_auth_params *params,
+int cyw_cfg80211_external_auth_request(struct net_device *netdev,
+				   struct cyw_cfg80211_external_auth_params *params,
 				   gfp_t gfp);
 
 /**
- * cyw-cfg80211_pmsr_report - report peer measurement result data
+ * cyw_cfg80211_pmsr_report - report peer measurement result data
  * @wdev: the wireless device reporting the measurement
  * @req: the original measurement request
  * @result: the result data
  * @gfp: allocation flags
  */
-void cyw-cfg80211_pmsr_report(struct wireless_dev *wdev,
-			  struct cyw-cfg80211_pmsr_request *req,
-			  struct cyw-cfg80211_pmsr_result *result,
+void cyw_cfg80211_pmsr_report(struct wireless_dev *wdev,
+			  struct cyw_cfg80211_pmsr_request *req,
+			  struct cyw_cfg80211_pmsr_result *result,
 			  gfp_t gfp);
 
 /**
- * cyw-cfg80211_pmsr_complete - report peer measurement completed
+ * cyw_cfg80211_pmsr_complete - report peer measurement completed
  * @wdev: the wireless device reporting the measurement
  * @req: the original measurement request
  * @gfp: allocation flags
@@ -7443,12 +7443,12 @@ void cyw-cfg80211_pmsr_report(struct wireless_dev *wdev,
  * Report that the entire measurement completed, after this
  * the request pointer will no longer be valid.
  */
-void cyw-cfg80211_pmsr_complete(struct wireless_dev *wdev,
-			    struct cyw-cfg80211_pmsr_request *req,
+void cyw_cfg80211_pmsr_complete(struct wireless_dev *wdev,
+			    struct cyw_cfg80211_pmsr_request *req,
 			    gfp_t gfp);
 
 /**
- * cyw-cfg80211_iftype_allowed - check whether the interface can be allowed
+ * cyw_cfg80211_iftype_allowed - check whether the interface can be allowed
  * @wiphy: the wiphy
  * @iftype: interface type
  * @is_4addr: use_4addr flag, must be '0' when check_swif is '1'
@@ -7458,7 +7458,7 @@ void cyw-cfg80211_pmsr_complete(struct wireless_dev *wdev,
  * can be used to check iftype against the software interfaces when
  * check_swif is '1'.
  */
-bool cyw-cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
+bool cyw_cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
 			     bool is_4addr, u8 check_swif);
 
 
@@ -7514,13 +7514,13 @@ bool cyw-cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype
 	WARN(1, "wiphy: %s\n" format, wiphy_name(wiphy), ##args);
 
 /**
- * cyw-cfg80211_update_owe_info_event - Notify the peer's OWE info to user space
+ * cyw_cfg80211_update_owe_info_event - Notify the peer's OWE info to user space
  * @netdev: network device
  * @owe_info: peer's owe info
  * @gfp: allocation flags
  */
-void cyw-cfg80211_update_owe_info_event(struct net_device *netdev,
-				    struct cyw-cfg80211_update_owe_info *owe_info,
+void cyw_cfg80211_update_owe_info_event(struct net_device *netdev,
+				    struct cyw_cfg80211_update_owe_info *owe_info,
 				    gfp_t gfp);
 
 #endif /* __NET_CFG80211_H */
